@@ -52,24 +52,31 @@ LW3's DPP platform explicitly uses Hydra for EV battery supply chain tracking wi
 | **CIP-150** (Block Data Compression) | Higher effective block capacity |
 | **Mithril** | Fast chain sync for light clients / verifiers |
 
+## DPP granularity
+
+A DPP is **not per individual item** — it is per product model or batch. The UNTP `granularityLevel` field makes this explicit:
+
+| Level | Meaning | Example |
+|-------|---------|---------|
+| `model` | One DPP per product design | A t-shirt model, a paint formula |
+| `batch` | One DPP per production batch | A factory run of 10,000 units |
+| `item` | One DPP per individual unit | An EV battery with unique serial and SoH tracking |
+
+Item-level DPPs are required for **EV batteries** (each has a unique serial, State of Health tracking, and lifecycle history). For most other sectors — textiles, electronics, construction, steel — the DPP is at model or batch level.
+
 ## Volume requirements
 
-The EU produces roughly:
+Estimated number of **DPP records** (not items) per sector:
 
-- ~3 million EV batteries/year (growing)
-- ~6 billion textile items/year
-- Hundreds of millions of electronic devices/year
+| Sector | DPP granularity | Estimated DPPs/year | L1 feasibility |
+|--------|----------------|--------------------:|----------------|
+| EV batteries | Item | ~3M | Comfortable |
+| Industrial batteries | Item | ~1M | Comfortable |
+| Iron & steel | Batch | ~100k-1M | Trivial |
+| Textiles | Model/batch | ~100k-1M | Trivial |
+| Electronics | Model/batch | ~100k-500k | Trivial |
+| Construction | Model/batch | ~100k-500k | Trivial |
 
-For batteries (first DPP mandate, Feb 2027): L1 batching is sufficient.
-For textiles and electronics at full scale: Hydra or equivalent L2 is required.
+All sectors fit comfortably on L1 with simple individual transactions. Batching and High Throughput patterns are optimizations, not requirements.
 
-| Sector | Annual volume | L1 individual | L1 batched (30/tx) | L1 High Throughput (10k/root) | L2 (Hydra) |
-|--------|--------------|--------------|-------------------|-------------------------------|------------|
-| Batteries | ~3M | Comfortable | Comfortable | Trivial | Not needed |
-| Iron & steel | ~50M | Tight | Comfortable | Trivial | Optional |
-| Textiles | ~6B | Impossible | Tight (~6.3 TPS sustained) | Comfortable (~600k tx/year) | Optional |
-| Electronics | ~500M | Impossible | Feasible | Comfortable | Optional |
-| Construction | ~100M | Feasible | Comfortable | Trivial | Not needed |
-
-!!! note "High Throughput changes the picture"
-    With the CF High Throughput pattern (one Merkle root per 10k products), even 6 billion textile items require only ~600k L1 transactions/year — well within capacity. L2 (Hydra) is beneficial for real-time lifecycle events but not strictly required for initial registration.
+Hydra L2 becomes relevant for **lifecycle events** — real-time SoH updates on millions of EV batteries, or supply chain event logging at high frequency — not for initial DPP registration.
