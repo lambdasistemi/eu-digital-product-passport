@@ -32,15 +32,25 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Regulation: regulation.md
-  - Timeline: timeline.md
-  - Data Model: data-model.md
-  - Schemas:
-    - Battery Pass: schemas/battery-pass.md
-    - UNTP DPP: schemas/untp-dpp.md
-  - Examples:
-    - Battery (Battery Pass): examples/battery-pass.md
-    - Battery (UNTP): examples/untp-battery.md
-  - Access & Governance: access.md
-  - Pilots & Implementations: pilots.md
+  - Cardano Feasibility:
+    - Overview: cardano/overview.md
+    - On-Chain Storage: cardano/storage.md
+    - Access Control: cardano/access-control.md
+    - Identity: cardano/identity.md
+    - Cost Analysis: cardano/costs.md
+    - Scalability: cardano/scalability.md
+    - EU Integration: cardano/eu-integration.md
+    - Existing Work: cardano/existing-work.md
+  - EU DPP Background:
+    - Regulation: regulation.md
+    - Timeline: timeline.md
+    - Data Model: data-model.md
+    - Schemas:
+      - Battery Pass: schemas/battery-pass.md
+      - UNTP DPP: schemas/untp-dpp.md
+    - Examples:
+      - Battery (Battery Pass): examples/battery-pass.md
+      - Battery (UNTP): examples/untp-battery.md
+    - Access & Governance: access.md
+    - Pilots & Implementations: pilots.md
   - Links: links.md
