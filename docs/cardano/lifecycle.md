@@ -56,13 +56,22 @@ stateDiagram-v2
 
 - **Delegation, not transfer**: The manufacturer can authorize another operator "to act on their behalf" (Art. 77(4)), but legal responsibility stays with the manufacturer.
 - **Repurposing = new product**: A repurposed battery is legally a new product and requires a **new** passport linked to the original (Art. 77(6a)).
-- **Consumer = read only**: Consumers are in the "general public" access group. No write access.
+- **Consumer = read, no write**: Consumers are in the "general public" access group. No write access — but the passport exists primarily **for them**. A buyer evaluating a used EV battery needs to verify SoH, cycle count, maintenance history, and carbon footprint to make an informed purchasing decision. The blockchain anchoring means this data is tamper-evident: the manufacturer cannot retroactively inflate SoH numbers to sell a degraded battery.
 - **BMS feeds the passport**: The BMS records SoH/cycle data. The manufacturer's backend processes it and publishes to the passport. Recital 46: data should be "at least updated daily."
 - **End**: "A battery passport shall cease to exist after the battery has been recycled" (Art. 77(6b)).
 
 ## Cardano architecture
 
-Given the regulation, the interaction model is **not peer-to-peer token passing**. It's a manufacturer-operated backend with on-chain anchoring.
+The write side is manufacturer-operated. But the **read side is where the value lives** — the passport serves multiple audiences making real decisions:
+
+| Actor | What they need from the passport | Why blockchain matters |
+|-------|--------------------------------|----------------------|
+| **Used battery buyer** | SoH, cycle count, maintenance history, remaining lifetime estimate | Manufacturer can't inflate numbers — data was anchored at a specific time |
+| **Repurposing operator** | Detailed SoH curves, material composition, disassembly instructions | Verifiable provenance for second-life assessment |
+| **Insurance company** | Battery condition, conformity declarations | Tamper-evident condition records |
+| **Fleet manager** | SoH across all vehicles, predictive maintenance | Trusted data from multiple manufacturers in one view |
+| **Market surveillance** | Due diligence, conformity, carbon footprint | Immutable audit trail |
+| **Recycler** | Chemistry, hazardous substances, disassembly | Accurate material composition for safe processing |
 
 ### Actors and their interfaces
 
