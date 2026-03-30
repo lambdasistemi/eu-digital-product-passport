@@ -41,6 +41,7 @@ nav:
     - Passport State: cardano/state.md
     - User Reporting & Incentives: cardano/incentives.md
     - Signed BMS Readings: cardano/signed-bms.md
+    - NFC Hardware: cardano/nfc-hardware.md
     - Battery Lifecycle: cardano/lifecycle.md
     - Scalability: cardano/scalability.md
     - EU Integration: cardano/eu-integration.md
