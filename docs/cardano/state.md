@@ -41,19 +41,32 @@ Trigger: Continuous (aggregated daily per Recital 46)
 Data:    SoH, remaining capacity, cycle count, energy throughput
 ```
 
-```mermaid
-graph LR
-    A[BMS chip] -->|CAN bus| B[Vehicle ECU]
-    B -->|cellular / WiFi| C[OEM telematics cloud]
-    C -->|API| D[Manufacturer passport backend]
-    D -->|update| E[Passport data store]
-```
+**The regulation does not specify how BMS data reaches the passport.**
 
-The BMS is the **hardware source of truth**. It doesn't know about passports — it just measures the battery. The vehicle's telematics system relays readings to the manufacturer's cloud, which processes them into passport-compatible format.
+Article 14 says the BMS must *contain* up-to-date SoH data ("shall be **contained in** the battery management system"). Article 77 says the passport must have this data. But **the bridge between Article 14 and Article 77 is completely unspecified**. No telematics, no internet, no API, no protocol is mandated.
 
-**Who is the actor?** The manufacturer's automated backend. No human is involved. It's a pipeline: `BMS → telematics → cloud → passport store`.
+The "at least daily" update frequency (Recital 46) refers to the BMS's internal SoH computation refresh — not to passport updates.
 
-**How often?** The regulation says "at least daily." In practice, telematics systems typically report on every drive cycle or on a fixed interval (hours). The manufacturer's backend aggregates and publishes.
+This is a recognized open problem:
+
+!!! warning "Unsolved implementation gap"
+    The Battery Pass consortium states that Annex VII data attributes "urgently require further elaboration and definitions, which are decisive for economic operators to determine system requirements for implementation." Industry analysis from CEPS, Seraph, and DataArt all identify the BMS-to-passport data transfer as the biggest unsolved challenge before the Feb 2027 deadline.
+
+The challenge varies dramatically by battery category:
+
+| Category | Connectivity | BMS-to-passport path |
+|----------|-------------|---------------------|
+| **New EVs** (Tesla, VW, etc.) | Always-on cellular telematics | Feasible: BMS → ECU → telematics → cloud → passport |
+| **Older EVs** | Limited or no telematics | Unknown: may require dealer visit to read BMS |
+| **LMT (e-bikes, scooters)** | No internet connectivity | Unknown: BMS is local only, no standard extraction method |
+| **Industrial (forklifts, UPS)** | Usually no internet | Unknown: may require on-site diagnostic tool |
+| **Stationary storage** | Varies (some have SCADA) | Case-by-case |
+
+For non-connected batteries, the only practical option today may be **manual reads** — a technician connects to the BMS via diagnostic port and extracts data, which is then uploaded to the passport. This could happen at service visits, inspections, or point of sale.
+
+**Who is the actor?** The manufacturer is legally responsible for keeping the passport up-to-date (Art. 77(4)). But the regulation doesn't say how they should get the data from a battery they no longer physically control. This is the fundamental tension.
+
+**Implication for Cardano:** The BMS-to-passport data bridge is an open design space. A Cardano-based solution could define a standard for this: e.g., a signed BMS data dump (read at service or via diagnostic tool) that can be independently verified and anchored on-chain, regardless of whether the battery is internet-connected.
 
 ### Event 3: Service / maintenance
 

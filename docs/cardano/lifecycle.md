@@ -152,27 +152,30 @@ When the battery is recycled, the recycler (holding a `DPP_RECYCLER` role token)
 - Records material recovery data in the event log
 - The passport is no longer "active" but the on-chain record persists as historical evidence
 
-## Data flow: BMS to blockchain
+## Data flow: BMS to passport (open problem)
 
-The BMS does not interact with Cardano directly. The data path:
+!!! warning "The regulation does not specify this"
+    Article 14 requires the BMS to *contain* SoH data. Article 77 requires the passport to *have* SoH data. How data moves from one to the other is completely unspecified. See [Passport State](state.md) for the full analysis.
 
-```mermaid
-graph LR
-    A[Battery BMS] -->|OBD-II / CAN bus| B[Vehicle telematics]
-    B -->|API / MQTT| C[Manufacturer backend]
-    C -->|process + format| D[Passport data store]
-    D -->|hash + publish| E[IPFS]
-    D -->|anchor hash| F[Cardano L1]
-```
+The data path depends entirely on the battery category and the manufacturer's infrastructure:
 
-Update frequency:
+| Category | Realistic data path |
+|----------|-------------------|
+| Connected EVs | BMS → telematics → manufacturer cloud → passport |
+| Non-connected EVs | BMS → diagnostic port → service visit → manual upload |
+| E-bikes / scooters | BMS → Bluetooth/app? → manufacturer? → passport (unclear) |
+| Industrial batteries | BMS → on-site diagnostic tool → manual upload |
 
-| Data type | Source | Update cadence | On-chain? |
-|-----------|--------|---------------|-----------|
-| SoH snapshot | BMS via backend | Daily (Recital 46) | Hash anchor on-chain, full data off-chain |
+For non-connected batteries, the passport may only be updated at discrete events (service visits, inspections, point of sale) rather than continuously.
+
+### On-chain anchoring cadence
+
+The on-chain datum only needs to be updated when the **hash of the off-chain data changes**. A practical cadence depends on how often data actually reaches the passport — which varies by category:
+
+| Data type | Source | Realistic cadence | On-chain? |
+|-----------|--------|------------------|-----------|
+| SoH snapshot | BMS (however extracted) | Per data availability event | Hash anchor on-chain, full data off-chain |
 | Cycle count | BMS | With SoH update | In off-chain data |
-| Maintenance event | Service provider | Per event | Event log batch |
-| Ownership change | Sale transaction | Per event | Datum update |
+| Maintenance event | Service provider | Per visit | Event log batch |
+| Ownership change | Sale transaction | Per sale | Datum update |
 | Status change | Operator decision | Per event | Datum update |
-
-The on-chain datum only needs to be updated when the **hash of the off-chain data changes** — not on every BMS reading. A practical cadence: update the on-chain anchor weekly or monthly, while the off-chain data is updated daily.
