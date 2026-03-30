@@ -156,5 +156,6 @@ This is the fourth genuine blockchain value-add in the design:
 |---|-------|----------------------|
 | 1 | Tamper-evident history | Manufacturer can't alter past readings |
 | 2 | Trustless incentive coordination | Smart contract guarantees reward for valid signed readings |
-| 3 | Trusted clock (challenge-response) | Blockchain slot as unforgeable timestamp |
-| **4** | **Ownership-gated reporting** | **Token transfer = reporting right transfer, atomic handover with signed condition proof** |
+| 3 | On-chain commitment as trusted clock | Minted commitment UTxO proves intent to read at a specific moment — prevents replay and stockpiling |
+| 4 | Ownership-gated reporting | Token transfer = reporting right transfer, atomic handover with signed condition proof |
+| **5** | **Single-use challenge (eUTxO)** | **Commitment UTxO is consumed on reading submission — one commitment, one reading, no cherry-picking** |

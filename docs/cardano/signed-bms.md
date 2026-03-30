@@ -142,9 +142,16 @@ A signed reading with a BMS-reported timestamp proves nothing about *when* the r
 - Store the signed result
 - Replay it months later when the battery has degraded, to fake a higher SoH
 
-### Challenge-response protocol
+### Challenge-response protocol with on-chain commitment
 
-The reader includes a **challenge** in the signing request — a value that the BMS could not have known in advance. The BMS signs the state data together with the challenge. This binds the reading to a specific moment.
+Simply reading the current slot number is not enough — anyone can read a slot retroactively. A dishonest user could:
+
+1. Tap the battery today (SoH 85%)
+2. Store the signed reading
+3. Months later, read the current slot, claim that was the challenge
+4. Submit the old reading as if it were fresh
+
+The fix: the user **commits the challenge on-chain first** by minting a commitment UTxO. This creates an unforgeable timestamp — the commitment transaction has a definite slot, and the reading must reference that exact commitment.
 
 ```mermaid
 sequenceDiagram
@@ -152,51 +159,84 @@ sequenceDiagram
     participant C as Cardano L1
     participant B as BMS Secure Element
 
-    U->>C: Read current slot number
-    C-->>U: Slot 142857000
+    Note over U,C: Step 1: Commit
+    U->>C: Submit commitment tx (mints challenge token)
+    Note over C: Commitment UTxO created at slot 142857000
+    Note over C: Contains: battery_id, user_pkh, nonce
+    C-->>U: Commitment tx confirmed
 
-    U->>B: Request signed state with challenge = slot 142857000
+    Note over U,B: Step 2: Tap
+    U->>B: NFC tap with challenge = commitment_tx_hash
     B->>B: Read sensors → state data
-    B->>B: payload = state_data ‖ challenge
-    B->>B: hash = H(payload)
-    B->>B: signature = Sign(private_key, hash)
-    B-->>U: {state_data, challenge, hash, signature}
+    B->>B: payload = state_data ‖ commitment_tx_hash
+    B->>B: signature = Sign(private_key, hash(payload))
+    B-->>U: COSE_Sign1 { state_data, commitment_tx_hash, signature }
 
-    U->>C: Submit transaction with signed reading
-    Note over C: Transaction lands in slot 142857042
-
-    C->>C: Validator checks:
-    Note over C: 1. challenge ≤ current_slot
-    Note over C: 2. current_slot - challenge < max_age (e.g., 1 hour)
-    Note over C: 3. Signature valid against BMS public key
-    Note over C: 4. Plausibility checks
-    Note over C: 5. Release reward
+    Note over U,C: Step 3: Submit
+    U->>C: Submit reading tx, consuming commitment UTxO
+    Note over C: Validator checks:
+    Note over C: 1. Commitment UTxO is consumed (single use)
+    Note over C: 2. commitment_tx_hash in reading matches
+    Note over C: 3. Commitment slot is recent (< max_age)
+    Note over C: 4. COSE signature valid
+    Note over C: 5. User holds ownership token
+    Note over C: 6. Plausibility checks
+    Note over C: 7. Release reward
 ```
 
-### What the challenge proves
+### Why the commitment matters
 
-| Attack | Without challenge | With challenge |
-|--------|------------------|---------------|
-| **Replay old reading** | Possible — old signed reading is still valid | Blocked — challenge slot is too old, validator rejects |
-| **Pre-compute future readings** | Possible — sign once, submit later | Blocked — BMS can't predict future slot numbers |
-| **Forge timestamp** | Easy — BMS clock is settable | Irrelevant — timestamp comes from the blockchain |
-| **Delay submission** | Undetectable | Detectable — gap between challenge slot and submission slot |
+The commitment transaction is the key innovation. It creates an on-chain proof that the user **declared their intent to read at a specific moment**.
 
-The `max_age` parameter (e.g., 200 slots = ~1 hour) defines how fresh a reading must be. The validator rejects anything older. This means:
+| Attack | Without commitment | With commitment |
+|--------|-------------------|-----------------|
+| **Replay old reading** | Possible — just use a current slot as challenge | **Blocked** — no matching commitment UTxO exists |
+| **Stockpile readings** | Take many readings, submit the best one later | **Blocked** — each commitment is consumed (single use) |
+| **Backdate a reading** | Claim any past slot as your challenge | **Blocked** — commitment tx has an immutable slot |
+| **Forge a commitment** | N/A | **Impossible** — it's a confirmed on-chain transaction |
 
-- The reading was produced **after** the challenge slot (BMS had to see the challenge)
-- The reading was submitted **within max_age** of being produced
-- The blockchain's own slot progression serves as the trusted clock
+The commitment UTxO is **consumed** when the reading is submitted — it can't be reused. One commitment = one reading. This prevents stockpiling.
+
+### The challenge value
+
+Using the **commitment transaction hash** as the challenge (instead of a slot number) is stronger:
+
+- The tx hash is unpredictable before the commitment is submitted
+- The BMS signs over it, binding the reading to that exact commitment
+- The validator can look up the commitment UTxO by its tx hash and verify it exists, is recent, and belongs to this user
+
+### Cost
+
+The commitment is a small transaction:
+
+| Step | Cost |
+|------|------|
+| Commitment tx (mint challenge token) | ~0.2 ADA |
+| Reading submission tx (consume commitment + submit reading) | ~0.3 ADA |
+| **Total per reading** | **~0.5 ADA** |
+
+The reward must exceed this cost to incentivize reporting. At current prices (~$0.25/ADA), the total cost per reading is ~$0.13.
+
+### What the commitment proves
+
+| Claim | Proven? |
+|-------|---------|
+| User intended to read at this moment | Yes — commitment tx has an immutable slot |
+| Reading was produced after the commitment | Yes — reading contains commitment_tx_hash, which didn't exist before |
+| Reading was submitted promptly | Yes — max_age between commitment slot and submission slot |
+| No reading was stockpiled or cherry-picked | Yes — each commitment is consumed once |
+| The challenge is unforgeable | Yes — it's a transaction hash on a consensus-secured chain |
 
 ### Why this needs a blockchain
 
-This is a genuine blockchain value-add, not just "hash anchoring":
+This is a genuine blockchain value-add:
 
-- **The challenge must come from a source neither party controls.** Cardano's slot number is determined by the Ouroboros protocol — no single party can manipulate it.
-- **The timestamp is consensus-derived.** It's not a server clock that the manufacturer controls, not a BMS clock that the user controls. It's the chain's own time.
-- **Freshness is enforced on-chain.** The validator is a smart contract — it can't be bypassed or bribed.
+- **The commitment is a confirmed transaction** — no party can forge, backdate, or alter it
+- **The slot is consensus-derived** — neither the user, the manufacturer, nor a server controls it
+- **Single-use consumption** — the eUTxO model naturally enforces one-reading-per-commitment (the UTxO is spent)
+- **The challenge (tx hash) is unpredictable** — determined by the transaction content and the ledger state at submission time
 
-A centralized server could issue challenges too, but then you trust the server operator. The blockchain makes the challenge protocol **trustless**.
+A centralized server could issue challenges too, but then you trust the server operator not to issue backdated challenges. The blockchain makes the entire protocol **trustless**.
 
 ### Signed reading format (with challenge)
 
@@ -228,6 +268,16 @@ The `monotonic_counter` is a strictly increasing value maintained by the secure 
 ECDSA signature verification is possible in Plutus (Cardano supports `verifyEcdsaSecp256k1Signature` as a built-in). If the BMS uses secp256k1 (like Bitcoin/Ethereum) or ed25519 (like Cardano native), the signature can be verified directly in the smart contract validator.
 
 ```
+CommitmentValidator:
+  -- Minting policy for challenge tokens
+  Validation (mint):
+    - Exactly one token minted
+    - Token name = hash(battery_id ‖ user_pkh ‖ current_slot)
+    - Output UTxO contains: battery_id, user_pkh, slot
+
+  Validation (burn / consume):
+    - Must be consumed by a valid reading submission
+
 ReportingValidator:
   Datum:
     batteryId     : ByteString
@@ -237,22 +287,24 @@ ReportingValidator:
     maxAgeSlots   : Integer        -- e.g., 200 slots (~1 hour)
 
   Redeemer: SubmitSignedReading
-    reading    : ByteString      -- serialized state data including challenge + counter
-    signature  : ByteString      -- BMS signature over hash(reading)
+    coseSign1  : ByteString      -- full COSE_Sign1 object from BMS
 
   Validation:
-    - Extract challenge slot from reading
-    - challenge ≤ current_slot
-    - current_slot - challenge < maxAgeSlots
-    - Extract monotonic_counter from reading
-    - monotonic_counter > lastCounter (strictly increasing)
-    - verifyEcdsaSecp256k1Signature(bmsPublicKey, hash(reading), signature) == True
+    - A commitment UTxO is consumed in this transaction
+    - commitment.battery_id matches datum.batteryId
+    - commitment.user_pkh matches the submitter
+    - commitment.slot + maxAgeSlots ≥ current_slot (commitment is recent)
+    - Extract commitment_tx_hash from COSE payload challenge field
+    - commitment_tx_hash matches the consumed commitment UTxO's tx hash
+    - Verify COSE_Sign1 signature against datum.bmsPublicKey
+    - Extract monotonic_counter: must be > lastCounter
     - Plausibility checks (SoH ≤ previous, cycles ≥ previous)
+    - Submitter holds the ownership token for this battery
     - Update lastCounter in output datum
     - Release reward to submitter
 ```
 
-This is a significant upgrade over unsigned user reports — the smart contract doesn't just check that a user submitted something plausible, it verifies that the BMS hardware itself produced the data, recently, in response to a fresh challenge.
+This is a significant upgrade over unsigned user reports — the smart contract doesn't just check that a user submitted something plausible, it verifies that the BMS hardware itself produced the data, recently, in response to a committed challenge that was minted on-chain before the reading.
 
 ## What this changes
 
