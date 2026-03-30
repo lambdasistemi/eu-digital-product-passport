@@ -1,0 +1,25 @@
+{
+  "batteryCarbonFootprint": 52.3,
+  "batteryCarbonFootprintUnit": "kgCO2e/kWh",
+  "carbonFootprintPerLifecycleStage": [
+    {
+      "lifecycleStage": "RawMaterialExtraction",
+      "carbonFootprint": 18.7
+    },
+    {
+      "lifecycleStage": "MainProduction",
+      "carbonFootprint": 24.1
+    },
+    {
+      "lifecycleStage": "Distribution",
+      "carbonFootprint": 3.2
+    },
+    {
+      "lifecycleStage": "Recycling",
+      "carbonFootprint": 6.3
+    }
+  ],
+  "carbonFootprintPerformanceClass": "B",
+  "carbonFootprintStudy": "https://example-gmbh.de/lca/battery-lfp-400ah-2024.pdf",
+  "absoluteCarbonFootprint": 5440.8
+}
