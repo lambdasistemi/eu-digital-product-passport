@@ -38,6 +38,7 @@ nav:
     - Access Control: cardano/access-control.md
     - Identity: cardano/identity.md
     - Cost Analysis: cardano/costs.md
+    - Passport State: cardano/state.md
     - Battery Lifecycle: cardano/lifecycle.md
     - Scalability: cardano/scalability.md
     - EU Integration: cardano/eu-integration.md
