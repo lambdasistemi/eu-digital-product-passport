@@ -1,5 +1,5 @@
-site_name: EU Digital Product Passport
-site_description: Research, schemas, and examples for the EU DPP
+site_name: EU Digital Product Passport on Cardano
+site_description: Feasibility study — storing EU Digital Product Passports on Cardano
 site_url: https://lambdasistemi.github.io/eu-digital-product-passport/
 repo_url: https://github.com/lambdasistemi/eu-digital-product-passport
 repo_name: lambdasistemi/eu-digital-product-passport
@@ -19,7 +19,11 @@ theme:
 markdown_extensions:
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - tables
