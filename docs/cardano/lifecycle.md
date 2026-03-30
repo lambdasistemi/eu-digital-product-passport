@@ -1,143 +1,169 @@
-# Battery Lifecycle on Cardano
+# Battery Passport Lifecycle
 
-## The problem
+## Chain of responsibility
 
-A battery passport is a **living document**. Article 77(2) of Regulation 2023/1542 requires it to contain "information specific to the individual battery, **including resulting from the use of that battery**."
+The Battery Regulation defines a clear chain of responsibility. The key insight: **the manufacturer/importer who placed the battery on the EU market remains legally responsible for the passport throughout the battery's entire first life** — even after selling it.
 
-This means the passport must be updated throughout the battery's life:
+The consumer never has write access. They can only read public data via QR scan.
+
+### Regulatory basis
+
+**Article 77(4):** The economic operator must "ensure that the information in the battery passport is accurate, complete and up-to-date."
+
+**Recital 94:** "the responsibility of compliance with the provisions for the battery passport should lie with the economic operator placing the battery on the market" — this persists even when the battery is in someone else's hands.
+
+**Article 3(22):** An "economic operator" includes the manufacturer, importer, distributor, or any person placing the battery on the market. But only the **manufacturer or importer** can "place on the market" (Recital 10).
+
+### The lifecycle
 
 ```mermaid
-graph LR
-    A[Manufacturing] --> B[Sale to OEM]
-    B --> C[In-vehicle use]
-    C --> D[SoH degrades]
-    D --> E{Decision}
-    E -->|still viable| F[Second life / Repurpose]
-    E -->|end of life| G[Recycling]
-    F --> H[Stationary storage]
-    H --> I[Further degradation]
-    I --> G
-    G --> J[Material recovery]
+stateDiagram-v2
+    [*] --> Manufacturing: Manufacturer creates passport
+    Manufacturing --> FirstLife: Sold to OEM / consumer
+    FirstLife --> FirstLife: BMS updates SoH (daily)
+    FirstLife --> FirstLife: Service / maintenance events
+    FirstLife --> Repurposing: Battery removed from vehicle
+    FirstLife --> Waste: Declared end-of-life
+    Repurposing --> SecondLife: NEW passport by NEW operator
+    SecondLife --> SecondLife: BMS updates SoH
+    SecondLife --> Waste: End of second life
+    Waste --> Recycled: Material recovery
+    Recycled --> [*]: Passport ceases to exist
+
+    note right of FirstLife
+        Original manufacturer/importer
+        remains responsible throughout
+    end note
+
+    note right of SecondLife
+        New economic operator
+        is now responsible
+    end note
 ```
 
-At each stage, the passport must record:
+### Responsibility at each stage
 
-| Event | Who updates | Data changed |
-|-------|-----------|-------------|
-| Manufacturing | Manufacturer | Initial creation — all fields |
-| Carbon footprint declaration | Manufacturer | LCA data, performance class |
-| Sale / ownership transfer | Seller → buyer | Operator information |
-| Periodic SoH update | BMS / service provider | State of Health, cycle count, energy throughput |
-| Repair / maintenance | Service provider | Event log, parts replaced |
-| Status change | New operator | Original → Repurposed / Remanufactured |
-| End of life | Recycler | Status → Waste, material recovery data |
+| Stage | Responsible party | What they do |
+|-------|------------------|-------------|
+| **Manufacturing** | Manufacturer | Creates passport, assigns unique ID, affixes QR code |
+| **First life (in use)** | Original manufacturer/importer | Keeps data accurate and up-to-date via BMS backend |
+| **Service / maintenance** | Manufacturer (can delegate) | Authorized service providers update on manufacturer's behalf |
+| **Repurposing** | **New economic operator** | Creates a **new** passport linked to the original |
+| **Declared waste** | Producer responsibility org / waste operator | Responsibility transfers |
+| **Recycling** | Recycler | Passport **ceases to exist** (Art. 77(6b)) |
 
-## History requirements
+### Key rules
 
-The regulation requires that historical data remain accessible. Annex XIII Section 4 includes "remaining capacity" and "capacity fade" — these only make sense if tracked over time, not just as a snapshot.
+- **Delegation, not transfer**: The manufacturer can authorize another operator "to act on their behalf" (Art. 77(4)), but legal responsibility stays with the manufacturer.
+- **Repurposing = new product**: A repurposed battery is legally a new product and requires a **new** passport linked to the original (Art. 77(6a)).
+- **Consumer = read only**: Consumers are in the "general public" access group. No write access.
+- **BMS feeds the passport**: The BMS records SoH/cycle data. The manufacturer's backend processes it and publishes to the passport. Recital 46: data should be "at least updated daily."
+- **End**: "A battery passport shall cease to exist after the battery has been recycled" (Art. 77(6b)).
 
-Three approaches on Cardano:
+## Cardano architecture
 
-### 1. Chain history (implicit)
+Given the regulation, the interaction model is **not peer-to-peer token passing**. It's a manufacturer-operated backend with on-chain anchoring.
 
-Every CIP-68 datum update consumes the old UTxO and creates a new one. The old datum is not in the current UTxO set but **exists in the transaction history**.
+### Actors and their interfaces
+
+```mermaid
+graph TD
+    subgraph "Manufacturer's Infrastructure"
+        A[BMS Telemetry Receiver]
+        B[Passport Backend Service]
+        C[Cardano Signing Keys]
+        A -->|SoH, cycles, temp| B
+        B -->|update hash| C
+    end
+
+    subgraph "Cardano L1"
+        D[CIP-68 Reference NFT]
+        E[Event Log tx history]
+        C -->|tx with new datum hash| D
+        C -->|batch Merkle root| E
+    end
+
+    subgraph "Off-chain Storage"
+        F[IPFS / Cloud]
+        B -->|full passport JSON-LD| F
+    end
+
+    G[Consumer] -->|scan QR| H[Resolver API]
+    H -->|query UTxO| D
+    H -->|fetch data| F
+    H -->|public tier only| G
+
+    I[Authority] -->|authenticated request| H
+    H -->|full data| I
+
+    J[Recycler / Repairer] -->|role token auth| H
+    H -->|restricted tier| J
+
+    K[Battery BMS] -->|telemetry stream| A
+```
+
+### Who holds what
+
+| Actor | Holds | Cardano interaction |
+|-------|-------|-------------------|
+| **Manufacturer** | CIP-68 user token + signing keys | Submits update transactions, manages off-chain data |
+| **Consumer** | Nothing | Scans QR → resolver API → reads public data |
+| **Service provider** | Delegated signing key or role token | Submits updates on manufacturer's behalf |
+| **New operator (repurposing)** | New CIP-68 user token (new passport) | Mints new passport linked to original |
+| **Authority** | Authority credentials | Reads all data via API (no on-chain interaction needed) |
+| **Recycler** | Role token | Reads restricted data, marks passport as ceased |
+
+### Transfer on repurposing
+
+When a battery is repurposed, it becomes a new product. On Cardano:
 
 ```mermaid
 sequenceDiagram
-    participant M as Manufacturer
+    participant M as Original Manufacturer
+    participant N as New Operator
     participant C as Cardano L1
-    participant I as Indexer
 
-    M->>C: Mint CIP-68 (datum v1: SoH=100%)
-    Note over C: UTxO₁ with datum v1
+    M->>C: Update original passport status → "end of first life"
+    Note over C: Original CIP-68 datum updated
 
-    M->>C: Update datum (v2: SoH=95%)
-    Note over C: UTxO₁ consumed, UTxO₂ with datum v2
+    N->>C: Mint NEW CIP-68 token (new passport)
+    Note over C: New datum contains link to original passport (policy ID + token name)
 
-    M->>C: Update datum (v3: SoH=88%)
-    Note over C: UTxO₂ consumed, UTxO₃ with datum v3
-
-    I->>C: Query tx history for policy ID
-    C-->>I: v1, v2, v3 (all preserved in chain)
+    N->>C: Ongoing updates to new passport
+    Note over C: New operator is now responsible
 ```
 
-**Pros**: Simple, no extra cost, full history on-chain.
-**Cons**: Requires a chain indexer to reconstruct history. Not directly queryable from the UTxO set — only the latest state is.
+The original passport remains on-chain (immutable history). The new passport references it, preserving the full chain of custody.
 
-### 2. Event log pattern (CF standard)
+### Passport cessation on recycling
 
-Lifecycle events are collected off-chain, batched periodically, and a Merkle root of the batch is anchored on-chain.
+When the battery is recycled, the recycler (holding a `DPP_RECYCLER` role token) submits a final transaction:
+
+- Updates the CIP-68 datum status to `Waste` / `Recycled`
+- Records material recovery data in the event log
+- The passport is no longer "active" but the on-chain record persists as historical evidence
+
+## Data flow: BMS to blockchain
+
+The BMS does not interact with Cardano directly. The data path:
 
 ```mermaid
-graph TD
-    A[SoH reading] --> B[Event collector]
-    C[Maintenance event] --> B
-    D[Ownership transfer] --> B
-    B --> E[Batch of N events]
-    E --> F[Merkle tree]
-    F --> G[Root hash → Cardano tx]
-    E --> H[Full events → IPFS]
+graph LR
+    A[Battery BMS] -->|OBD-II / CAN bus| B[Vehicle telematics]
+    B -->|API / MQTT| C[Manufacturer backend]
+    C -->|process + format| D[Passport data store]
+    D -->|hash + publish| E[IPFS]
+    D -->|anchor hash| F[Cardano L1]
 ```
 
-**Pros**: Cost-efficient (~0.25 ADA per batch of many events), tamper-evident history, off-chain data can be large.
-**Cons**: Events are not individually on-chain — only roots. Requires trust in the off-chain event store (mitigated by IPFS content-addressing).
+Update frequency:
 
-### 3. Hybrid: current state + event log
+| Data type | Source | Update cadence | On-chain? |
+|-----------|--------|---------------|-----------|
+| SoH snapshot | BMS via backend | Daily (Recital 46) | Hash anchor on-chain, full data off-chain |
+| Cycle count | BMS | With SoH update | In off-chain data |
+| Maintenance event | Service provider | Per event | Event log batch |
+| Ownership change | Sale transaction | Per event | Datum update |
+| Status change | Operator decision | Per event | Datum update |
 
-Combine both: CIP-68 datum holds the **current state** (latest SoH, current owner, status). A separate event log anchors the **full history**.
-
-```mermaid
-graph TD
-    subgraph "Current State (CIP-68)"
-        A[Reference NFT datum]
-        A --> B[SoH: 88%]
-        A --> C[Cycles: 1,247]
-        A --> D[Status: Original]
-        A --> E[Owner: did:prism:...]
-    end
-
-    subgraph "History (Event Log)"
-        F[Batch 1: manufacturing + initial test]
-        G[Batch 2: months 1-6 SoH readings]
-        H[Batch 3: first service event]
-        I[Batch N: latest readings]
-        F --> J[Merkle root₁ → Cardano tx₁]
-        G --> K[Merkle root₂ → Cardano tx₂]
-        H --> L[Merkle root₃ → Cardano tx₃]
-        I --> M[Merkle rootₙ → Cardano txₙ]
-    end
-```
-
-This is the most complete approach and likely what a production system would use:
-
-- **QR scan → CIP-68 datum** gives you the current state instantly
-- **Event log** provides the full auditable history
-- **Chain history** serves as a backup / cross-check
-
-## Who can update?
-
-The Plutus validator controlling the CIP-68 reference NFT enforces update permissions:
-
-| Actor | Proof | Allowed operations |
-|-------|-------|-------------------|
-| Manufacturer | Signing key (issuerPkh in datum) | All updates, initial creation |
-| Authorized service provider | Role token (`DPP_SERVICE`) | SoH updates, maintenance events |
-| New owner (on transfer) | Transaction signed by both parties | Ownership field update |
-| Recycler | Role token (`DPP_RECYCLER`) | Status → Waste, material recovery |
-| Authority | Role token (`DPP_AUTHORITY`) | Revocation, compliance flags |
-
-The validator can also enforce **invariants**:
-
-- SoH can only decrease (or stay the same after recalibration)
-- Cycle count can only increase
-- Status transitions follow a valid state machine (Original → Repurposed → Waste, never Waste → Original)
-
-## Hydra for high-frequency updates
-
-EV batteries in active use generate telemetry data continuously. Writing every voltage/temperature reading to L1 is impractical and unnecessary. Pattern:
-
-1. **BMS telemetry** streams to an off-chain collector
-2. Collector aggregates readings into periodic SoH snapshots (e.g., monthly)
-3. Snapshots are batched and Merkle-rooted via L1 event log
-4. For real-time applications (fleet management, grid balancing), a **Hydra Head** between the BMS operator and the DPP service can process high-frequency events with sub-second latency
-5. Hydra settles to L1 periodically
+The on-chain datum only needs to be updated when the **hash of the off-chain data changes** — not on every BMS reading. A practical cadence: update the on-chain anchor weekly or monthly, while the off-chain data is updated daily.
