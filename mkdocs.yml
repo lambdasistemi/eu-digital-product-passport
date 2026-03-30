@@ -39,6 +39,7 @@ nav:
     - Identity: cardano/identity.md
     - Cost Analysis: cardano/costs.md
     - Passport State: cardano/state.md
+    - User Reporting & Incentives: cardano/incentives.md
     - Battery Lifecycle: cardano/lifecycle.md
     - Scalability: cardano/scalability.md
     - EU Integration: cardano/eu-integration.md
