@@ -1,0 +1,42 @@
+site_name: EU Digital Product Passport
+site_description: Research, schemas, and examples for the EU DPP
+site_url: https://lambdasistemi.github.io/eu-digital-product-passport/
+repo_url: https://github.com/lambdasistemi/eu-digital-product-passport
+repo_name: lambdasistemi/eu-digital-product-passport
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: blue
+    accent: cyan
+  features:
+    - content.code.copy
+    - navigation.sections
+    - navigation.expand
+    - toc.integrate
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Regulation: regulation.md
+  - Timeline: timeline.md
+  - Data Model: data-model.md
+  - Schemas:
+    - Battery Pass: schemas/battery-pass.md
+    - UNTP DPP: schemas/untp-dpp.md
+  - Examples:
+    - Battery (Battery Pass): examples/battery-pass.md
+    - Battery (UNTP): examples/untp-battery.md
+  - Access & Governance: access.md
+  - Pilots & Implementations: pilots.md
+  - Links: links.md

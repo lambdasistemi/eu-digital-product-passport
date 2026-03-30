@@ -1,0 +1,167 @@
+{
+  "type": ["DigitalProductPassport", "VerifiableCredential"],
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://test.uncefact.org/vocabulary/untp/dpp/0.6.0/"
+  ],
+  "id": "https://example-gmbh.de/credentials/dpp-lfp-400ah-001",
+  "issuer": {
+    "type": ["CredentialIssuer"],
+    "id": "did:web:identifiers.example-gmbh.de:batteries",
+    "name": "Example GmbH - Battery Division",
+    "issuerAlsoKnownAs": [
+      {
+        "id": "https://id.gs1.org/01/4012345000015",
+        "name": "Example GmbH",
+        "registeredId": "4012345000015",
+        "idScheme": {
+          "type": ["IdentifierScheme"],
+          "id": "https://id.gs1.org/01/",
+          "name": "Global Trade Identification Number (GTIN)"
+        }
+      }
+    ]
+  },
+  "validFrom": "2024-09-15T00:00:00Z",
+  "validUntil": "2032-09-15T00:00:00Z",
+  "credentialSubject": {
+    "type": ["ProductPassport"],
+    "id": "https://example-gmbh.de/product/lfp-400ah",
+    "granularityLevel": "item",
+    "product": {
+      "type": ["Product"],
+      "id": "https://id.gs1.org/01/4012345000015/21/BPC001",
+      "name": "LiFePO4 EV Battery Module 400Ah",
+      "registeredId": "4012345000015.21.BPC001",
+      "idScheme": {
+        "type": ["IdentifierScheme"],
+        "id": "https://id.gs1.org/01/",
+        "name": "GTIN"
+      },
+      "serialNumber": "BPC-2024-LFP-400AH-001",
+      "description": "400Ah 48V LiFePO4 battery module for electric vehicles, prismatic cell design",
+      "productCategory": [
+        {
+          "type": ["Classification"],
+          "id": "https://unstats.un.org/unsd/classifications/Econ/cpc/46410",
+          "code": "46410",
+          "name": "Electric accumulators",
+          "schemeID": "https://unstats.un.org/unsd/classifications/Econ/cpc/",
+          "schemeName": "UN Central Product Classification (CPC)"
+        }
+      ],
+      "producedByParty": {
+        "id": "did:web:identifiers.example-gmbh.de",
+        "name": "Example GmbH",
+        "registeredId": "DE-HRB-123456"
+      },
+      "producedAtFacility": {
+        "id": "https://example-gmbh.de/facility/stuttgart-süd",
+        "name": "Batteriewerk Süd, Stuttgart"
+      },
+      "productionDate": "2024-09-15",
+      "countryOfProduction": "DE",
+      "dimensions": {
+        "weight": { "value": 285, "unit": "KGM" },
+        "length": { "value": 0.8, "unit": "MTR" },
+        "width": { "value": 0.5, "unit": "MTR" },
+        "height": { "value": 0.3, "unit": "MTR" }
+      }
+    },
+    "emissionsScorecard": {
+      "carbonFootprint": 52.3,
+      "declaredUnit": "kWh",
+      "operationalScope": "CradleToGate",
+      "primarySourcedRatio": 0.65
+    },
+    "circularityScorecard": {
+      "recyclableContent": 0.92,
+      "recycledContent": 0.26,
+      "utilityFactor": 1.0,
+      "materialCircularityIndicator": 0.58
+    },
+    "materialsProvenance": [
+      {
+        "name": "Lithium Iron Phosphate (LFP)",
+        "originCountry": "CL",
+        "massFraction": 0.35,
+        "mass": { "value": 99.75, "unit": "KGM" },
+        "recycledMassFraction": 0.12,
+        "hazardous": false
+      },
+      {
+        "name": "Graphite (anode)",
+        "originCountry": "MZ",
+        "massFraction": 0.15,
+        "mass": { "value": 42.75, "unit": "KGM" },
+        "recycledMassFraction": 0.08,
+        "hazardous": false
+      },
+      {
+        "name": "Copper (current collectors)",
+        "originCountry": "DE",
+        "massFraction": 0.10,
+        "mass": { "value": 28.5, "unit": "KGM" },
+        "recycledMassFraction": 0.65,
+        "hazardous": false
+      },
+      {
+        "name": "Aluminium (casing & collectors)",
+        "originCountry": "NO",
+        "massFraction": 0.12,
+        "mass": { "value": 34.2, "unit": "KGM" },
+        "recycledMassFraction": 0.40,
+        "hazardous": false
+      },
+      {
+        "name": "Electrolyte (LiPF6 solution)",
+        "originCountry": "JP",
+        "massFraction": 0.08,
+        "mass": { "value": 22.8, "unit": "KGM" },
+        "recycledMassFraction": 0.0,
+        "hazardous": true
+      }
+    ],
+    "conformityClaim": [
+      {
+        "type": ["Claim", "Declaration"],
+        "id": "https://example-gmbh.de/conformity/eu-battery-reg-2023-1542",
+        "conformance": true,
+        "conformityTopic": "environment.emissions",
+        "assessmentDate": "2024-08-20",
+        "declaredValue": [
+          {
+            "metricName": "Carbon footprint per kWh",
+            "metricValue": { "value": 52.3, "unit": "kgCO2e/kWh" },
+            "accuracy": 0.05
+          }
+        ]
+      },
+      {
+        "type": ["Claim", "Certification"],
+        "id": "https://example-gmbh.de/conformity/recycled-content-2024",
+        "conformance": true,
+        "conformityTopic": "circularity.recycledContent",
+        "assessmentDate": "2024-08-25",
+        "declaredValue": [
+          {
+            "metricName": "Recycled cobalt content",
+            "metricValue": { "value": 0, "unit": "percent" }
+          },
+          {
+            "metricName": "Recycled lithium content",
+            "metricValue": { "value": 12, "unit": "percent" }
+          },
+          {
+            "metricName": "Recycled copper content",
+            "metricValue": { "value": 65, "unit": "percent" }
+          }
+        ]
+      }
+    ],
+    "dueDiligenceDeclaration": {
+      "linkURL": "https://example-gmbh.de/due-diligence/battery-supply-chain-2024.pdf",
+      "linkName": "Supply Chain Due Diligence Report 2024"
+    }
+  }
+}
