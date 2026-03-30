@@ -38,6 +38,12 @@ nav:
     - Access Control: cardano/access-control.md
     - Identity: cardano/identity.md
     - Cost Analysis: cardano/costs.md
+    - Passport State: cardano/state.md
+    - User Reporting & Incentives: cardano/incentives.md
+    - Signed BMS Readings: cardano/signed-bms.md
+    - NFC Hardware: cardano/nfc-hardware.md
+    - Payload Standard: cardano/payload-standard.md
+    - Battery Lifecycle: cardano/lifecycle.md
     - Scalability: cardano/scalability.md
     - EU Integration: cardano/eu-integration.md
     - Existing Work: cardano/existing-work.md

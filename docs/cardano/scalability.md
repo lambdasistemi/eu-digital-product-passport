@@ -52,21 +52,58 @@ LW3's DPP platform explicitly uses Hydra for EV battery supply chain tracking wi
 | **CIP-150** (Block Data Compression) | Higher effective block capacity |
 | **Mithril** | Fast chain sync for light clients / verifiers |
 
+## DPP granularity
+
+The granularity of a DPP — whether it covers a product model, a production batch, or an individual unit — varies by sector and is defined in sector-specific regulation or delegated acts.
+
+| Level | Meaning | Example |
+|-------|---------|---------|
+| `model` | One DPP per product design | A t-shirt model, a paint formula |
+| `batch` | One DPP per production batch | A factory run of 10,000 units |
+| `item` | One DPP per individual unit | An EV battery with unique serial and SoH tracking |
+
+### Batteries: item-level (confirmed)
+
+The Battery Regulation (EU) 2023/1542 is explicit. Article 77(1):
+
+> "**each** LMT battery, **each** industrial battery with a capacity greater than 2 kWh and **each** electric vehicle battery placed on the market or put into service shall have an electronic record ('battery passport')."
+
+Article 77(2) confirms each passport contains both model-level data and "information specific to the **individual battery**, including resulting from the use of that battery" — State of Health, charging cycles, operating conditions.
+
+This makes sense: each battery degrades differently, so item-level tracking is necessary.
+
+### All other sectors: delegated acts decide (not yet defined)
+
+ESPR Article 9(2)(d) states that delegated acts shall specify:
+
+> "**whether the digital product passport is to be established at model, batch or item level**, and the definition of such levels"
+
+As of March 2026, no ESPR delegated acts have been adopted. The granularity for every non-battery sector is **not yet legally defined**. Expected levels based on industry analysis:
+
+| Sector | Delegated act status | Expected granularity | Reasoning |
+|--------|---------------------|---------------------|-----------|
+| Batteries | **Adopted** (Reg. 2023/1542) | **Item** | Unique degradation, SoH tracking |
+| Iron & steel | Pending (~2026) | Likely batch (per heat/lot) | Bulk material, batch production |
+| Textiles | Pending (~2027) | Likely batch or model | Commodity items, no unique serial |
+| Tyres | Pending (~2027) | Unknown | DOT codes exist but regulation unclear |
+| Electronics | Pending (~2029) | Likely mixed | Item for phones (serials exist), model for cables |
+| Construction | Pending (CPR + ESPR) | Likely model or batch | Bulk/commodity products |
+
+### UNTP: issuer/regulator decides
+
+The UNTP spec supports all three levels via the `granularityLevel` property but does not prescribe which to use. It is purely descriptive — declaring what level a given passport was issued at.
+
 ## Volume requirements
 
-The EU produces roughly:
+| Sector | Granularity | Estimated DPPs/year | L1 feasibility |
+|--------|------------|--------------------:|----------------|
+| Batteries (EV + industrial + LMT) | Item | ~4-5M | Comfortable |
+| Iron & steel | Batch | ~100k-1M | Trivial |
+| Textiles | Model/batch | ~100k-1M | Trivial |
+| Tyres | Unknown | Unknown | Depends on granularity |
+| Electronics | Mixed | ~100k-1M | Trivial to comfortable |
+| Construction | Model/batch | ~100k-500k | Trivial |
 
-- ~3 million EV batteries/year (growing)
-- ~6 billion textile items/year
-- Hundreds of millions of electronic devices/year
+Batteries are the only confirmed item-level sector and produce ~4-5M DPPs/year — well within L1 capacity. All other sectors, if batch/model level, are trivially L1.
 
-For batteries (first DPP mandate, Feb 2027): L1 batching is sufficient.
-For textiles and electronics at full scale: Hydra or equivalent L2 is required.
-
-| Sector | Annual volume | L1 feasible? | L2 needed? |
-|--------|--------------|-------------|-----------|
-| Batteries | ~3M | Yes (batched) | Optional |
-| Iron & steel | ~50M products | Yes (batched) | Recommended |
-| Textiles | ~6B items | No | Yes |
-| Electronics | ~500M devices | Possible (batched) | Recommended |
-| Construction | ~100M products | Yes (batched) | Optional |
+Hydra L2 becomes relevant for **lifecycle events** — real-time SoH updates on millions of individual batteries, or high-frequency supply chain event logging — not for initial DPP registration.
