@@ -43,6 +43,7 @@ nav:
     - Signed BMS Readings: cardano/signed-bms.md
     - NFC Hardware: cardano/nfc-hardware.md
     - Payload Standard: cardano/payload-standard.md
+    - Ownership Transfer: cardano/ownership.md
     - Battery Lifecycle: cardano/lifecycle.md
     - Scalability: cardano/scalability.md
     - EU Integration: cardano/eu-integration.md
