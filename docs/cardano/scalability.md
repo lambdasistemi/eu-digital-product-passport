@@ -63,10 +63,13 @@ The EU produces roughly:
 For batteries (first DPP mandate, Feb 2027): L1 batching is sufficient.
 For textiles and electronics at full scale: Hydra or equivalent L2 is required.
 
-| Sector | Annual volume | L1 feasible? | L2 needed? |
-|--------|--------------|-------------|-----------|
-| Batteries | ~3M | Yes (batched) | Optional |
-| Iron & steel | ~50M products | Yes (batched) | Recommended |
-| Textiles | ~6B items | No | Yes |
-| Electronics | ~500M devices | Possible (batched) | Recommended |
-| Construction | ~100M products | Yes (batched) | Optional |
+| Sector | Annual volume | L1 individual | L1 batched (30/tx) | L1 High Throughput (10k/root) | L2 (Hydra) |
+|--------|--------------|--------------|-------------------|-------------------------------|------------|
+| Batteries | ~3M | Comfortable | Comfortable | Trivial | Not needed |
+| Iron & steel | ~50M | Tight | Comfortable | Trivial | Optional |
+| Textiles | ~6B | Impossible | Tight (~6.3 TPS sustained) | Comfortable (~600k tx/year) | Optional |
+| Electronics | ~500M | Impossible | Feasible | Comfortable | Optional |
+| Construction | ~100M | Feasible | Comfortable | Trivial | Not needed |
+
+!!! note "High Throughput changes the picture"
+    With the CF High Throughput pattern (one Merkle root per 10k products), even 6 billion textile items require only ~600k L1 transactions/year — well within capacity. L2 (Hydra) is beneficial for real-time lifecycle events but not strictly required for initial registration.
