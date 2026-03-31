@@ -241,7 +241,61 @@ The operator pre-funds a reward pool locked at the MPFS contract address. Each v
 - Minimum interval between readings for the same battery
 - Which batteries are eligible (all in their MPT, or a subset)
 
+## Reading rights as MPT leaf state
+
+Ownership of the reading right — who is allowed to submit signed readings and claim rewards — is a field in the MPT leaf value, not a separate token. MPFS supports state transitions on leaf values, so transferring the reading right is just another transition on the battery's key.
+
+### Leaf value structure
+
+```
+BatteryLeaf {
+  batteryId       : ByteString    -- unique battery identifier
+  status          : Status        -- Virgin | Active | Repurposed | Recycled
+  readerPkh       : Maybe PubKeyHash  -- who can submit readings (Nothing = unclaimed)
+  bmsPublicKey    : ByteString    -- registered at manufacturing
+  lastSoH         : Integer       -- last known State of Health
+  lastCycleCount  : Integer       -- last known cycle count
+  lastReadingSlot : Integer       -- slot of last accepted reading
+  ...                             -- other passport fields
+}
+```
+
+### Battery lifecycle through MPT transitions
+
+```mermaid
+stateDiagram-v2
+    [*] --> Virgin: Manufacturer inserts leaf (readerPkh = Nothing)
+    Virgin --> Active: First user scans NFC → readerPkh set to user's key
+    Active --> Active: User submits signed reading → SoH/cycles updated
+    Active --> Active: Reading right transferred → readerPkh changes
+    Active --> Repurposed: Operator marks end of first life
+    Repurposed --> [*]: New operator creates leaf in their own MPT
+    Active --> Recycled: Battery end of life
+    Recycled --> [*]: Passport ceases (leaf remains as historical record)
+```
+
+| Transition | Who initiates | What changes in the leaf |
+|-----------|--------------|------------------------|
+| **Manufacturing** | Operator | Leaf inserted: status=Virgin, readerPkh=Nothing |
+| **First scan** | User (NFC tap) | readerPkh set to user's public key hash |
+| **Reading submission** | Current reader | lastSoH, lastCycleCount, lastReadingSlot updated |
+| **Transfer reading right** | Current reader | readerPkh changes to new user's key |
+| **Repurposing** | Operator | status → Repurposed; new operator creates new leaf in their MPT |
+| **Recycling** | Operator | status → Recycled; readerPkh → Nothing |
+
+### Why no separate token
+
+The reading right lives in the MPT leaf because:
+
+- **No locked ADA**: an MPT field costs nothing to maintain (unlike a CIP-68 UTxO with min-ADA deposit)
+- **Atomic with passport data**: the reading right and the battery state are in the same leaf, updated in the same transition — no risk of them getting out of sync
+- **Transfer is a state transition**: MPFS already handles leaf value transitions; transferring the reading right is just changing one field
+- **Verification is a Merkle proof**: to prove you hold the reading right, provide a proof from your leaf to the operator's MPT root
+
+### Transfer on resale
+
+Rare for batteries (you typically don't resell an EV battery separately), but the mechanism exists for the general case. The current reader submits a transition that sets readerPkh to the new user's key. The MPFS on-chain validator verifies that the current reader signed the transaction.
+
 ## Open design questions
 
-1. **Ownership transfer**: The battery holder needs a token to claim rewards. When the battery changes hands, this token must transfer. Options: a thin native token (not CIP-68) minted per battery pointing to the MPT key, or a secondary trie of ownership mappings.
-2. **Proof size at scale**: An MPT proof for a battery in a trie of 10M leaves needs benchmarking against MPFS's actual proof format. The theoretical size (~20 hash nodes, ~640 bytes) is well within limits but should be validated empirically.
+1. **Proof size at scale**: An MPT proof for a battery in a trie of 10M leaves needs benchmarking against MPFS's actual proof format. The theoretical size (~20 hash nodes, ~640 bytes) is well within limits but should be validated empirically.
