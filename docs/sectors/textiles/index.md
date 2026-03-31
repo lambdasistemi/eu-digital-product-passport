@@ -107,26 +107,85 @@ Unlike batteries, there is no "condition" to track dynamically. The passport is 
 
 ## Cardano architecture for textiles
 
-The static data model simplifies the architecture:
+Same MPFS pattern as [batteries](../batteries/architecture.md) and [tyres](../tyres/index.md): one [Merkle Patricia Trie](../../references.md#mpfs) per brand/manufacturer. Each product model or production batch is a leaf. One on-chain UTxO per brand holds the root hash.
 
-- **L1 batched minting** — one transaction per batch/model, ~30 products per tx
-- **CIP-68 datum** stores hash anchor (same as batteries, but updated less frequently)
-- **No Hydra needed** — no real-time updates
-- **No signed hardware readings** — no embedded sensor equivalent
-- **Supply chain Merkle trees** — each supply chain step hashes its attestation into a tree; root anchored on-chain
-- **Verifiable Credentials** — W3C VCs for supply chain certifications (organic cotton, fair trade, OEKO-TEX)
+### Leaf value structure
+
+```
+TextileLeaf {
+  productId         : ByteString    -- GTIN or SKU
+  granularity       : Level         -- Batch | Model
+  status            : Status        -- InProduction | OnSale | Unsold | Donated | Recycled
+  fibreComposition  : [FibreEntry]  -- per Reg. 1007/2011 (already mandatory)
+  countryOfOrigin   : [StageOrigin] -- per production step (spinning, weaving, dyeing, sewing)
+  carbonFootprint   : Integer       -- kgCO2e per garment
+  waterFootprint    : Integer       -- litres per garment
+  recycledContent   : RecycledData  -- % recycled polyester, % recycled cotton
+  recyclability     : Integer       -- mono-material percentage
+  supplyChainHash  : ByteString    -- Merkle root of supply chain attestation tree
+  ...                               -- other fields per delegated act
+}
+```
+
+### Supply chain attestation tree
+
+The textile supply chain is multi-step and multi-jurisdiction. Each step produces an attestation (certification, audit, declaration of origin) that is hashed into a supply chain Merkle tree. The root of this tree is stored in the leaf's `supplyChainHash` field.
+
+```mermaid
+graph TD
+    subgraph "Supply chain Merkle tree"
+        R[Root hash = supplyChainHash in leaf]
+        R --> H1[Hash]
+        R --> H2[Hash]
+        H1 --> A1["Cotton farm attestation<br/>Origin: India, GOTS certified"]
+        H1 --> A2["Spinning mill attestation<br/>Country: India, SA8000 audit"]
+        H2 --> A3["Dyeing attestation<br/>Country: China, OEKO-TEX"]
+        H2 --> A4["Sewing attestation<br/>Country: Vietnam, BSCI audit"]
+    end
+
+    subgraph "Brand's MPT"
+        L["TextileLeaf<br/>supplyChainHash = Root hash"]
+    end
+
+    R -.-> L
+```
+
+A verifier can request a Merkle proof for any step in the chain without revealing the others — selective disclosure for supply chain transparency.
+
+### Destruction ban compliance
+
+The [unsold goods destruction ban](../../references.md#espr-art23) (ESPR Art. 23, July 2026 for large enterprises) requires brands to prove they are not destroying unsold stock. The MPT leaf status field tracks the destiny of each batch:
+
+| Status | Meaning | Destruction ban relevance |
+|--------|---------|--------------------------|
+| `OnSale` | In retail/warehouse | Inventory |
+| `Sold` | Purchased by consumer | No issue |
+| `Unsold` | Not sold within season | **Must not be destroyed** |
+| `Donated` | Donated to charity/social enterprise | Compliant |
+| `Recycled` | Sent to fibre recycling | Compliant |
+| `Destroyed` | **Illegal** for textiles from July 2026 | Non-compliant — on-chain evidence |
+
+The MPT creates a tamper-evident audit trail. A brand that transitions a batch from `Unsold` to `Donated` has that transition anchored on-chain with a timestamp. Market surveillance authorities can verify the full history of any batch via Merkle proofs.
 
 ### Anti-counterfeiting
 
-For luxury textiles, the DPP doubles as an anti-counterfeiting measure. A QR code or NFC tag on the garment links to the on-chain record. Counterfeits cannot reproduce the on-chain anchor.
+For luxury textiles, the DPP doubles as an anti-counterfeiting measure. A QR code or NFC tag on the garment links to the on-chain record. Counterfeits cannot reproduce the on-chain anchor — verifying the product requires a Merkle proof against the brand's MPT root.
 
 This is the strongest Cardano value proposition for textiles — **provenance authentication** rather than dynamic condition tracking.
+
+### Why simpler than batteries
+
+| Aspect | Batteries | Textiles |
+|--------|-----------|---------|
+| Dynamic data | SoH changes continuously | None — static after production |
+| Updates | Daily (BMS data) | Only on lifecycle events (sale, donation, recycling) |
+| User interaction | Signed BMS readings with rewards | None |
+| Supply chain | Single manufacturer | Multi-step chain → supply chain attestation tree per leaf |
+| On-chain cost | ~73 ADA/year per operator | **< 10 ADA/year** per brand (very rare updates) |
 
 ## Open questions
 
 1. **Delegated act scope** — which data fields, which sub-sectors (apparel, footwear, home textiles)?
-2. **Granularity** — model level (one DPP per design) or batch level (one per production run)?
-3. **Supply chain data sharing** — how much supply chain data is the brand willing to put on-chain vs keep private?
-4. **Destruction ban evidence** — can the DPP serve as proof that unsold goods were donated/recycled?
-5. **NFC tags on garments** — durability through washing? Cost per garment?
-6. **Resale integration** — can platforms like Vinted/ThredUp scan the DPP QR?
+2. **Granularity** — model level (one leaf per design) or batch level (one leaf per production run)?
+3. **Supply chain privacy** — selective disclosure via Merkle proofs solves partial transparency, but brands may resist putting even hashed attestations on a public chain
+4. **Destruction ban evidence** — the MPT model supports it, but will regulators accept on-chain proofs as compliance evidence?

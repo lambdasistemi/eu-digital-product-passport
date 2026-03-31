@@ -90,7 +90,5 @@ The [Cardano Foundation DPP Blueprint](../references.md#cf-dpp) defines four pat
 | **Event Log** | Optional for identity token | Append-only datum updates with monotonic index | ~0.25 ADA/batch |
 | **High Throughput** | **Not used** — batch Merkle root instead | 1 UTxO per ~10,000 products | ~0.3 ADA/1,000 products |
 
-!!! note "Which pattern for which sector"
-    - **Batteries** (item-level, dynamic SoH): Anchored Proof or Event Log — per-product CIP-68 tokens are justified because each battery has unique state, and the user token enables ownership transfer and reporting incentives.
-    - **Tyres** (unknown granularity, mostly static): Static Passport Anchor if item-level, High Throughput if batch/model.
-    - **Textiles** (batch/model, static): High Throughput — no per-product token needed. One Merkle root anchors an entire production batch.
+!!! note "Recommended architecture: MPFS per operator"
+    All three sectors use the same [MPFS](../references.md#mpfs) Merkle Patricia Trie per operator model — one UTxO per operator, products as leaves. The DPP Blueprint patterns above are informational context, not the recommended architecture for this study. See [battery architecture](../sectors/batteries/architecture.md), [tyre architecture](../sectors/tyres/index.md#cardano-architecture-for-tyres), and [textile architecture](../sectors/textiles/index.md#cardano-architecture-for-textiles) for sector-specific details.
