@@ -193,7 +193,7 @@ MPFS handles multiple leaf modifications in a single batch natively — the off-
 
 ## Signed readings and user incentives
 
-The [challenge-response protocol](signed-bms.md) for signed BMS readings plugs into MPFS via a two-phase on-chain interaction:
+The [challenge-response protocol](signed-bms.md) for signed BMS readings integrates with MPFS in three phases. The key design: **rewards are released at incorporation time**, when the operator batches leaf updates into a new MPT root. The operator's transaction simultaneously updates the trie and pays out all pending rewards — one atomic operation.
 
 ```mermaid
 sequenceDiagram
@@ -202,44 +202,46 @@ sequenceDiagram
     participant B as BMS (NFC)
     participant O as Operator (MPT owner)
 
-    Note over U,C: Phase 1 — Commitment
+    Note over U,C: Phase 1 — Commitment + Reading
     U->>C: Mint commitment in MPFS (challenge token)
     Note over C: Commitment UTxO created at slot N
-
-    Note over U,B: Phase 2 — Reading
     U->>B: NFC tap with challenge = commitment_tx_hash
     B-->>U: COSE_Sign1 { state_data, commitment_tx_hash, signature }
+    U->>C: Submit signed reading, consume commitment UTxO
+    Note over C: Reading UTxO sits on-chain, pending incorporation
 
-    Note over U,C: Phase 3 — Claim
-    U->>C: Submit reading, consume commitment UTxO
-    Note over C: Redeemer: "here is the signed reading, pay me"
-    Note over C: Validator checks: signature valid, commitment fresh,<br/>reading plausible, user holds battery token
-    C-->>U: Reward released
-
-    Note over O,C: Phase 4 — Incorporation
-    O->>C: Query on-chain: new verified readings for my batteries
+    Note over O,C: Phase 2 — Batch incorporation + reward
+    O->>O: Collect pending reading UTxOs for this batch
     O->>O: Update affected leaves in off-chain MPT
-    O->>C: Anchor new MPT root via MPFS on-chain validator
+    O->>C: Single MPFS transaction:
+    Note over C: 1. Consume pending reading UTxOs
+    Note over C: 2. Anchor new MPT root (transition proof)
+    Note over C: 3. Release rewards to users in this batch
+    C-->>U: Reward released
 ```
 
-### Why the operator incorporates readings
+### Why incorporation and reward are atomic
 
-The operator (economic operator who placed the battery on the EU market) is **legally compelled** by [Art. 77(4)](../../references.md#bat-art77-4) to keep the passport accurate and up-to-date. They don't incorporate readings out of goodwill — they do it because:
+The operator's batch update transaction does three things at once:
 
-- The regulation requires it
-- The readings are already on-chain (verified, timestamped, signed by BMS hardware)
-- Not incorporating them means their MPT diverges from the on-chain evidence
-- Market surveillance authorities can compare the operator's MPT leaves against the on-chain reading submissions
+1. **Consumes pending reading UTxOs** — the signed readings submitted by users
+2. **Updates the MPT root** — incorporating those readings into the trie leaves
+3. **Releases rewards** — paying each user whose reading was incorporated
 
-The user provides data the operator needs but can't easily obtain (especially for non-connected batteries). The smart contract guarantees the reward. The regulation guarantees incorporation.
+This is a single transaction. If the operator doesn't incorporate, the readings sit on-chain unconsumed and the rewards stay locked. The operator is incentivized to incorporate because:
+
+- [Art. 77(4)](../../references.md#bat-art77-4) **legally requires** them to keep the passport up-to-date
+- Unconsumed readings are visible on-chain — market surveillance can see the operator is ignoring data
+- The readings are signed by BMS hardware — the operator can't claim they're invalid
+- Users provide data the operator needs but can't easily obtain (especially for non-connected batteries)
 
 ### Reward funding
 
-The operator pre-funds a reward pool locked at the MPFS contract address. Each valid reading submission releases a reward to the user. The operator controls:
+The operator pre-funds a reward pool locked at the MPFS contract address. Rewards are released from this pool during the batch update transaction. The operator controls:
 
 - Reward amount per reading
 - Minimum interval between readings for the same battery
-- Which batteries are eligible (all in their MPT, or a subset)
+- Batch cadence (how often they incorporate — hourly, daily, etc.)
 
 ## Reading rights as MPT leaf state
 
