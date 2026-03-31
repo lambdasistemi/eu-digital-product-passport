@@ -976,6 +976,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#trust-chain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trust chain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#open-questions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1094,6 +1105,34 @@
     
   
     Ownership Transfer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../presentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation
   
 
     
@@ -2239,6 +2278,73 @@ ReportingValidator:
 </tr>
 </tbody>
 </table>
+<h2 id="trust-chain">Trust chain<a class="headerlink" href="#trust-chain" title="Permanent link">&para;</a></h2>
+<p>The full chain of trust from physical measurement to on-chain verification:</p>
+<pre class="mermaid"><code>graph TD
+    A[Battery cells] --&gt;|physics| B[Analog Front-End IC]
+    B --&gt;|I2C: raw readings| C[BMS MCU]
+    C --&gt;|formatted CBOR payload| D[Secure Element]
+    D --&gt;|COSE_Sign1 signature| E[NTAG 5 Link]
+    E --&gt;|NFC| F[User's Phone]
+    F --&gt;|transaction| G[Cardano L1]
+
+    H[SE Manufacturer] --&gt;|key injection at factory| D
+    D --&gt;|public key| I[Battery Passport Datum]
+    G --&gt;|verify signature against| I</code></pre>
+<table>
+<thead>
+<tr>
+<th>Link</th>
+<th>Trust basis</th>
+<th>Weakness</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cells → AFE</td>
+<td>Physics (voltage, current, temperature)</td>
+<td>Sensor failure or physical tampering</td>
+</tr>
+<tr>
+<td>AFE → MCU</td>
+<td>I2C bus on PCB</td>
+<td>Compromised MCU firmware could substitute readings</td>
+</tr>
+<tr>
+<td>MCU → SE</td>
+<td>I2C, CBOR schema validation</td>
+<td>SE signs whatever the MCU gives it</td>
+</tr>
+<tr>
+<td>SE → signature</td>
+<td>Private key never leaves chip</td>
+<td>Key extraction attacks (expensive, destructive)</td>
+</tr>
+<tr>
+<td>SE factory → public key</td>
+<td>Pre-provisioned by chip vendor (e.g., Microchip Trust&amp;GO)</td>
+<td>Vendor compromise (extremely unlikely)</td>
+</tr>
+<tr>
+<td>Public key → passport datum</td>
+<td>Registered at manufacturing by economic operator</td>
+<td>Operator must correctly register the right key</td>
+</tr>
+<tr>
+<td>Signature → on-chain verification</td>
+<td>Plutus built-in ECDSA/EdDSA</td>
+<td>Correctness of validator code</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Root of trust</strong>: the secure element vendor's provisioning process. For pre-provisioned chips (Microchip Trust&amp;GO, Infineon OPTIGA Trust M Express), the vendor generates the key pair in their secure facility and provides a device certificate signed by their CA. The manufacturer registers the public key in the battery passport datum at production time.</p>
+<p><strong>Weakest link</strong>: the MCU → SE boundary. The secure element cannot verify that the CBOR payload it signs corresponds to real sensor readings. This is mitigated by:</p>
+<ul>
+<li>CBOR schema validation (contract rejects malformed payloads)</li>
+<li>Plausibility checks (SoH can't increase, cycles can't decrease)</li>
+<li>Cross-referencing with independent measurements (workshop EIS, charging session data)</li>
+<li>Physical tamper-evidence of the BMS board itself</li>
+</ul>
 <h2 id="open-questions">Open questions<a class="headerlink" href="#open-questions" title="Permanent link">&para;</a></h2>
 <ol>
 <li><strong>Standardization</strong>: No standard exists for BMS signed readings. A CIP (Cardano Improvement Proposal) or an industry standard (SAE, ISO) would be needed to define the format, key algorithm, and serialization.</li>
@@ -2300,6 +2406,8 @@ ReportingValidator:
     
     
       <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../../javascripts/mermaid-dark.mjs" type="module"></script>
       
     
   </body>

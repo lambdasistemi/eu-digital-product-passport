@@ -964,6 +964,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sectors/batteries/presentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1806,12 +1834,8 @@
 </tbody>
 </table>
 <div class="admonition note">
-<p class="admonition-title">Which pattern for which sector</p>
-<ul>
-<li><strong>Batteries</strong> (item-level, dynamic SoH): Anchored Proof or Event Log — per-product CIP-68 tokens are justified because each battery has unique state, and the user token enables ownership transfer and reporting incentives.</li>
-<li><strong>Tyres</strong> (unknown granularity, mostly static): Static Passport Anchor if item-level, High Throughput if batch/model.</li>
-<li><strong>Textiles</strong> (batch/model, static): High Throughput — no per-product token needed. One Merkle root anchors an entire production batch.</li>
-</ul>
+<p class="admonition-title">Recommended architecture: MPFS per operator</p>
+<p>All three sectors use the same <a href="../../references/#mpfs">MPFS</a> Merkle Patricia Trie per operator model — one UTxO per operator, products as leaves. The DPP Blueprint patterns above are informational context, not the recommended architecture for this study. See <a href="../../sectors/batteries/architecture/">battery architecture</a>, <a href="../../sectors/tyres/#cardano-architecture-for-tyres">tyre architecture</a>, and <a href="../../sectors/textiles/#cardano-architecture-for-textiles">textile architecture</a> for sector-specific details.</p>
 </div>
 
 
@@ -1866,6 +1890,8 @@
     
     
       <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../javascripts/mermaid-dark.mjs" type="module"></script>
       
     
   </body>

@@ -292,6 +292,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#the-eu-dpp-roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The EU DPP roadmap
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-is-a-dpp" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -314,17 +325,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sector-studies" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Sector studies
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#key-findings" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -340,17 +340,6 @@
     <span class="md-ellipsis">
       
         Contents
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#key-regulations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Key regulations
       
     </span>
   </a>
@@ -943,6 +932,34 @@
     
   
     Ownership Transfer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="sectors/batteries/presentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation
   
 
     
@@ -1648,49 +1665,151 @@
 
 <h1 id="eu-digital-product-passport-on-cardano">EU Digital Product Passport on Cardano<a class="headerlink" href="#eu-digital-product-passport-on-cardano" title="Permanent link">&para;</a></h1>
 <p>Feasibility study for storing EU Digital Product Passports on the Cardano blockchain.</p>
-<h2 id="what-is-a-dpp">What is a DPP<a class="headerlink" href="#what-is-a-dpp" title="Permanent link">&para;</a></h2>
-<p>The Digital Product Passport (DPP) is a structured data record linked to physical products via a data carrier (QR code, RFID, NFC). Mandated by the EU under the <strong>Ecodesign for Sustainable Products Regulation (ESPR)</strong>, it provides standardized information about sustainability, circularity, material composition, and supply chain traceability.</p>
-<h2 id="why-cardano">Why Cardano<a class="headerlink" href="#why-cardano" title="Permanent link">&para;</a></h2>
-<p>Cardano's eUTxO model maps naturally to per-product records. CIP-68 tokens provide updatable on-chain metadata, <code>did:prism</code> offers W3C-compliant decentralized identity, and Hydra L2 enables high-throughput event logging. The Cardano Foundation already maintains an <a href="https://github.com/cardano-foundation/cardano-dpp-standards">official DPP standards repository</a>.</p>
-<pre class="mermaid"><code>graph LR
-    A[Product QR] --&gt; B[GS1 Resolver]
-    B --&gt; C[Cardano CIP-68 UTxO]
-    C --&gt; D[On-chain: hash + URI]
-    D --&gt; E[Off-chain: full DPP]
-    E --&gt; F[UNTP Verifiable Credential]</code></pre>
-<h2 id="sector-studies">Sector studies<a class="headerlink" href="#sector-studies" title="Permanent link">&para;</a></h2>
-<p>This study covers three EU product sectors with the earliest DPP deadlines:</p>
+<div class="admonition warning">
+<p class="admonition-title">Scope and limitations</p>
+<p>This is an <strong>architectural exploration</strong>, not compliance guidance. Three layers are clearly separated throughout:</p>
+<ol>
+<li><strong>Regulatory layer</strong> — what the EU mandates (ESPR, Battery Regulation, delegated acts). Cited from EUR-Lex with specific articles.</li>
+<li><strong>Data model layer</strong> — industry schemas (Battery Pass, UNTP, GS1). Not EU mandates — implementations aligned with regulatory requirements.</li>
+<li><strong>Technical implementation layer</strong> — Cardano-specific architecture (MPFS, Aiken, did:prism). <strong>None of this is mandated by any EU regulation.</strong> The EU is technology-neutral.</li>
+</ol>
+<p>Do not use this study for compliance decisions without cross-checking against the <a href="references/#eu-regulations">official regulation texts</a>.</p>
+</div>
+<h2 id="the-eu-dpp-roadmap">The EU DPP roadmap<a class="headerlink" href="#the-eu-dpp-roadmap" title="Permanent link">&para;</a></h2>
+<p>The European Union is rolling out mandatory Digital Product Passports across virtually all physical products placed on its market. The <a href="references/#reg-espr">ESPR (EU) 2024/1781</a> provides the framework; sector-specific regulations and delegated acts define the details.</p>
+<pre class="mermaid"><code>timeline
+    title EU DPP rollout
+    section In force
+        2023 : Battery Regulation enters into force
+        2024 : ESPR enters into force
+             : Construction Products Regulation enters into force
+        2025 : Battery carbon footprint declaration
+             : Separate textile collection mandatory (WFD)
+    section 2026–2027
+        2026 : EU DPP Registry operational
+             : Destruction ban on unsold textiles
+             : First ESPR delegated acts (iron/steel, textiles, tyres)
+        2027 : Battery passport mandatory
+             : Tyre DPP compliance expected
+             : Detergents DPP mandatory
+    section 2028–2030
+        2028 : Battery recycled content thresholds
+             : Textile DPP compliance expected
+             : Electronics/ICT DPP expected
+             : Furniture DPP expected
+        2029 : Toys DPP mandatory
+        2030 : Construction products DPP
+             : ELV Environmental Vehicle Passport
+    section 2031+
+        2031 : Stricter battery recycled content</code></pre>
+<p>This study analyses three sectors with the earliest deadlines and deepest Cardano integration potential:</p>
 <table>
 <thead>
 <tr>
 <th>Sector</th>
 <th>Regulation</th>
 <th>Deadline</th>
-<th>Granularity</th>
-<th>Cardano fit</th>
+<th>Why it matters</th>
+<th>This study</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><a href="sectors/batteries/"><strong>Batteries</strong></a></td>
-<td>(EU) 2023/1542</td>
-<td>Feb 2027</td>
-<td>Item</td>
-<td>Dynamic SoH tracking, signed BMS readings, ownership transfer</td>
+<td><a href="references/#reg-battery">(EU) 2023/1542</a></td>
+<td><strong>Feb 2027</strong></td>
+<td>First DPP ever mandated. Item-level. Dynamic SoH data. Strongest blockchain case.</td>
+<td><a href="sectors/batteries/#why-the-eu-wants-to-trace-batteries">Regulatory drivers</a> · <a href="sectors/batteries/architecture/">Architecture</a></td>
 </tr>
 <tr>
 <td><a href="sectors/tyres/"><strong>Tyres</strong></a></td>
 <td>ESPR delegated act</td>
 <td>~2027</td>
-<td>TBD</td>
-<td>Wear monitoring, retreading lifecycle, DOT code identity</td>
+<td>#1 microplastics source. 6PPD crisis. Retreading collapse.</td>
+<td><a href="sectors/tyres/#why-the-eu-wants-to-trace-tyres">Regulatory drivers</a> · <a href="sectors/tyres/#granularity-analysis">Granularity analysis</a></td>
 </tr>
 <tr>
 <td><a href="sectors/textiles/"><strong>Textiles</strong></a></td>
 <td>ESPR delegated act</td>
 <td>~2027-2028</td>
-<td>Batch/model</td>
-<td>Supply chain provenance, anti-counterfeiting, destruction ban</td>
+<td>Forced labour. Greenwashing. Destruction ban. &lt;1% recycling.</td>
+<td><a href="sectors/textiles/#why-the-eu-wants-to-trace-textiles">Regulatory drivers</a> · <a href="sectors/textiles/#supply-chain-traceability">Supply chain</a></td>
+</tr>
+</tbody>
+</table>
+<p>For the full list of upcoming DPP mandates across all sectors, see the <a href="timeline/">DPP rollout timeline</a>.</p>
+<h2 id="what-is-a-dpp">What is a DPP<a class="headerlink" href="#what-is-a-dpp" title="Permanent link">&para;</a></h2>
+<p>The Digital Product Passport is a structured data record linked to physical products via a data carrier (QR code, RFID, NFC). It is not a tracking device — it is a <strong>regulatory compliance data infrastructure</strong> that makes six other EU regulations enforceable at product level:</p>
+<table>
+<thead>
+<tr>
+<th>Regulation</th>
+<th>What it requires</th>
+<th>DPP role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="references/#reg-espr">ESPR</a></td>
+<td>Ecodesign requirements (durability, recyclability, carbon footprint)</td>
+<td>Carries the data per product</td>
+</tr>
+<tr>
+<td><a href="references/#csddd">CSDDD</a></td>
+<td>Supply chain due diligence (human rights, environment)</td>
+<td>Carries product-level evidence</td>
+</tr>
+<tr>
+<td><a href="references/#reg-eudr">EUDR</a></td>
+<td>Deforestation-free sourcing</td>
+<td>Carries traceability to origin</td>
+</tr>
+<tr>
+<td><a href="references/#cbam">CBAM</a></td>
+<td>Carbon border adjustment for imports</td>
+<td>Carries embedded carbon data</td>
+</tr>
+<tr>
+<td><a href="references/#empowering-consumers">Empowering Consumers</a></td>
+<td>Bans unsubstantiated green claims</td>
+<td>Provides verifiable data</td>
+</tr>
+<tr>
+<td><a href="references/#wfd-revision">WFD revision</a></td>
+<td>EPR eco-modulation for textiles</td>
+<td>Data substrate for fee differentiation</td>
+</tr>
+</tbody>
+</table>
+<h2 id="why-cardano">Why Cardano<a class="headerlink" href="#why-cardano" title="Permanent link">&para;</a></h2>
+<p>The <a href="references/#mpfs">MPFS infrastructure</a> (Merkle Patricia Forestry Service) provides production-grade on-chain/off-chain support for per-operator Merkle Patricia Tries with Aiken validators. Each economic operator manages one trie; products are leaves. One on-chain UTxO per operator.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Benefit for DPP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>eUTxO model</strong></td>
+<td>One UTxO per operator — naturally maps to per-operator trie roots</td>
+</tr>
+<tr>
+<td><strong><a href="references/#mpfs">MPFS</a> on-chain validators</strong></td>
+<td>Aiken validators verify MPT transition proofs in a single transaction</td>
+</tr>
+<tr>
+<td><strong><a href="references/#did-prism-w3c">did:prism</a></strong></td>
+<td>W3C DID method anchored on Cardano — operator identity</td>
+</tr>
+<tr>
+<td><strong>Formal verification</strong></td>
+<td>Aiken validators can be formally verified for compliance logic</td>
+</tr>
+<tr>
+<td><strong>Low fees</strong></td>
+<td>~$18/year per operator for daily root updates (batteries); &lt;$10/year for static sectors</td>
 </tr>
 </tbody>
 </table>
@@ -1705,90 +1824,53 @@
 <tbody>
 <tr>
 <td><strong>Technical feasibility</strong></td>
-<td>High — CF DPP Blueprint patterns, Plutus/Aiken validators, did:prism cover all requirements</td>
+<td>High — MPFS infrastructure, Aiken validators, did:prism cover all requirements</td>
 </tr>
 <tr>
 <td><strong>Cost</strong></td>
-<td>$0.01-0.13/product (L1 batched), ~$0.0001 (Hydra)</td>
+<td>~$18/year per battery operator (daily updates); &lt;$10/year for tyres/textiles</td>
 </tr>
 <tr>
 <td><strong>Scalability</strong></td>
-<td>L1 sufficient for all three sectors at expected volumes</td>
+<td>One UTxO per operator — millions of products as MPT leaves, no on-chain bloat</td>
 </tr>
 <tr>
 <td><strong>EU compliance</strong></td>
 <td>Technology-neutral regulation; adapter middleware needed for EU registry</td>
 </tr>
 <tr>
-<td><strong>Identity</strong></td>
-<td>did:prism is W3C-registered, supplementary to UNTP's did:web</td>
-</tr>
-<tr>
-<td><strong>Existing work</strong></td>
-<td>Cardano Foundation DPP standards, LW3 Hydra platform, pilots in wine/batteries</td>
+<td><strong>Ecosystem maturity</strong></td>
+<td>Early-stage — MPFS is production-grade; DPP Blueprint is docs-only; LW3 is pre-product</td>
 </tr>
 </tbody>
 </table>
 <h2 id="contents">Contents<a class="headerlink" href="#contents" title="Permanent link">&para;</a></h2>
+<p><strong>Sector studies</strong> (regulatory drivers → data model → Cardano architecture):</p>
+<ul>
+<li><a href="sectors/batteries/">Batteries</a> — critical raw materials, carbon footprint, second-life markets, consumer protection, safe recycling</li>
+<li><a href="sectors/tyres/">Tyres</a> — microplastics, 6PPD chemicals, retreading, EUDR, durability, end-of-life</li>
+<li><a href="sectors/textiles/">Textiles</a> — waste crisis, forced labour, greenwashing, destruction ban, environmental impact, EPR</li>
+</ul>
 <p><strong>Cardano platform</strong> (shared infrastructure):</p>
 <ul>
 <li><a href="cardano/overview/">Overview</a> — architecture and rationale</li>
-<li><a href="cardano/storage/">On-chain storage</a> — CIP-68, datums, metadata labels</li>
+<li><a href="cardano/storage/">On-chain storage</a> — CIP-68, MPFS, datums</li>
 <li><a href="cardano/access-control/">Access control</a> — Plutus validators, role tokens</li>
 <li><a href="cardano/identity/">Identity</a> — did:prism, Identus, Verifiable Credentials</li>
 <li><a href="cardano/costs/">Cost analysis</a> — per-product and at-scale economics</li>
 <li><a href="cardano/scalability/">Scalability</a> — L1, Hydra L2, volume requirements</li>
 <li><a href="cardano/eu-integration/">EU integration</a> — registry, GS1, UNTP</li>
-<li><a href="cardano/existing-work/">Existing work</a> — CF DPP standards, pilots, CIPs</li>
-</ul>
-<p><strong>Sector studies:</strong></p>
-<ul>
-<li><a href="sectors/batteries/">Batteries</a> — signed BMS readings, NFC hardware, ownership transfer, incentives</li>
-<li><a href="sectors/tyres/">Tyres</a> — wear monitoring, retreading, DOT codes</li>
-<li><a href="sectors/textiles/">Textiles</a> — supply chain traceability, anti-counterfeiting, circular economy</li>
+<li><a href="cardano/existing-work/">Existing work</a> — MPFS, DPP Blueprint, Scantrust pilot</li>
 </ul>
 <p><strong>EU DPP background:</strong></p>
 <ul>
 <li><a href="regulation/">Regulation</a> — ESPR, Battery Regulation, related directives</li>
-<li><a href="timeline/">Timeline</a> — sector-by-sector rollout dates</li>
+<li><a href="timeline/">Timeline</a> — full sector-by-sector rollout dates</li>
 <li><a href="data-model/">Data model</a> — schemas and formats</li>
-<li><a href="schemas/battery-pass/">Schemas</a> — Battery Pass, UNTP DPP</li>
-<li><a href="examples/battery-pass/">Examples</a> — realistic JSON payloads</li>
 <li><a href="access/">Access &amp; governance</a> — three-tier model, registry, enforcement</li>
 <li><a href="pilots/">Pilots</a> — CIRPASS, Battery Pass, Catena-X</li>
+<li><a href="references/">References</a> — all cited sources</li>
 </ul>
-<h2 id="key-regulations">Key regulations<a class="headerlink" href="#key-regulations" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Regulation</th>
-<th>Scope</th>
-<th>Status</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://eur-lex.europa.eu/eli/reg/2024/1781">ESPR (EU) 2024/1781</a></td>
-<td>Framework for all product DPPs</td>
-<td>In force (July 2024)</td>
-</tr>
-<tr>
-<td><a href="https://eur-lex.europa.eu/eli/reg/2023/1542">Battery Regulation (EU) 2023/1542</a></td>
-<td>Battery passports</td>
-<td>In force (August 2023)</td>
-</tr>
-<tr>
-<td><a href="https://eur-lex.europa.eu/eli/reg/2024/3110">CPR (EU) 2024/3110</a></td>
-<td>Construction products DPP</td>
-<td>In force (January 2025)</td>
-</tr>
-<tr>
-<td>Delegated acts (various)</td>
-<td>Sector-specific DPP requirements</td>
-<td>In progress</td>
-</tr>
-</tbody>
-</table>
 
 
 
@@ -1842,6 +1924,8 @@
     
     
       <script src="assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="javascripts/mermaid-dark.mjs" type="module"></script>
       
     
   </body>

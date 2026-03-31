@@ -860,6 +860,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#revocation-and-invalidation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revocation and invalidation
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1029,6 +1040,34 @@
     
   
     Ownership Transfer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../presentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation
   
 
     
@@ -1955,6 +1994,54 @@
 <li>Records material recovery data in the event log</li>
 <li>The passport is no longer "active" but the on-chain record persists as historical evidence</li>
 </ul>
+<h3 id="revocation-and-invalidation">Revocation and invalidation<a class="headerlink" href="#revocation-and-invalidation" title="Permanent link">&para;</a></h3>
+<p>The regulation defines one cessation trigger: recycling (Art. 77(6b)). But other invalidation scenarios exist that the regulation does not explicitly address:</p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Trigger</th>
+<th>Proposed on-chain action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Recycling</strong></td>
+<td>Battery has been recycled</td>
+<td>Status → Recycled, passport ceases (Art. 77(6b))</td>
+</tr>
+<tr>
+<td><strong>Recall</strong></td>
+<td>Safety defect discovered</td>
+<td>Authority marks passport with recall flag</td>
+</tr>
+<tr>
+<td><strong>Fraud detection</strong></td>
+<td>Falsified data discovered</td>
+<td>Authority revokes passport validity</td>
+</tr>
+<tr>
+<td><strong>Manufacturer insolvency</strong></td>
+<td>Company ceases to exist</td>
+<td>Escrow/backup provider takes over (ESPR Art. 11)</td>
+</tr>
+<tr>
+<td><strong>BMS key compromise</strong></td>
+<td>Secure element private key leaked</td>
+<td>Manufacturer updates BMS public key in datum, old readings flagged</td>
+</tr>
+<tr>
+<td><strong>Duplicate / counterfeit</strong></td>
+<td>Same battery ID on multiple passports</td>
+<td>Authority flags duplicates via market surveillance</td>
+</tr>
+</tbody>
+</table>
+<p>On Cardano, revocation is a datum update: a <code>revoked</code> or <code>recalled</code> flag set by the appropriate role token holder (authority or manufacturer). The validator enforces that only authorized actors can set these flags. Revoked passports remain on-chain as historical evidence but are marked as invalid for current use.</p>
+<div class="admonition note">
+<p class="admonition-title">No formal revocation registry in regulation</p>
+<p>The Battery Regulation does not define a revocation mechanism beyond cessation on recycling. The scenarios above are implementation-level provisions for situations the regulation doesn't explicitly address. A future delegated act or implementing act may formalize revocation requirements.</p>
+</div>
 <h2 id="data-flow-bms-to-passport-open-problem">Data flow: BMS to passport (open problem)<a class="headerlink" href="#data-flow-bms-to-passport-open-problem" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">The regulation does not specify this</p>
@@ -2085,6 +2172,8 @@
     
     
       <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../../javascripts/mermaid-dark.mjs" type="module"></script>
       
     
   </body>

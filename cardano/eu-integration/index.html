@@ -615,6 +615,50 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#compliance-risk-registry-synchronization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compliance risk: registry synchronization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ebsi-and-eidas-20" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EBSI and eIDAS 2.0
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#off-chain-data-persistence-insolvency-protection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Off-chain data persistence (insolvency protection)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transaction-pattern-privacy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transaction pattern privacy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#open-questions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -962,6 +1006,34 @@
     
   
     Ownership Transfer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sectors/batteries/presentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation
   
 
     
@@ -1768,12 +1840,122 @@
 <li>Standardized response format (whatever the EU registry API specifies)</li>
 <li>Authority-level access (full data including due diligence)</li>
 </ul>
+<h2 id="compliance-risk-registry-synchronization">Compliance risk: registry synchronization<a class="headerlink" href="#compliance-risk-registry-synchronization" title="Permanent link">&para;</a></h2>
+<p>A product with a technically perfect DPP on Cardano is <strong>legally non-compliant</strong> if its Unique Product Identifier is not registered in the EU Central Registry. Products without registry entries can be seized at the border.</p>
+<p>The adapter middleware must therefore be <strong>actively synchronized</strong>, not just passively queryable:</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant O as Operator Backend
+    participant C as Cardano L1
+    participant A as Adapter Middleware
+    participant R as EU DPP Registry
+
+    O-&gt;&gt;C: Update passport (new product / status change)
+    C--&gt;&gt;A: Watch for on-chain events (new UTxOs, datum updates)
+    A-&gt;&gt;R: Register / update UPI via registry API
+    R--&gt;&gt;A: Confirmation
+    A-&gt;&gt;A: Log sync status
+
+    Note over A,R: If sync fails: retry with backoff, alert operator
+    Note over A,R: Operator is legally responsible for registry entry</code></pre>
+<p>The adapter must handle:</p>
+<ul>
+<li><strong>Initial registration</strong> — when a new product passport is minted on-chain, the UPI must be registered in the EU registry before the product is placed on the market</li>
+<li><strong>Status updates</strong> — repurposing, waste declaration, recycling cessation must propagate to the registry</li>
+<li><strong>Failure recovery</strong> — if the registry API is down, the adapter must queue and retry; the operator must not place products on the market until sync is confirmed</li>
+<li><strong>Audit trail</strong> — the adapter should log all registry interactions for compliance evidence</li>
+</ul>
+<h2 id="ebsi-and-eidas-20">EBSI and eIDAS 2.0<a class="headerlink" href="#ebsi-and-eidas-20" title="Permanent link">&para;</a></h2>
+<p>The EU operates two digital infrastructure initiatives sometimes confused with DPPs:</p>
+<ul>
+<li><strong>EBSI</strong> (European Blockchain Services Infrastructure) — a permissioned blockchain for cross-border public services (diploma verification, business registries, trusted data sharing). It is <strong>not</strong> the DPP registry and the ESPR does not reference it.</li>
+<li><strong>eIDAS 2.0</strong> — the EU Digital Identity Wallet for citizens. It concerns personal identity, not product identification. The ESPR does not reference eIDAS for DPPs.</li>
+</ul>
+<p>Neither EBSI nor eIDAS is mandated for DPP infrastructure. The ESPR's technology-neutral approach means any system satisfying the registry API can be used. However, if future implementing acts reference EBSI or eIDAS wallets for authority access, a Cardano-based system would need a bridge.</p>
+<h2 id="off-chain-data-persistence-insolvency-protection">Off-chain data persistence (insolvency protection)<a class="headerlink" href="#off-chain-data-persistence-insolvency-protection" title="Permanent link">&para;</a></h2>
+<p><a href="../../references/#reg-espr">ESPR Art. 11</a> requires DPP service providers to ensure data remains available even if the economic operator becomes insolvent. For a Cardano-based system:</p>
+<ul>
+<li><strong>On-chain data is permanent</strong> — the Merkle root, operator identity, and product identifiers survive any individual party's insolvency</li>
+<li><strong>Off-chain data is vulnerable</strong> — if the operator's MPFS node goes down and no backup exists, the full passport data is lost (the on-chain hash becomes unresolvable)</li>
+</ul>
+<p>Mitigation strategies:</p>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Cost</th>
+<th>Trust model</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IPFS pinning service</strong> (Pinata, web3.storage)</td>
+<td>~$0.10-0.50/GB/month</td>
+<td>Relies on pinning provider</td>
+</tr>
+<tr>
+<td><strong>Arweave</strong> (permanent storage)</td>
+<td>~$5 per GB (one-time)</td>
+<td>Decentralized, permanent</td>
+</tr>
+<tr>
+<td><strong>IAGON</strong> (Cardano-native decentralized storage)</td>
+<td>Varies</td>
+<td>Aligned ecosystem</td>
+</tr>
+<tr>
+<td><strong>Mandatory escrow backup</strong> (per ESPR Art. 11)</td>
+<td>Part of compliance cost</td>
+<td>Independent third-party holds copy</td>
+</tr>
+<tr>
+<td><strong>Multi-operator replication</strong></td>
+<td>Free (if supply chain partners each pin)</td>
+<td>Distributed across participants</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommendation</strong>: require at least two independent off-chain storage providers. IPFS with content-addressing ensures that if <em>anyone</em> pins the data, it's retrievable by its CID. The on-chain hash guarantees integrity regardless of which provider serves it.</p>
+<h2 id="transaction-pattern-privacy">Transaction pattern privacy<a class="headerlink" href="#transaction-pattern-privacy" title="Permanent link">&para;</a></h2>
+<p>On a public blockchain, transaction patterns can reveal business intelligence:</p>
+<table>
+<thead>
+<tr>
+<th>Observable pattern</th>
+<th>What it reveals</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frequency of operator's trie updates</td>
+<td>Production cadence / volume</td>
+</tr>
+<tr>
+<td>Number of leaves added per update</td>
+<td>Batch sizes</td>
+</tr>
+<tr>
+<td>Timing of status changes</td>
+<td>Supply chain velocity</td>
+</tr>
+</tbody>
+</table>
+<p>Mitigations:</p>
+<ul>
+<li><strong>Batch updates at fixed intervals</strong> (e.g., daily regardless of volume) — hides whether 10 or 10,000 products were added</li>
+<li><strong>Merkle proofs for selective disclosure</strong> — already in the architecture; a verifier sees only the product they query, not the full trie</li>
+<li><strong>Hydra L2 for high-frequency events</strong> — events within a Hydra head are not visible on L1 until settlement</li>
+<li><strong>Future: ZK proofs</strong> — Hyperledger Identus supports AnonCreds for zero-knowledge credential proofs; Cardano's Plutus V3 adds BLS12-381 primitives for ZK-friendly curves</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Not unique to blockchain</p>
+<p>Centralized DPP platforms have the same risk — the platform operator sees all data. The difference is who can observe: on a public chain it's anyone; on a centralized platform it's the operator. Neither is inherently better — the threat models differ.</p>
+</div>
 <h2 id="open-questions">Open questions<a class="headerlink" href="#open-questions" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>EU registry API specification</strong> — not yet finalized. Cardano adapter design depends on it.</li>
+<li><strong>EU registry API specification</strong> — not yet finalized. Cardano adapter design depends on it. The adapter architecture above is based on the expected resolver model (Art. 13).</li>
 <li><strong>Blockchain acceptance</strong> — the EU has not explicitly endorsed or rejected blockchain-based DPPs. The regulation is technology-neutral.</li>
 <li><strong>Data sovereignty</strong> — some member states may have concerns about product data being anchored on a public blockchain, even if only hashes are stored on-chain.</li>
-<li><strong>Long-term availability</strong> — the EU requires DPP data to be available for the entire product lifetime. Cardano's blockchain is permanent, but off-chain storage (IPFS) needs pinning guarantees.</li>
+<li><strong>Cost predictability</strong> — while current costs are very low (~$18/year per operator), ADA price volatility could affect long-term budgeting. At 10x current ADA price, costs would be ~$180/year per operator — still trivial for industrial use but worth monitoring. Hydra L2 further reduces cost sensitivity.</li>
 </ol>
 
 
@@ -1828,6 +2010,8 @@
     
     
       <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../javascripts/mermaid-dark.mjs" type="module"></script>
       
     
   </body>
