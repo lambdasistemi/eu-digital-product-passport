@@ -149,20 +149,50 @@ Each operator's UTxO is controlled by their signing key. The link between the on
 
 The Aiken validator on the UTxO enforces that only the operator's key (or delegated keys) can update the root.
 
-## Update batching
+## Updates via MPFS
 
-The operator doesn't need to update the on-chain root after every single battery change. They can batch:
+The [MPFS infrastructure](../references.md#mpfs) already solves the trie update problem. The architecture splits into an off-chain service and on-chain validators:
 
-1. Receive BMS readings / service events for many batteries throughout the day
-2. Update affected leaves in the off-chain MPT
-3. Once per day (or per hour, or per business cycle): anchor the new root on-chain
+```mermaid
+graph TD
+    subgraph "Operator's infrastructure"
+        A[BMS readings / service events] --> B[MPFS off-chain service]
+        B -->|insert / update leaves| C[Off-chain MPT store]
+        C -->|new root hash| D[Transaction builder]
+    end
 
-This means one transaction per batch period, regardless of how many batteries were updated. At ~0.2 ADA per transaction, daily root updates for an operator with millions of batteries costs **~73 ADA/year** (~$18).
+    subgraph "Cardano L1"
+        D -->|submit tx with new root + proof| E[MPFS on-chain validator]
+        E -->|verifies proof against old root| F[Updated UTxO with new root]
+    end
+
+    subgraph "Verification"
+        G[Consumer / Authority] -->|fetch leaf + proof| C
+        G -->|fetch current root| F
+        G -->|verify proof| H{Root matches?}
+    end
+```
+
+- **Off-chain** (`cardano-foundation/mpfs`): HTTP service managing the trie. Handles inserts, updates, deletes, proof generation. The operator runs this as part of their passport backend.
+- **On-chain** (`cardano-foundation/cardano-mpfs-onchain`): Aiken validators that verify MPT transition proofs — given the old root, a proof, and the new root, the validator confirms the transition is valid. This is what locks the operator's UTxO.
+- **Cage** (`cardano-foundation/cardano-mpfs-cage`): Language-agnostic specification of the validator logic with cross-language test vectors.
+
+### Update flow
+
+1. Operator receives BMS readings / service events throughout the day
+2. MPFS off-chain service updates affected leaves in the trie
+3. At the chosen cadence (hourly, daily, per business cycle): the service computes the new root and builds a Cardano transaction
+4. The on-chain validator verifies the MPT transition proof and accepts the new root
+5. One transaction per batch, regardless of how many batteries were updated
+
+At ~0.2 ADA per transaction, daily root updates for an operator with millions of batteries costs **~73 ADA/year** (~$18).
+
+### Concurrent updates
+
+MPFS handles multiple leaf modifications in a single batch natively — the off-chain service applies all mutations to the trie and produces one new root with one transition proof. No contention at the on-chain level because there is exactly one UTxO per operator.
 
 ## Open design questions
 
-1. **MPT implementation**: The [MPFS infrastructure](../references.md#mpfs) (cardano-foundation/mpfs, cardano-mpfs-onchain, cardano-mpfs-cage) provides production-grade Merkle Patricia Trie support with Aiken on-chain validators and cross-language test vectors. This is the natural foundation for the per-operator trie model.
-2. **Proof size**: An MPT proof for a battery in a trie of 10M leaves is ~20 hash nodes (log₂ of depth). At 32 bytes per node, that's ~640 bytes — well within a QR-scannable response but needs benchmarking for on-chain verification.
-3. **Concurrent updates**: If the operator updates multiple batteries in the same batch, the MPT must handle concurrent modifications. This is a standard problem with well-known solutions (batch insert/update).
-4. **Signed readings integration**: The challenge-response protocol for [signed BMS readings](signed-bms.md) still works — the signed reading is verified and then incorporated into the leaf data before the root update.
-5. **Ownership transfer**: The CIP-68 user token concept for ownership transfer needs rethinking in the MPT model. One option: a separate thin token (not CIP-68) that the owner holds, pointing to the battery's key in the operator's MPT. Alternatively, ownership is tracked as a field in the leaf data.
+1. **Signed readings integration**: The challenge-response protocol for [signed BMS readings](signed-bms.md) still works — the signed reading is verified off-chain and incorporated into the leaf data before the next root update. The on-chain commitment UTxO for the challenge remains a separate mechanism.
+2. **Ownership transfer**: The CIP-68 user token concept for ownership transfer needs rethinking in the MPT model. One option: a separate thin token (not CIP-68) that the owner holds, pointing to the battery's key in the operator's MPT. Alternatively, ownership is tracked as a field in the leaf data.
+3. **Proof size at scale**: An MPT proof for a battery in a trie of 10M leaves needs benchmarking against MPFS's actual proof format. The theoretical size (~20 hash nodes, ~640 bytes) is well within limits but should be validated empirically.
