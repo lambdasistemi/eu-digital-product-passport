@@ -26,6 +26,7 @@ Georgian wine industry pilot ([case study](../references.md#scantrust-wine)):
 
 - **Use case**: Anti-counterfeiting and supply chain digitization
 - **Implementation**: QR codes linked to blockchain-verified product data
+- **Scale**: Expanded from Baia's Wine (organic winery, Imereti region) to a [national partnership with the Georgian National Wine Agency](https://cardanofoundation.org/blog/cardano-foundation-partners-with-georgian-national-wine-agency) (30+ wineries)
 
 ## Supply chain metadata labels ([CIP-10](../references.md#cip-10))
 

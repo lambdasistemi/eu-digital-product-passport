@@ -49,12 +49,13 @@ All factual claims in this feasibility study are backed by the sources listed he
 | <a id="cf-dpp"></a>CF-DPP | Cardano Foundation DPP Standards | [GitHub](https://github.com/cardano-foundation/cardano-dpp-standards) |
 | <a id="cf-dpp-page"></a>CF-DPP-PAGE | CF DPP Solution Page | [cardanofoundation.org](https://cardanofoundation.org/solutions/digital-product-passport) |
 | <a id="identus"></a>IDENTUS | Hyperledger Identus (did:prism) | [GitHub](https://github.com/hyperledger-identus) |
-| <a id="did-prism-w3c"></a>DID-PRISM-W3C | did:prism W3C DID Method registration | [W3C DID Registry](https://www.w3.org/TR/did-spec-registries/#did-methods) |
-| <a id="hydra"></a>HYDRA | Hydra L2 Documentation | [hydra.family](https://hydra.family/) |
-| <a id="mithril"></a>MITHRIL | Mithril Documentation | [mithril.network](https://mithril.network/) |
+| <a id="did-prism-w3c"></a>DID-PRISM-W3C | did:prism W3C DID Method registration | [W3C DID Extensions](https://www.w3.org/TR/did-extensions/) |
+| <a id="hydra"></a>HYDRA | Hydra L2 Documentation | [hydra.family](https://hydra.family/), [FAQ](https://hydra.family/head-protocol/docs/faqs) |
+| <a id="hydra-blog"></a>HYDRA-BLOG | Hydra — Cardano's solution for ultimate scalability (IOG, Sep 2021) | [IOG blog](https://iog.io/en/blog/posts/2021/09/17/hydra-cardano-s-solution-for-ultimate-scalability/) |
+| <a id="mithril"></a>MITHRIL | Mithril Documentation | [mithril.network](https://mithril.network/doc/) |
 | <a id="cip-150"></a>CIP-150 | Block Data Compression (ZStandard) | [CIP-0150](https://cips.cardano.org/cip/CIP-0150) |
 | <a id="cardano-params"></a>CARDANO-PARAMS | Cardano Protocol Parameters (live values) | [cardanoscan.io](https://cardanoscan.io/protocolparams), [parameter guide](https://docs.cardano.org/about-cardano/explore-more/parameter-guide) |
-| <a id="plutus-builtins"></a>PLUTUS-BUILTINS | Plutus Built-in Functions (including verifyEcdsaSecp256k1Signature) | [CIP-0049](https://cips.cardano.org/cip/CIP-0049) |
+| <a id="plutus-builtins"></a>PLUTUS-BUILTINS | ECDSA and Schnorr signatures in Plutus Core (Valentine hard fork, Feb 2023) | [CIP-0049](https://cips.cardano.org/cip/CIP-0049) |
 | <a id="hydra-doom"></a>HYDRA-DOOM | Hydra Doom Tournament — 1M TPS demonstrated (Dec 2024) | [press release](https://www.newswire.com/news/hydra-demonstrates-cardanos-scalability-by-achieving-1-million-22486706) |
 | <a id="leios"></a>LEIOS | Ouroboros Leios — Input Endorsers research | [IOG paper](https://www.iog.io/papers/ouroboros-leios-design-goals-and-concepts) |
 | <a id="did-prism-spec"></a>DID-PRISM-SPEC | did:prism method specification | [GitHub](https://github.com/input-output-hk/prism-did-method-spec/blob/main/w3c-spec/PRISM-method.md) |
@@ -106,8 +107,8 @@ All factual claims in this feasibility study are backed by the sources listed he
 
 | ID | Reference | URL |
 |----|-----------|-----|
-| <a id="lw3"></a>LW3 | LW3 — Hydra-powered DPP platform | [lw3.io](https://lw3.io/) |
-| <a id="scantrust-wine"></a>SCANTRUST-WINE | Scantrust + Cardano Foundation — Baia's Wine pilot | [cardanofoundation.org](https://cardanofoundation.org/case-studies/baias-wine) |
+| <a id="lw3"></a>LW3 | LW3 — Hydra-powered DPP platform (CF Venture Hub) | [lw3.io](https://lw3.io/), [Coinfomania](https://coinfomania.com/cardano-foundation-and-lw3-expand-blockchain-based-digital-product-passports-to-transform-global-supply-chains/) |
+| <a id="scantrust-wine"></a>SCANTRUST-WINE | Scantrust + Cardano Foundation — Baia's Wine pilot (Georgian wine) | [Scantrust case study](https://blog.scantrust.com/case-study-baias-wine-anti-counterfeiting-and-supply-chain-awareness-on-the-cardano-blockchain/), [CF blog](https://cardanofoundation.org/blog/cardano-reveals-its-first-supply-chain-solution-in-association-with-scantrust) |
 | <a id="seedtrace"></a>SEEDTRACE | seedtrace — Agricultural supply chain on Cardano | [seedtrace.org](https://www.seedtrace.org/) |
 | <a id="tangem"></a>TANGEM | Tangem — NFC hardware wallet (Infineon secure element) | [tangem.com](https://tangem.com/) |
 
