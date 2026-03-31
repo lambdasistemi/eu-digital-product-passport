@@ -235,35 +235,75 @@ This is a single transaction. If the operator doesn't incorporate, the readings 
 - The readings are signed by BMS hardware — the operator can't claim they're invalid
 - Users provide data the operator needs but can't easily obtain (especially for non-connected batteries)
 
-### Reward rules
+### Acceptance vs reward — two levels of validation
 
-Each battery has a reward schedule enforced by the MPFS validator during the batch transaction. The `lastReadingSlot` field in the leaf tracks when the last rewarded reading was accepted. The validator checks this before releasing a reward.
+The validator distinguishes between **acceptance** (is this reading valid?) and **reward** (should the user get paid?). All valid readings are incorporated. The reward is the only thing gated by the frequency cap.
 
-| Rule | Enforced by | Example |
-|------|------------|---------|
-| **Frequency cap** | `lastReadingSlot` + minimum interval ≤ current slot | One rewarded reading per month |
-| **Reader authorization** | `readerPkh` must match submitter | Only the assigned reader gets paid |
-| **Plausibility** | SoH ≤ previous, cycles ≥ previous | Readings that violate physics are rejected |
-| **Freshness** | Commitment slot within max age | Stale readings are rejected |
+#### Hard gate: certified timestamp (acceptance)
 
-The operator pre-funds a reward pool locked at the MPFS contract address. During the batch transaction, the validator checks each pending reading against the leaf's current state:
+The BMS signs over the commitment transaction hash. This binds the reading to a specific on-chain moment. A reading without a valid certified timestamp is **rejected entirely** — not incorporated, not rewarded, discarded.
+
+| Check | Gate level | Failure = |
+|-------|-----------|-----------|
+| BMS signature valid (COSE_Sign1 over commitment_tx_hash) | **Hard** | Reading rejected |
+| Commitment UTxO exists and is recent | **Hard** | Reading rejected |
+| Plausibility (SoH ≤ previous, cycles ≥ previous) | **Hard** | Reading rejected |
+| Reader authorization (`readerPkh` matches submitter) | **Soft** | Reading incorporated, no reward |
+| Frequency cap (cooldown since last rewarded reading) | **Soft** | Reading incorporated, no reward |
+
+The certified timestamp is the foundation — without it, nothing happens. With it, the reading is always useful data for the operator.
+
+#### Soft gate: reward eligibility
 
 ```
 For each pending reading in this batch:
-  1. Look up battery leaf by batteryId
-  2. Check: reading.submitterPkh == leaf.readerPkh       → authorized?
-  3. Check: reading.commitmentSlot + maxAge ≥ currentSlot → fresh?
-  4. Check: currentSlot ≥ leaf.lastReadingSlot + minInterval → cooldown passed?
-  5. Check: reading.soH ≤ leaf.lastSoH                   → plausible?
-  6. If all pass:
-     - Update leaf: lastSoH, lastCycleCount, lastReadingSlot
+
+  -- Hard gates (reject if any fail)
+  1. Verify COSE_Sign1 signature against leaf.bmsPublicKey     → authentic?
+  2. Verify commitment_tx_hash matches consumed commitment UTxO → timestamped?
+  3. Check: commitment slot + maxAge ≥ current slot             → fresh?
+  4. Check: reading.soH ≤ leaf.lastSoH                         → plausible?
+
+  If any hard gate fails → discard reading, do not incorporate
+
+  -- Always incorporate
+  5. Update leaf: lastSoH, lastCycleCount, lastReadingSlot
+
+  -- Soft gates (reward only if all pass)
+  6. Check: reading.submitterPkh == leaf.readerPkh              → authorized?
+  7. Check: current slot ≥ leaf.lastRewardedSlot + minInterval  → cooldown passed?
+
+  If all soft gates pass:
      - Release reward from pool to submitter
-  7. If cooldown not passed:
-     - Update leaf (data is still valid and useful)
-     - No reward released
+     - Update leaf: lastRewardedSlot = current slot
+  Else:
+     - No reward (reading is still incorporated)
 ```
 
-This means: a user can submit readings more often than the reward interval — the data still gets incorporated into the passport (the operator needs it). But they only get paid once per interval. The readings between reward windows are "free" contributions from the operator's perspective.
+This means:
+
+- **Anyone can submit** a valid signed reading — only the authorized reader gets rewarded
+- **Readings are always incorporated** if they pass the hard gates — the operator needs the data regardless of who submitted it
+- **The reward is a bonus**, not a prerequisite — the passport stays up-to-date even without rewarded submissions
+- **The certified timestamp is non-negotiable** — it's what makes the reading trustworthy
+
+### Leaf value structure (updated)
+
+```
+BatteryLeaf {
+  batteryId         : ByteString
+  status            : Status            -- Virgin | Active | Repurposed | Recycled
+  readerPkh         : Maybe PubKeyHash  -- authorized reader (reward-eligible)
+  bmsPublicKey      : ByteString        -- registered at manufacturing
+  lastSoH           : Integer           -- last known State of Health
+  lastCycleCount    : Integer           -- last known cycle count
+  lastReadingSlot   : Integer           -- slot of last accepted reading (any)
+  lastRewardedSlot  : Integer           -- slot of last rewarded reading
+  ...                                   -- other passport fields
+}
+```
+
+Note the split: `lastReadingSlot` tracks the most recent incorporated reading (for data purposes). `lastRewardedSlot` tracks the most recent rewarded reading (for cooldown purposes). They diverge when readings are submitted more frequently than the reward interval.
 
 ### Reward funding
 
@@ -275,22 +315,7 @@ The operator pre-funds a reward pool locked at the MPFS contract address. Reward
 
 ## Reading rights as MPT leaf state
 
-Ownership of the reading right — who is allowed to submit signed readings and claim rewards — is a field in the MPT leaf value, not a separate token. MPFS supports state transitions on leaf values, so transferring the reading right is just another transition on the battery's key.
-
-### Leaf value structure
-
-```
-BatteryLeaf {
-  batteryId       : ByteString    -- unique battery identifier
-  status          : Status        -- Virgin | Active | Repurposed | Recycled
-  readerPkh       : Maybe PubKeyHash  -- who can submit readings (Nothing = unclaimed)
-  bmsPublicKey    : ByteString    -- registered at manufacturing
-  lastSoH         : Integer       -- last known State of Health
-  lastCycleCount  : Integer       -- last known cycle count
-  lastReadingSlot : Integer       -- slot of last accepted reading
-  ...                             -- other passport fields
-}
-```
+Ownership of the reading right — who is allowed to submit signed readings and claim rewards — is a field in the MPT leaf value (`readerPkh`), not a separate token. MPFS supports state transitions on leaf values, so transferring the reading right is just another transition on the battery's key.
 
 ### Battery lifecycle through MPT transitions
 
