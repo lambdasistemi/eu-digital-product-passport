@@ -110,6 +110,19 @@ All factual claims in this feasibility study are backed by the sources listed he
 | <a id="acea-ev"></a>ACEA-EV | ACEA — EU new car registrations (BEV 17.4% market share, 2025) | [acea.auto](https://www.acea.auto/pc-registrations/new-car-registrations-1-8-in-2025-battery-electric-17-4-market-share/) |
 | <a id="iea-gevo"></a>IEA-GEVO | IEA — Global EV Outlook 2025, trends in electric car markets | [iea.org](https://www.iea.org/reports/global-ev-outlook-2025/trends-in-electric-car-markets-2) |
 | <a id="eu-dcc-tech"></a>EU-DCC-TECH | EU Digital COVID Certificate — Technical Specifications (CBOR + COSE_Sign1) | [health.ec.europa.eu](https://health.ec.europa.eu/publications/technical-specifications-eu-digital-covid-certificates_en), [hcert-spec](https://github.com/ehn-dcc-development/hcert-spec) |
+| <a id="zero-pollution"></a>ZERO-POLLUTION | EU Zero Pollution Action Plan — COM(2021) 400 | [EUR-Lex](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A52021DC0400) |
+| <a id="ceap"></a>CEAP | Circular Economy Action Plan — COM(2020) 98 | [EUR-Lex](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=COM%3A2020%3A98%3AFIN) |
+| <a id="euro7"></a>EURO7 | Euro 7 — Regulation (EU) 2024/1257 (vehicle emissions incl. tyre abrasion measurement) | [EUR-Lex](https://eur-lex.europa.eu/eli/reg/2024/1257) |
+| <a id="landfill-dir"></a>LANDFILL-DIR | Landfill Directive 1999/31/EC — Art. 5(3) bans whole tyre landfilling | [EUR-Lex](https://eur-lex.europa.eu/eli/dir/1999/31) |
+| <a id="csddd"></a>CSDDD | Corporate Sustainability Due Diligence Directive (EU) 2024/1760 | [EUR-Lex](https://eur-lex.europa.eu/eli/dir/2024/1760) |
+| <a id="empowering-consumers"></a>EMPOWERING-CONSUMERS | Empowering Consumers Directive (EU) 2024/825 — bans unsubstantiated green claims | [EUR-Lex](https://eur-lex.europa.eu/eli/dir/2024/825) |
+| <a id="wfd-revision"></a>WFD-REVISION | Proposed revision of Waste Framework Directive — COM(2023) 420 (mandatory textile EPR) | [EUR-Lex](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=COM%3A2023%3A420%3AFIN) |
+| <a id="wfd-2018"></a>WFD-2018 | Waste Framework Directive amendment (EU) 2018/851 — textile separate collection by Jan 2025 | [EUR-Lex](https://eur-lex.europa.eu/eli/dir/2018/851) |
+| <a id="agec-france"></a>AGEC-FRANCE | France AGEC law (2020) — bans destruction of unsold non-food goods | [legifrance.gouv.fr](https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000041553759) |
+| <a id="emf-textiles"></a>EMF-TEXTILES | Ellen MacArthur Foundation — A New Textiles Economy (2017) | [ellenmacarthurfoundation.org](https://www.ellenmacarthurfoundation.org/a-new-textiles-economy) |
+| <a id="iucn-microplastics"></a>IUCN-MICROPLASTICS | IUCN — Primary Microplastics in the Oceans (2017) | [iucn.org](https://www.iucn.org/resources/publication/primary-microplastics-oceans) |
+| <a id="aspi-uyghur"></a>ASPI-UYGHUR | ASPI — Uyghurs for Sale (2020) | [aspi.org.au](https://www.aspi.org.au/report/uyghurs-sale) |
+| <a id="sheffield-uyghur"></a>SHEFFIELD-UYGHUR | Sheffield Hallam University — In Broad Daylight (2021) | [shu.ac.uk](https://www.shu.ac.uk/helena-kennedy-centre/research-and-projects/all-projects/in-broad-daylight) |
 
 ## Cardano Ecosystem Projects
 
