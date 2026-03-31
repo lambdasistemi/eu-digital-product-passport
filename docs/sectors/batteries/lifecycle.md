@@ -152,6 +152,24 @@ When the battery is recycled, the recycler (holding a `DPP_RECYCLER` role token)
 - Records material recovery data in the event log
 - The passport is no longer "active" but the on-chain record persists as historical evidence
 
+### Revocation and invalidation
+
+The regulation defines one cessation trigger: recycling (Art. 77(6b)). But other invalidation scenarios exist that the regulation does not explicitly address:
+
+| Scenario | Trigger | Proposed on-chain action |
+|----------|---------|------------------------|
+| **Recycling** | Battery has been recycled | Status → Recycled, passport ceases (Art. 77(6b)) |
+| **Recall** | Safety defect discovered | Authority marks passport with recall flag |
+| **Fraud detection** | Falsified data discovered | Authority revokes passport validity |
+| **Manufacturer insolvency** | Company ceases to exist | Escrow/backup provider takes over (ESPR Art. 11) |
+| **BMS key compromise** | Secure element private key leaked | Manufacturer updates BMS public key in datum, old readings flagged |
+| **Duplicate / counterfeit** | Same battery ID on multiple passports | Authority flags duplicates via market surveillance |
+
+On Cardano, revocation is a datum update: a `revoked` or `recalled` flag set by the appropriate role token holder (authority or manufacturer). The validator enforces that only authorized actors can set these flags. Revoked passports remain on-chain as historical evidence but are marked as invalid for current use.
+
+!!! note "No formal revocation registry in regulation"
+    The Battery Regulation does not define a revocation mechanism beyond cessation on recycling. The scenarios above are implementation-level provisions for situations the regulation doesn't explicitly address. A future delegated act or implementing act may formalize revocation requirements.
+
 ## Data flow: BMS to passport (open problem)
 
 !!! warning "The regulation does not specify this"
