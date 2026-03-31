@@ -2,7 +2,7 @@
 
 ## Ecodesign for Sustainable Products Regulation (ESPR)
 
-**Regulation (EU) 2024/1781** — adopted 13 June 2024, published in the Official Journal on 28 June 2024 (OJ L 2024/1781). Entered into force on 18 July 2024.
+[**Regulation (EU) 2024/1781**](references.md#reg-espr) — adopted 13 June 2024, published in the Official Journal on 28 June 2024 (OJ L 2024/1781). Entered into force on 18 July 2024.
 
 The ESPR replaces and extends the old Ecodesign Directive 2009/125/EC (which only covered energy-related products) to cover virtually all physical products placed on the EU market, with exceptions for food, feed, medicinal products, and living organisms.
 
@@ -49,7 +49,7 @@ The ESPR also introduces a ban on the destruction of unsold consumer products:
 
 ## Battery Regulation
 
-**Regulation (EU) 2023/1542** — adopted 12 July 2023, entered into force 17 August 2023. This is the first EU regulation to mandate a Digital Product Passport for a specific product category.
+[**Regulation (EU) 2023/1542**](references.md#reg-battery) — adopted 12 July 2023, entered into force 17 August 2023. This is the first EU regulation to mandate a Digital Product Passport for a specific product category.
 
 ### Battery passport requirements
 
@@ -129,7 +129,7 @@ Beyond the ESPR and Battery Regulation, several other EU regulations mandate or 
 
 ### Construction Products Regulation
 
-**Regulation (EU) 2024/3110** — adopted 27 November 2024, entered into force 7 January 2025. Replaces the old CPR (EU) No 305/2011.
+[**Regulation (EU) 2024/3110**](references.md#reg-cpr) — adopted 27 November 2024, entered into force 7 January 2025. Replaces the old CPR (EU) No 305/2011.
 
 The DPP is a central pillar of the new CPR. The First CPR Working Plan for 2026-2029 was published in December 2025. Priority sub-categories: insulation, cement, steel, windows, heating/cooling systems.
 

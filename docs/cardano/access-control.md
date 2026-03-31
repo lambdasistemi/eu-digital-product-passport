@@ -2,7 +2,7 @@
 
 ## The challenge
 
-The EU DPP mandates three access tiers:
+The EU DPP mandates three access tiers ([ESPR Art. 10](../references.md#espr-art10), [Battery Reg. Art. 77(3)](../references.md#bat-art77-3)):
 
 | Level | Actors | Data |
 |-------|--------|------|

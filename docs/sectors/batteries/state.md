@@ -2,7 +2,7 @@
 
 ## What is the state?
 
-The battery passport state is the complete set of data fields defined in Annex XIII of Regulation 2023/1542. It divides into:
+The battery passport state is the complete set of data fields defined in [Annex XIII](../references.md#bat-annex-xiii) of [Regulation 2023/1542](../references.md#reg-battery). It divides into:
 
 | Category | Examples | Changes? | Source |
 |----------|----------|----------|--------|
@@ -50,7 +50,7 @@ The "at least daily" update frequency (Recital 46) refers to the BMS's internal 
 This is a recognized open problem:
 
 !!! warning "Unsolved implementation gap"
-    The Battery Pass consortium states that Annex VII data attributes "urgently require further elaboration and definitions, which are decisive for economic operators to determine system requirements for implementation." Industry analysis from CEPS, Seraph, and DataArt all identify the BMS-to-passport data transfer as the biggest unsolved challenge before the Feb 2027 deadline.
+    The [Battery Pass consortium](../references.md#battery-pass) states that Annex VII data attributes "urgently require further elaboration and definitions, which are decisive for economic operators to determine system requirements for implementation" (Battery Pass Content Guidance v3, 2024). Industry analyses consistently identify the BMS-to-passport data transfer as the biggest unsolved challenge before the Feb 2027 deadline.
 
 The challenge varies dramatically by battery category:
 

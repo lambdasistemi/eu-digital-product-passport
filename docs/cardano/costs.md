@@ -2,9 +2,9 @@
 
 ## Per-product costs
 
-All costs at ADA ~$0.25 USD (March 2026).
+All costs at ADA ~$0.25 USD (March 2026). ADA/USD rate is indicative; check current market price. Protocol parameters from [Cardano network documentation](../references.md#cardano-params).
 
-### Individual mint (CIP-68)
+### Individual mint ([CIP-68](../references.md#cip-68))
 
 | Component | ADA | USD |
 |-----------|-----|-----|

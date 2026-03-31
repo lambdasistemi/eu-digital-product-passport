@@ -2,7 +2,7 @@
 
 ## Summary
 
-Storing EU Digital Product Passports on Cardano is technically feasible. The Cardano Foundation is already building an official DPP solution with open-source standards, active pilots, and a monthly working group.
+Storing EU Digital Product Passports on Cardano is technically feasible. The Cardano Foundation is already building an [official DPP solution](../references.md#cf-dpp) with open-source standards, active pilots, and a monthly working group ([solution page](../references.md#cf-dpp-page)).
 
 The core pattern: **anchor hashes and identifiers on-chain, store full DPP data off-chain**.
 
@@ -36,9 +36,9 @@ graph TD
 |----------|----------------|
 | **eUTxO model** | Each product's DPP is a discrete UTxO — naturally maps to per-product records |
 | **Native multi-asset** | DPP tokens are first-class citizens, no ERC-721-style contract overhead |
-| **CIP-68 updatable datums** | DPP data evolves over product lifecycle (repairs, ownership, SoH updates) |
-| **did:prism** | W3C DID method anchored on Cardano — stronger assurance than did:web |
-| **Hydra L2** | High-throughput channel for real-time lifecycle events |
+| **[CIP-68](../references.md#cip-68) updatable datums** | DPP data evolves over product lifecycle (repairs, ownership, SoH updates) |
+| **[did:prism](../references.md#did-prism-w3c)** | W3C DID method anchored on Cardano — stronger assurance than did:web |
+| **[Hydra L2](../references.md#hydra)** | High-throughput channel for real-time lifecycle events |
 | **Formal verification** | Aiken/Plutus validators can be formally verified for compliance logic |
 | **Low fees** | $0.01-0.13 per product at current prices |
 
@@ -60,4 +60,4 @@ The Cardano Foundation maintains an official open-source repository:
 - **Validator language**: Aiken
 - **Token standard**: CIP-68
 - **Data structure**: Merkle Trees (default) or Merkle Patricia Tries
-- **Pilots**: Textiles, EV batteries (with LW3 / Hydra)
+- **Pilots**: Textiles, EV batteries (with [LW3](../references.md#lw3) / [Hydra](../references.md#hydra))

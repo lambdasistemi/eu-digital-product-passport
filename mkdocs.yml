@@ -66,4 +66,5 @@ nav:
       - Battery (UNTP): examples/untp-battery.md
     - Access & Governance: access.md
     - Pilots & Implementations: pilots.md
+  - References: references.md
   - Links: links.md

@@ -6,7 +6,7 @@ The `did:prism` method is Cardano's W3C-registered DID method. Identity operatio
 
 | Property | Value |
 |----------|-------|
-| W3C registered | Yes (March 2023) |
+| W3C registered | Yes (March 2023) — [W3C DID Registry](../references.md#did-prism-w3c) |
 | Metadata label | 21325 |
 | Finality depth | 112 block confirmations (~37 minutes) |
 | Long-form DIDs | Supported (usable before on-chain anchoring) |
@@ -24,7 +24,7 @@ The `did:prism` method is Cardano's W3C-registered DID method. Identity operatio
 
 ## Hyperledger Identus
 
-Formerly Atala PRISM. IOG contributed it to the Hyperledger Foundation in December 2023; promoted to full Hyperledger Project in April 2024.
+Formerly Atala PRISM. IOG contributed it to the [Hyperledger Foundation](../references.md#identus) in December 2023; promoted to full Hyperledger Project in April 2024.
 
 Implements:
 
@@ -39,7 +39,7 @@ Open source: [github.com/hyperledger-identus](https://github.com/hyperledger-ide
 
 ## Integration with UNTP DPP
 
-The UNTP mandates `did:web` as the minimum DID method for organizational identifiers. A bridge pattern supports both:
+The [UNTP](../references.md#untp) mandates `did:web` as the minimum DID method for organizational identifiers. A bridge pattern supports both:
 
 ```mermaid
 graph TD

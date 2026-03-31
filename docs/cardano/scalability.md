@@ -2,6 +2,8 @@
 
 ## Layer 1 throughput
 
+Protocol parameters from [Cardano network documentation](../references.md#cardano-params). Values as of March 2026; subject to on-chain governance.
+
 | Parameter | Value |
 |-----------|-------|
 | Block time | 20 seconds |
@@ -14,7 +16,7 @@ With batching (30 products per transaction), L1 can register **~14 billion produ
 
 The bottleneck is not throughput but **cost**: at scale, individual L1 transactions become expensive compared to L2.
 
-## Layer 2: Hydra
+## Layer 2: [Hydra](../references.md#hydra)
 
 ```mermaid
 graph TD
@@ -41,7 +43,7 @@ graph TD
 - **High-frequency manufacturing** (one event per product per station on the line)
 - **Batch settlement** — aggregate events into a single L1 transaction periodically
 
-LW3's DPP platform explicitly uses Hydra for EV battery supply chain tracking with CIP-68 tokenization.
+[LW3](../references.md#lw3)'s DPP platform explicitly uses Hydra for EV battery supply chain tracking with [CIP-68](../references.md#cip-68) tokenization.
 
 ## Future improvements
 
@@ -50,7 +52,7 @@ LW3's DPP platform explicitly uses Hydra for EV battery supply chain tracking wi
 | **Ouroboros Leios** (Input Endorsers) | Significant L1 throughput increase |
 | **Block size increases** (governance) | Currently 90 KB, incrementally adjustable |
 | **CIP-150** (Block Data Compression) | Higher effective block capacity |
-| **Mithril** | Fast chain sync for light clients / verifiers |
+| [**Mithril**](../references.md#mithril) | Fast chain sync for light clients / verifiers |
 
 ## DPP granularity
 

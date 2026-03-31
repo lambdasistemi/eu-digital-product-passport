@@ -2,7 +2,7 @@
 
 ## EU DPP Registry
 
-The ESPR (Art. 13) mandates a centralized EU DPP registry by **19 July 2026**. The registry:
+The [ESPR](../references.md#reg-espr) ([Art. 13](../references.md#espr-art13)) mandates a centralized EU DPP registry by **19 July 2026**. The registry:
 
 - Stores **lookup references** (unique product/operator/facility identifiers), not full product data
 - Provides APIs for data exchange
@@ -21,9 +21,9 @@ graph LR
 
 The EU has not mandated any specific storage technology. Blockchain-based DPPs are permitted as long as they satisfy the registry's interoperability requirements.
 
-## GS1 standards alignment
+## [GS1](../references.md#gs1-digital-link) standards alignment
 
-The EU aligns with GS1 for product identification. Cardano DPP standards explicitly support GS1 Digital Link.
+The EU aligns with GS1 for product identification. Cardano DPP standards explicitly support [GS1 Digital Link](../references.md#gs1-digital-link).
 
 | Standard | Role | Cardano mapping |
 |----------|------|-----------------|
@@ -42,9 +42,9 @@ Product QR: https://id.gs1.org/01/4012345000015/21/BPC001
     → Fetch full DPP from IPFS
 ```
 
-## UNTP alignment
+## [UNTP](../references.md#untp) alignment
 
-The UN Transparency Protocol is the primary cross-sector DPP format. Cardano integration:
+The [UN Transparency Protocol](../references.md#untp) is the primary cross-sector DPP format. Cardano integration:
 
 | UNTP requirement | Cardano implementation |
 |-----------------|----------------------|

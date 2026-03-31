@@ -25,8 +25,8 @@ Both are IETF standards, not blockchain-specific. They're already used across th
 | **SUIT firmware updates** (RFC 9019) | CBOR manifest, COSE signatures |
 | **Matter / Thread** (smart home) | CBOR for device commissioning |
 | **LwM2M** (IoT device management) | CBOR as alternative to TLV |
-| **EU Digital COVID Certificate** | CBOR + COSE_Sign1 |
-| **ISO 18013-5** (mobile driving licence) | CBOR + COSE |
+| [**EU Digital COVID Certificate**](../references.md#eu-dcc-tech) | CBOR + COSE_Sign1 |
+| [**ISO 18013-5**](../references.md#iso-18013-5) (mobile driving licence) | CBOR + COSE |
 
 ### Why not JSON
 
