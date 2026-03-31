@@ -16,6 +16,9 @@ theme:
     - navigation.expand
     - toc.integrate
 
+extra_javascript:
+  - javascripts/mermaid-dark.mjs
+
 markdown_extensions:
   - admonition
   - pymdownx.details
