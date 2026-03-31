@@ -51,7 +51,6 @@ All factual claims in this feasibility study are backed by the sources listed he
 | <a id="mpfs"></a>MPFS | Merkle Patricia Forestry Service — off-chain HTTP service (Haskell) | [cardano-foundation/mpfs](https://github.com/cardano-foundation/mpfs) |
 | <a id="mpfs-onchain"></a>MPFS-ONCHAIN | MPFS on-chain — Aiken validators for MPT transition proofs | [cardano-foundation/cardano-mpfs-onchain](https://github.com/cardano-foundation/cardano-mpfs-onchain) |
 | <a id="mpfs-cage"></a>MPFS-CAGE | MPFS cage — language-agnostic validator spec + cross-language test vectors | [cardano-foundation/cardano-mpfs-cage](https://github.com/cardano-foundation/cardano-mpfs-cage) |
-| <a id="merkle-tree-java"></a>MERKLE-TREE-JAVA | *(legacy)* Java/TypeScript Merkle tree implementation — superseded by MPFS | [cardano-foundation/merkle-tree-java](https://github.com/cardano-foundation/merkle-tree-java) |
 | <a id="identus"></a>IDENTUS | Hyperledger Identus (did:prism) | [GitHub](https://github.com/hyperledger-identus) |
 | <a id="did-prism-w3c"></a>DID-PRISM-W3C | did:prism W3C DID Method registration | [W3C DID Extensions](https://www.w3.org/TR/did-extensions/) |
 | <a id="hydra"></a>HYDRA | Hydra L2 Documentation | [hydra.family](https://hydra.family/), [FAQ](https://hydra.family/head-protocol/docs/faqs) |
