@@ -1,0 +1,40 @@
+{
+  "productIdentifier": "BPC-2024-LFP-400AH-001",
+  "batteryPassportIdentifier": "urn:eudpp:battery:de:example-gmbh:2024:001",
+  "batteryCategory": "ev",
+  "batteryStatus": "Original",
+  "batteryMass": 285,
+  "manufacturingDate": "2024-09-15T08:30:00.000+02:00",
+  "puttingIntoService": "2024-11-01T10:00:00.000+01:00",
+  "warrentyPeriod": "P8Y",
+  "manufacturerInformation": {
+    "identifier": "DE-HRB-123456",
+    "contactName": "Example GmbH - Battery Division",
+    "emailAddress": "battery-passport@example-gmbh.de",
+    "postalAddress": {
+      "addressCountry": "Germany",
+      "streetAddress": "Industriestraße 42",
+      "postalCode": "70173",
+      "city": "Stuttgart"
+    },
+    "webAddress": "https://www.example-gmbh.de/batteries"
+  },
+  "operatorInformation": {
+    "identifier": "FR-SIRET-98765432100012",
+    "contactName": "AutoMoteur SA",
+    "emailAddress": "compliance@automoteur.fr",
+    "postalAddress": {
+      "addressCountry": "France",
+      "streetAddress": "12 Rue de l'Innovation",
+      "postalCode": "75008",
+      "city": "Paris"
+    },
+    "webAddress": "https://www.automoteur.fr"
+  },
+  "manufacturingPlace": {
+    "addressCountry": "Germany",
+    "streetAddress": "Batteriewerk Süd, Industriestraße 42",
+    "postalCode": "70173",
+    "city": "Stuttgart"
+  }
+}

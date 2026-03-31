@@ -1,0 +1,2408 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Feasibility study — storing EU Digital Product Passports on Cardano">
+      
+      
+      
+        <link rel="canonical" href="https://lambdasistemi.github.io/eu-digital-product-passport/sectors/batteries/architecture/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../state/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Architecture - EU Digital Product Passport on Cardano</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#battery-passport-architecture" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="EU Digital Product Passport on Cardano" class="md-header__button md-logo" aria-label="EU Digital Product Passport on Cardano" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            EU Digital Product Passport on Cardano
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Architecture
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/lambdasistemi/eu-digital-product-passport" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lambdasistemi/eu-digital-product-passport
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="EU Digital Product Passport on Cardano" class="md-nav__button md-logo" aria-label="EU Digital Product Passport on Cardano" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    EU Digital Product Passport on Cardano
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/lambdasistemi/eu-digital-product-passport" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lambdasistemi/eu-digital-product-passport
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cardano Platform
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cardano Platform
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    On-Chain Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/access-control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cost Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/scalability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scalability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/eu-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EU Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/existing-work/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Existing Work
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Batteries
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Batteries
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-not-cip-68-per-battery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why not CIP-68 per battery
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-model-one-merkle-patricia-trie-per-responsible-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The model: one Merkle Patricia Trie per responsible operator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The model: one Merkle Patricia Trie per responsible operator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#on-chain-footprint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        On-chain footprint
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-mpt-not-a-plain-merkle-tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why MPT, not a plain Merkle tree
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-maps-to-the-regulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it maps to the regulation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How it maps to the regulation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#responsibility-trie-ownership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibility = trie ownership
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#repurposing-new-trie-new-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repurposing = new trie, new operator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recycling-leaf-removal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recycling = leaf removal
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verification-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operator-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operator identity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#updates-via-mpfs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Updates via MPFS
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Updates via MPFS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#update-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concurrent-updates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concurrent updates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signed-readings-and-user-incentives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Signed readings and user incentives
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Signed readings and user incentives">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-incorporation-and-reward-are-atomic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why incorporation and reward are atomic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#acceptance-vs-reward-two-levels-of-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acceptance vs reward — two levels of validation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Acceptance vs reward — two levels of validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hard-gate-certified-timestamp-acceptance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hard gate: certified timestamp (acceptance)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#soft-gate-reward-eligibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soft gate: reward eligibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#leaf-value-structure-updated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Leaf value structure (updated)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reward-funding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reward funding
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reading-rights-as-mpt-leaf-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading rights as MPT leaf state
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Reading rights as MPT leaf state">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#battery-lifecycle-through-mpt-transitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Battery lifecycle through MPT transitions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-no-separate-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why no separate token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transfer-on-resale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transfer on resale
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-design-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open design questions
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Passport State
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../signed-bms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Signed BMS Readings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nfc-hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NFC Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../payload-standard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payload Standard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../incentives/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Reporting & Incentives
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ownership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ownership Transfer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tyres
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tyres
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tyres/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Textiles
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Textiles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../textiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EU DPP Background
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    EU DPP Background
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../regulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../timeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schemas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Schemas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../schemas/battery-pass/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Battery Pass
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../schemas/untp-dpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UNTP DPP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/battery-pass/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Battery (Battery Pass)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/untp-battery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Battery (UNTP)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access & Governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../pilots/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pilots & Implementations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../links/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Links
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="battery-passport-architecture">Battery Passport Architecture<a class="headerlink" href="#battery-passport-architecture" title="Permanent link">&para;</a></h1>
+<h2 id="why-not-cip-68-per-battery">Why not CIP-68 per battery<a class="headerlink" href="#why-not-cip-68-per-battery" title="Permanent link">&para;</a></h2>
+<p>CIP-68 is a <a href="../../../cardano/storage/#cip-68-updatable-datum-format">datum format and naming convention</a>, not a scalable architecture. Each CIP-68 reference NFT requires its own UTxO with a min-ADA deposit (~1.5-2 ADA) locked for the battery's lifetime.</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>CIP-68 per battery</th>
+<th>Problem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EU batteries/year</td>
+<td>~4-5M</td>
+<td>4-5M new UTxOs per year</td>
+</tr>
+<tr>
+<td>Locked ADA</td>
+<td>~1.5-2 ADA × 4-5M = <strong>6-10M ADA/year</strong></td>
+<td>Capital locked indefinitely (batteries live 8-15 years)</td>
+</tr>
+<tr>
+<td>Accumulated after 10 years</td>
+<td><strong>60-100M ADA</strong> locked in deposits</td>
+<td>~$15-25M at current prices, growing every year</td>
+</tr>
+<tr>
+<td>UTxO set bloat</td>
+<td>Millions of reference NFTs</td>
+<td>Node memory and chain sync burden</td>
+</tr>
+</tbody>
+</table>
+<p>This is not viable. It treats the blockchain as a database, minting one row per battery.</p>
+<h2 id="the-model-one-merkle-patricia-trie-per-responsible-operator">The model: one Merkle Patricia Trie per responsible operator<a class="headerlink" href="#the-model-one-merkle-patricia-trie-per-responsible-operator" title="Permanent link">&para;</a></h2>
+<p>The <a href="../../../references/#bat-art77-4">Battery Regulation Art. 77(4)</a> assigns responsibility to the <strong>economic operator who places the battery on the EU market</strong> — the manufacturer or importer. This operator is the single writer for the passport throughout its first life.</p>
+<p>This maps directly to a <strong>Merkle Patricia Trie (MPT) per operator</strong>:</p>
+<pre class="mermaid"><code>graph TD
+    subgraph "BMW's MPT"
+        R1[Root hash] --&gt; N1[Branch]
+        N1 --&gt; L1["Battery #DE-BMW-2027-00001&lt;br/&gt;SoH: 98%, cycles: 47"]
+        N1 --&gt; L2["Battery #DE-BMW-2027-00002&lt;br/&gt;SoH: 95%, cycles: 230"]
+        N1 --&gt; N2[Branch]
+        N2 --&gt; L3["Battery #DE-BMW-2027-00003&lt;br/&gt;SoH: 88%, cycles: 1200"]
+        N2 --&gt; L4["...millions more"]
+    end
+
+    subgraph "CATL's MPT"
+        R2[Root hash] --&gt; N3[Branch]
+        N3 --&gt; L5["Battery #CN-CATL-2027-00001"]
+        N3 --&gt; L6["Battery #CN-CATL-2027-00002"]
+    end
+
+    subgraph "Cardano L1"
+        U1["UTxO: BMW operator&lt;br/&gt;datum = BMW MPT root hash"]
+        U2["UTxO: CATL operator&lt;br/&gt;datum = CATL MPT root hash"]
+    end
+
+    R1 -.-&gt;|anchored in| U1
+    R2 -.-&gt;|anchored in| U2</code></pre>
+<h3 id="on-chain-footprint">On-chain footprint<a class="headerlink" href="#on-chain-footprint" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Per-battery CIP-68</th>
+<th>MPT per operator</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UTxOs on chain</td>
+<td>1 per battery (millions)</td>
+<td><strong>1 per operator</strong> (hundreds)</td>
+</tr>
+<tr>
+<td>Locked ADA</td>
+<td>~1.5-2 ADA per battery</td>
+<td>~1.5-2 ADA per operator</td>
+</tr>
+<tr>
+<td>Update cost</td>
+<td>~0.2 ADA per battery update</td>
+<td>~0.2 ADA per root update (any number of batteries)</td>
+</tr>
+<tr>
+<td>Proof of specific battery</td>
+<td>Read UTxO directly</td>
+<td>Merkle proof: leaf → root</td>
+</tr>
+</tbody>
+</table>
+<p>A single UTxO per operator, containing the MPT root hash. Updating one battery's SoH means recomputing the path from that leaf to root and submitting the new root on-chain. Cost: one transaction, regardless of whether the operator manages 100 or 10 million batteries.</p>
+<h2 id="why-mpt-not-a-plain-merkle-tree">Why MPT, not a plain Merkle tree<a class="headerlink" href="#why-mpt-not-a-plain-merkle-tree" title="Permanent link">&para;</a></h2>
+<p>A plain Merkle tree is append-only — you can prove a leaf exists, but updating a leaf means rebuilding the tree. An MPT (also called Merkle Patricia Forestry in the Cardano ecosystem) supports:</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Plain Merkle Tree</th>
+<th>Merkle Patricia Trie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Insert new battery</td>
+<td>Rebuild tree</td>
+<td>Insert at key, update path to root</td>
+</tr>
+<tr>
+<td>Update battery SoH</td>
+<td>Rebuild tree</td>
+<td>Update leaf, recompute path to root</td>
+</tr>
+<tr>
+<td>Delete (recycling)</td>
+<td>Not supported</td>
+<td>Remove leaf, recompute path</td>
+</tr>
+<tr>
+<td>Prove battery exists</td>
+<td>Merkle proof (log n)</td>
+<td>Merkle proof (log n)</td>
+</tr>
+<tr>
+<td>Prove battery does NOT exist</td>
+<td>Not possible</td>
+<td><strong>Non-membership proof</strong></td>
+</tr>
+<tr>
+<td>Key-based lookup</td>
+<td>Not supported</td>
+<td>Lookup by battery ID (key)</td>
+</tr>
+</tbody>
+</table>
+<p>The non-membership proof is important: an authority can ask "does this battery ID exist in BMW's trie?" and get a cryptographic proof that it doesn't — without revealing any other batteries. This is useful for market surveillance and anti-counterfeiting.</p>
+<h2 id="how-it-maps-to-the-regulation">How it maps to the regulation<a class="headerlink" href="#how-it-maps-to-the-regulation" title="Permanent link">&para;</a></h2>
+<h3 id="responsibility-trie-ownership">Responsibility = trie ownership<a class="headerlink" href="#responsibility-trie-ownership" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Regulatory concept</th>
+<th>MPT mapping</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Economic operator places battery on market</td>
+<td>Creates an MPT, anchors root on-chain</td>
+</tr>
+<tr>
+<td>Legal responsibility for passport accuracy (<a href="../../../references/#bat-art77-4">Art. 77(4)</a>)</td>
+<td>Operator holds the signing key for the UTxO containing their root</td>
+</tr>
+<tr>
+<td>Battery manufacturing (passport creation)</td>
+<td>Insert new leaf into MPT</td>
+</tr>
+<tr>
+<td>SoH update (daily)</td>
+<td>Update leaf data, recompute root, anchor on-chain</td>
+</tr>
+<tr>
+<td>Service / maintenance</td>
+<td>Update leaf with maintenance event</td>
+</tr>
+<tr>
+<td>Delegation to service provider</td>
+<td>Service provider submits leaf update, operator recomputes root</td>
+</tr>
+</tbody>
+</table>
+<h3 id="repurposing-new-trie-new-operator">Repurposing = new trie, new operator<a class="headerlink" href="#repurposing-new-trie-new-operator" title="Permanent link">&para;</a></h3>
+<p>When a battery is repurposed (<a href="../../../references/#bat-art77-6a">Art. 77(6)(a)</a>), a new economic operator takes responsibility:</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant BMW as BMW (original operator)
+    participant RE as Repurposing Co (new operator)
+    participant C as Cardano L1
+
+    BMW-&gt;&gt;BMW: Update leaf status → "end of first life"
+    BMW-&gt;&gt;C: Anchor updated root (BMW's MPT)
+
+    RE-&gt;&gt;RE: Create new leaf in own MPT
+    Note over RE: New leaf contains:&lt;br/&gt;- New battery ID&lt;br/&gt;- Link to original (BMW MPT root + proof path)&lt;br/&gt;- Initial SoH at repurposing
+
+    RE-&gt;&gt;C: Anchor updated root (Repurposing Co's MPT)
+
+    Note over C: Two UTxOs, two operators&lt;br/&gt;BMW's root: original history preserved&lt;br/&gt;RE's root: second-life passport</code></pre>
+<p>The original battery's history is preserved in BMW's trie (immutable — the old root hashes remain on-chain in the transaction history). The new passport in the repurposer's trie links back to the original via a reference to BMW's root hash and the Merkle proof path.</p>
+<h3 id="recycling-leaf-removal">Recycling = leaf removal<a class="headerlink" href="#recycling-leaf-removal" title="Permanent link">&para;</a></h3>
+<p>When a battery is recycled (<a href="../../../references/#bat-art77-6b">Art. 77(6)(b)</a>), the recycler (if they have a role authorization) updates the leaf status to <code>Recycled</code>. The passport "ceases to exist" in regulatory terms, but the on-chain history of root hashes preserves the full audit trail.</p>
+<h2 id="verification-flow">Verification flow<a class="headerlink" href="#verification-flow" title="Permanent link">&para;</a></h2>
+<p>A consumer scans a battery's QR code. The resolver needs to prove the battery's passport data is authentic:</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant U as Consumer
+    participant R as Resolver API
+    participant C as Cardano L1
+    participant S as Off-chain Storage
+
+    U-&gt;&gt;R: Scan QR → battery ID
+    R-&gt;&gt;C: Find operator's UTxO (by operator ID or policy)
+    C--&gt;&gt;R: Current MPT root hash
+    R-&gt;&gt;S: Fetch battery leaf data + Merkle proof path
+    S--&gt;&gt;R: Leaf data + proof
+    R-&gt;&gt;R: Verify: hash(leaf) → intermediate nodes → root
+    R-&gt;&gt;R: Compare computed root with on-chain root
+
+    alt Root matches
+        R--&gt;&gt;U: Passport data (verified, untampered)
+    else Root mismatch
+        R--&gt;&gt;U: WARNING: data has been altered
+    end</code></pre>
+<p>The consumer doesn't need a Cardano wallet or any blockchain knowledge. The resolver does the verification and presents the result.</p>
+<h2 id="operator-identity">Operator identity<a class="headerlink" href="#operator-identity" title="Permanent link">&para;</a></h2>
+<p>Each operator's UTxO is controlled by their signing key. The link between the on-chain UTxO and the real-world legal entity is established via:</p>
+<ul>
+<li><strong><a href="../../../cardano/identity/">did:prism</a></strong>: The operator's DID Document references their Cardano public key</li>
+<li><strong>EU DPP Registry</strong>: The operator registers their DPP endpoint (which resolves through the Cardano adapter)</li>
+<li><strong>GS1 GLN</strong>: The operator's Global Location Number links to their MPT via the resolver</li>
+</ul>
+<p>The Aiken validator on the UTxO enforces that only the operator's key (or delegated keys) can update the root.</p>
+<h2 id="updates-via-mpfs">Updates via MPFS<a class="headerlink" href="#updates-via-mpfs" title="Permanent link">&para;</a></h2>
+<p>The <a href="../../../references/#mpfs">MPFS infrastructure</a> already solves the trie update problem. The architecture splits into an off-chain service and on-chain validators:</p>
+<pre class="mermaid"><code>graph TD
+    subgraph "Operator's infrastructure"
+        A[BMS readings / service events] --&gt; B[MPFS off-chain service]
+        B --&gt;|insert / update leaves| C[Off-chain MPT store]
+        C --&gt;|new root hash| D[Transaction builder]
+    end
+
+    subgraph "Cardano L1"
+        D --&gt;|submit tx with new root + proof| E[MPFS on-chain validator]
+        E --&gt;|verifies proof against old root| F[Updated UTxO with new root]
+    end
+
+    subgraph "Verification"
+        G[Consumer / Authority] --&gt;|fetch leaf + proof| C
+        G --&gt;|fetch current root| F
+        G --&gt;|verify proof| H{Root matches?}
+    end</code></pre>
+<ul>
+<li><strong>Off-chain</strong> (<a href="../../../references/#mpfs"><code>cardano-foundation/mpfs</code></a>): Haskell HTTP service managing the trie. Handles inserts, updates, deletes, proof generation, transaction building. The operator runs this as part of their passport backend.</li>
+<li><strong>On-chain</strong> (<a href="../../../references/#mpfs-onchain"><code>cardano-foundation/cardano-mpfs-onchain</code></a>): Aiken validators that verify MPT transition proofs — given the old root, a proof, and the new root, the validator confirms the transition is valid. This is what locks the operator's UTxO.</li>
+<li><strong>Cage</strong> (<a href="../../../references/#mpfs-cage"><code>cardano-foundation/cardano-mpfs-cage</code></a>): Language-agnostic specification of the validator logic with cross-language test vectors, ensuring off-chain and on-chain implementations agree.</li>
+</ul>
+<h3 id="update-flow">Update flow<a class="headerlink" href="#update-flow" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Operator receives BMS readings / service events throughout the day</li>
+<li>MPFS off-chain service updates affected leaves in the trie</li>
+<li>At the chosen cadence (hourly, daily, per business cycle): the service computes the new root and builds a Cardano transaction</li>
+<li>The on-chain validator verifies the MPT transition proof and accepts the new root</li>
+<li>One transaction per batch, regardless of how many batteries were updated</li>
+</ol>
+<p>At ~0.2 ADA per transaction, daily root updates for an operator with millions of batteries costs <strong>~73 ADA/year</strong> (~$18).</p>
+<h3 id="concurrent-updates">Concurrent updates<a class="headerlink" href="#concurrent-updates" title="Permanent link">&para;</a></h3>
+<p>MPFS handles multiple leaf modifications in a single batch natively — the off-chain service applies all mutations to the trie and produces one new root with one transition proof. No contention at the on-chain level because there is exactly one UTxO per operator.</p>
+<h2 id="signed-readings-and-user-incentives">Signed readings and user incentives<a class="headerlink" href="#signed-readings-and-user-incentives" title="Permanent link">&para;</a></h2>
+<p>The <a href="../signed-bms/">challenge-response protocol</a> for signed BMS readings integrates with MPFS in three phases. The key design: <strong>rewards are released at incorporation time</strong>, when the operator batches leaf updates into a new MPT root. The operator's transaction simultaneously updates the trie and pays out all pending rewards — one atomic operation.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant U as User (battery holder)
+    participant C as Cardano L1 (MPFS)
+    participant B as BMS (NFC)
+    participant O as Operator (MPT owner)
+
+    Note over U,C: Phase 1 — Commitment + Reading
+    U-&gt;&gt;C: Mint commitment in MPFS (challenge token)
+    Note over C: Commitment UTxO created at slot N
+    U-&gt;&gt;B: NFC tap with challenge = commitment_tx_hash
+    B--&gt;&gt;U: COSE_Sign1 { state_data, commitment_tx_hash, signature }
+    U-&gt;&gt;C: Submit signed reading, consume commitment UTxO
+    Note over C: Reading UTxO sits on-chain, pending incorporation
+
+    Note over O,C: Phase 2 — Batch incorporation + reward
+    O-&gt;&gt;O: Collect pending reading UTxOs for this batch
+    O-&gt;&gt;O: Update affected leaves in off-chain MPT
+    O-&gt;&gt;C: Single MPFS transaction:
+    Note over C: 1. Consume pending reading UTxOs
+    Note over C: 2. Anchor new MPT root (transition proof)
+    Note over C: 3. Release rewards to users in this batch
+    C--&gt;&gt;U: Reward released</code></pre>
+<h3 id="why-incorporation-and-reward-are-atomic">Why incorporation and reward are atomic<a class="headerlink" href="#why-incorporation-and-reward-are-atomic" title="Permanent link">&para;</a></h3>
+<p>The operator's batch update transaction does three things at once:</p>
+<ol>
+<li><strong>Consumes pending reading UTxOs</strong> — the signed readings submitted by users</li>
+<li><strong>Updates the MPT root</strong> — incorporating those readings into the trie leaves</li>
+<li><strong>Releases rewards</strong> — paying each user whose reading was incorporated</li>
+</ol>
+<p>This is a single transaction. If the operator doesn't incorporate, the readings sit on-chain unconsumed and the rewards stay locked. The operator is incentivized to incorporate because:</p>
+<ul>
+<li><a href="../../../references/#bat-art77-4">Art. 77(4)</a> <strong>legally requires</strong> them to keep the passport up-to-date</li>
+<li>Unconsumed readings are visible on-chain — market surveillance can see the operator is ignoring data</li>
+<li>The readings are signed by BMS hardware — the operator can't claim they're invalid</li>
+<li>Users provide data the operator needs but can't easily obtain (especially for non-connected batteries)</li>
+</ul>
+<h3 id="acceptance-vs-reward-two-levels-of-validation">Acceptance vs reward — two levels of validation<a class="headerlink" href="#acceptance-vs-reward-two-levels-of-validation" title="Permanent link">&para;</a></h3>
+<p>The validator distinguishes between <strong>acceptance</strong> (is this reading valid?) and <strong>reward</strong> (should the user get paid?). All valid readings are incorporated. The reward is the only thing gated by the frequency cap.</p>
+<h4 id="hard-gate-certified-timestamp-acceptance">Hard gate: certified timestamp (acceptance)<a class="headerlink" href="#hard-gate-certified-timestamp-acceptance" title="Permanent link">&para;</a></h4>
+<p>The BMS signs over the commitment transaction hash. This binds the reading to a specific on-chain moment. A reading without a valid certified timestamp is <strong>rejected entirely</strong> — not incorporated, not rewarded, discarded.</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Gate level</th>
+<th>Failure =</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BMS signature valid (COSE_Sign1 over commitment_tx_hash)</td>
+<td><strong>Hard</strong></td>
+<td>Reading rejected</td>
+</tr>
+<tr>
+<td>Commitment UTxO exists and is recent</td>
+<td><strong>Hard</strong></td>
+<td>Reading rejected</td>
+</tr>
+<tr>
+<td>Plausibility (SoH ≤ previous, cycles ≥ previous)</td>
+<td><strong>Hard</strong></td>
+<td>Reading rejected</td>
+</tr>
+<tr>
+<td>Reader authorization (<code>readerPkh</code> matches submitter)</td>
+<td><strong>Soft</strong></td>
+<td>Reading incorporated, no reward</td>
+</tr>
+<tr>
+<td>Frequency cap (cooldown since last rewarded reading)</td>
+<td><strong>Soft</strong></td>
+<td>Reading incorporated, no reward</td>
+</tr>
+</tbody>
+</table>
+<p>The certified timestamp is the foundation — without it, nothing happens. With it, the reading is always useful data for the operator.</p>
+<h4 id="soft-gate-reward-eligibility">Soft gate: reward eligibility<a class="headerlink" href="#soft-gate-reward-eligibility" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>For each pending reading in this batch:
+
+  -- Hard gates (reject if any fail)
+  1. Verify COSE_Sign1 signature against leaf.bmsPublicKey     → authentic?
+  2. Verify commitment_tx_hash matches consumed commitment UTxO → timestamped?
+  3. Check: commitment slot + maxAge ≥ current slot             → fresh?
+  4. Check: reading.soH ≤ leaf.lastSoH                         → plausible?
+
+  If any hard gate fails → discard reading, do not incorporate
+
+  -- Always incorporate
+  5. Update leaf: lastSoH, lastCycleCount, lastReadingSlot
+
+  -- Soft gates (reward only if all pass)
+  6. Check: reading.submitterPkh == leaf.readerPkh              → authorized?
+  7. Check: current slot ≥ leaf.lastRewardedSlot + minInterval  → cooldown passed?
+
+  If all soft gates pass:
+     - Release reward from pool to submitter
+     - Update leaf: lastRewardedSlot = current slot
+  Else:
+     - No reward (reading is still incorporated)
+</code></pre></div>
+<p>This means:</p>
+<ul>
+<li><strong>Anyone can submit</strong> a valid signed reading — only the authorized reader gets rewarded</li>
+<li><strong>Readings are always incorporated</strong> if they pass the hard gates — the operator needs the data regardless of who submitted it</li>
+<li><strong>The reward is a bonus</strong>, not a prerequisite — the passport stays up-to-date even without rewarded submissions</li>
+<li><strong>The certified timestamp is non-negotiable</strong> — it's what makes the reading trustworthy</li>
+</ul>
+<h3 id="leaf-value-structure-updated">Leaf value structure (updated)<a class="headerlink" href="#leaf-value-structure-updated" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>BatteryLeaf {
+  batteryId         : ByteString
+  status            : Status            -- Virgin | Active | Repurposed | Recycled
+  readerPkh         : Maybe PubKeyHash  -- authorized reader (reward-eligible)
+  bmsPublicKey      : ByteString        -- registered at manufacturing
+  lastSoH           : Integer           -- last known State of Health
+  lastCycleCount    : Integer           -- last known cycle count
+  lastReadingSlot   : Integer           -- slot of last accepted reading (any)
+  lastRewardedSlot  : Integer           -- slot of last rewarded reading
+  ...                                   -- other passport fields
+}
+</code></pre></div>
+<p>Note the split: <code>lastReadingSlot</code> tracks the most recent incorporated reading (for data purposes). <code>lastRewardedSlot</code> tracks the most recent rewarded reading (for cooldown purposes). They diverge when readings are submitted more frequently than the reward interval.</p>
+<h3 id="reward-funding">Reward funding<a class="headerlink" href="#reward-funding" title="Permanent link">&para;</a></h3>
+<p>The operator pre-funds a reward pool locked at the MPFS contract address. Rewards are released from this pool during the batch update transaction. The operator controls:</p>
+<ul>
+<li><strong>Reward amount</strong> per reading (fixed or variable by battery category)</li>
+<li><strong>Minimum interval</strong> between rewarded readings (e.g. 30 days = ~129,600 slots)</li>
+<li><strong>Batch cadence</strong> (how often they run the incorporation transaction)</li>
+</ul>
+<h2 id="reading-rights-as-mpt-leaf-state">Reading rights as MPT leaf state<a class="headerlink" href="#reading-rights-as-mpt-leaf-state" title="Permanent link">&para;</a></h2>
+<p>Ownership of the reading right — who is allowed to submit signed readings and claim rewards — is a field in the MPT leaf value (<code>readerPkh</code>), not a separate token. MPFS supports state transitions on leaf values, so transferring the reading right is just another transition on the battery's key.</p>
+<h3 id="battery-lifecycle-through-mpt-transitions">Battery lifecycle through MPT transitions<a class="headerlink" href="#battery-lifecycle-through-mpt-transitions" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>stateDiagram-v2
+    [*] --&gt; Virgin: Manufacturer inserts leaf (readerPkh = Nothing)
+    Virgin --&gt; Active: First user scans NFC → readerPkh set to user's key
+    Active --&gt; Active: User submits signed reading → SoH/cycles updated
+    Active --&gt; Active: Reading right transferred → readerPkh changes
+    Active --&gt; Repurposed: Operator marks end of first life
+    Repurposed --&gt; [*]: New operator creates leaf in their own MPT
+    Active --&gt; Recycled: Battery end of life
+    Recycled --&gt; [*]: Passport ceases (leaf remains as historical record)</code></pre>
+<table>
+<thead>
+<tr>
+<th>Transition</th>
+<th>Who initiates</th>
+<th>What changes in the leaf</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Manufacturing</strong></td>
+<td>Operator</td>
+<td>Leaf inserted: status=Virgin, readerPkh=Nothing</td>
+</tr>
+<tr>
+<td><strong>First scan</strong></td>
+<td>User (NFC tap)</td>
+<td>readerPkh set to user's public key hash</td>
+</tr>
+<tr>
+<td><strong>Reading submission</strong></td>
+<td>Current reader</td>
+<td>lastSoH, lastCycleCount, lastReadingSlot updated</td>
+</tr>
+<tr>
+<td><strong>Transfer reading right</strong></td>
+<td>Current reader</td>
+<td>readerPkh changes to new user's key</td>
+</tr>
+<tr>
+<td><strong>Repurposing</strong></td>
+<td>Operator</td>
+<td>status → Repurposed; new operator creates new leaf in their MPT</td>
+</tr>
+<tr>
+<td><strong>Recycling</strong></td>
+<td>Operator</td>
+<td>status → Recycled; readerPkh → Nothing</td>
+</tr>
+</tbody>
+</table>
+<h3 id="why-no-separate-token">Why no separate token<a class="headerlink" href="#why-no-separate-token" title="Permanent link">&para;</a></h3>
+<p>The reading right lives in the MPT leaf because:</p>
+<ul>
+<li><strong>No locked ADA</strong>: an MPT field costs nothing to maintain (unlike a CIP-68 UTxO with min-ADA deposit)</li>
+<li><strong>Atomic with passport data</strong>: the reading right and the battery state are in the same leaf, updated in the same transition — no risk of them getting out of sync</li>
+<li><strong>Transfer is a state transition</strong>: MPFS already handles leaf value transitions; transferring the reading right is just changing one field</li>
+<li><strong>Verification is a Merkle proof</strong>: to prove you hold the reading right, provide a proof from your leaf to the operator's MPT root</li>
+</ul>
+<h3 id="transfer-on-resale">Transfer on resale<a class="headerlink" href="#transfer-on-resale" title="Permanent link">&para;</a></h3>
+<p>Rare for batteries (you typically don't resell an EV battery separately), but the mechanism exists for the general case. The current reader submits a transition that sets readerPkh to the new user's key. The MPFS on-chain validator verifies that the current reader signed the transaction.</p>
+<h2 id="open-design-questions">Open design questions<a class="headerlink" href="#open-design-questions" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Proof size at scale</strong>: An MPT proof for a battery in a trie of 10M leaves needs benchmarking against MPFS's actual proof format. The theoretical size (~20 hash nodes, ~640 bytes) is well within limits but should be validated empirically.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy", "navigation.sections", "navigation.expand", "toc.integrate"], "search": "../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

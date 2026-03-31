@@ -1,0 +1,2064 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Feasibility study — storing EU Digital Product Passports on Cardano">
+      
+      
+      
+        <link rel="canonical" href="https://lambdasistemi.github.io/eu-digital-product-passport/sectors/batteries/state/">
+      
+      
+        <link rel="prev" href="../architecture/">
+      
+      
+        <link rel="next" href="../lifecycle/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Passport State - EU Digital Product Passport on Cardano</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#passport-state" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="EU Digital Product Passport on Cardano" class="md-header__button md-logo" aria-label="EU Digital Product Passport on Cardano" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            EU Digital Product Passport on Cardano
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Passport State
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/lambdasistemi/eu-digital-product-passport" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lambdasistemi/eu-digital-product-passport
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="EU Digital Product Passport on Cardano" class="md-nav__button md-logo" aria-label="EU Digital Product Passport on Cardano" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    EU Digital Product Passport on Cardano
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/lambdasistemi/eu-digital-product-passport" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lambdasistemi/eu-digital-product-passport
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cardano Platform
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cardano Platform
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    On-Chain Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/access-control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/identity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cost Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/scalability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scalability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/eu-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EU Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cardano/existing-work/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Existing Work
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Batteries
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Batteries
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Passport State
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Passport State
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-the-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is the state?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#who-changes-the-state-and-how" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who changes the state and how?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Who changes the state and how?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#event-1-manufacturing-passport-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event 1: Manufacturing (passport creation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-2-daily-soh-updates-telemetry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event 2: Daily SoH updates (telemetry)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-3-service-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event 3: Service / maintenance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-4-sale-ownership-transfer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event 4: Sale / ownership transfer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-5-repurposing-new-passport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event 5: Repurposing (new passport)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-6-end-of-life" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event 6: End of life
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-7-recycling-passport-cessation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event 7: Recycling (passport cessation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-is-the-state-stored" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where is the state stored?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Where is the state stored?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#without-blockchain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Without blockchain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#with-cardano" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        With Cardano
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#state-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../signed-bms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Signed BMS Readings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nfc-hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NFC Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../payload-standard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Payload Standard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../incentives/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Reporting & Incentives
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ownership/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ownership Transfer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tyres
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tyres
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tyres/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Textiles
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Textiles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../textiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EU DPP Background
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    EU DPP Background
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../regulation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../timeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schemas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Schemas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../schemas/battery-pass/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Battery Pass
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../schemas/untp-dpp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UNTP DPP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/battery-pass/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Battery (Battery Pass)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/untp-battery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Battery (UNTP)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../access/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access & Governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../pilots/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pilots & Implementations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../links/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Links
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="passport-state">Passport State<a class="headerlink" href="#passport-state" title="Permanent link">&para;</a></h1>
+<h2 id="what-is-the-state">What is the state?<a class="headerlink" href="#what-is-the-state" title="Permanent link">&para;</a></h2>
+<p>The battery passport state is the complete set of data fields defined in <a href="../../../references/#bat-annex-xiii">Annex XIII</a> of <a href="../../../references/#reg-battery">Regulation 2023/1542</a>. It divides into:</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Examples</th>
+<th>Changes?</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Product identity</strong></td>
+<td>Manufacturer, model, chemistry, serial number</td>
+<td>Never</td>
+<td>Manufacturer (at production)</td>
+</tr>
+<tr>
+<td><strong>Carbon footprint</strong></td>
+<td>kgCO2e/kWh, performance class, LCA study</td>
+<td>Once (declared)</td>
+<td>Manufacturer (LCA process)</td>
+</tr>
+<tr>
+<td><strong>Recycled content</strong></td>
+<td>% cobalt, lithium, nickel, lead from recycled sources</td>
+<td>Once (declared)</td>
+<td>Manufacturer (supply chain)</td>
+</tr>
+<tr>
+<td><strong>Material composition</strong></td>
+<td>Hazardous substances, critical raw materials</td>
+<td>Never</td>
+<td>Manufacturer (at production)</td>
+</tr>
+<tr>
+<td><strong>Performance specs</strong></td>
+<td>Rated capacity, voltage, energy density</td>
+<td>Never</td>
+<td>Manufacturer (at production)</td>
+</tr>
+<tr>
+<td><strong>Dynamic performance</strong></td>
+<td>SoH, capacity fade, cycle count, energy throughput</td>
+<td><strong>Continuously</strong></td>
+<td>BMS (hardware in the battery)</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>Original / Repurposed / Remanufactured / Waste</td>
+<td><strong>On events</strong></td>
+<td>Economic operator (decision)</td>
+</tr>
+<tr>
+<td><strong>Due diligence</strong></td>
+<td>Supply chain audit reports</td>
+<td>Periodically</td>
+<td>Manufacturer / auditor</td>
+</tr>
+<tr>
+<td><strong>Conformity</strong></td>
+<td>CE marking, test certificates</td>
+<td>Once</td>
+<td>Notified body / manufacturer</td>
+</tr>
+</tbody>
+</table>
+<p>Most of the passport is <strong>write-once at manufacturing</strong>. The part that changes is:</p>
+<ol>
+<li><strong>BMS-sourced telemetry</strong> → dynamic performance data (SoH, cycles)</li>
+<li><strong>Lifecycle events</strong> → status changes, ownership transfers, maintenance, end-of-life</li>
+</ol>
+<h2 id="who-changes-the-state-and-how">Who changes the state and how?<a class="headerlink" href="#who-changes-the-state-and-how" title="Permanent link">&para;</a></h2>
+<h3 id="event-1-manufacturing-passport-creation">Event 1: Manufacturing (passport creation)<a class="headerlink" href="#event-1-manufacturing-passport-creation" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Actor:   Manufacturer
+Trigger: Battery produced and tested
+Data:    All static fields + initial SoH (100%)
+</code></pre></div>
+<p>The manufacturer's production system generates the complete initial passport and assigns the unique identifier. This is the only moment where the bulk of the data is written.</p>
+<h3 id="event-2-daily-soh-updates-telemetry">Event 2: Daily SoH updates (telemetry)<a class="headerlink" href="#event-2-daily-soh-updates-telemetry" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Actor:   BMS → Vehicle telematics → Manufacturer&#39;s cloud
+Trigger: Continuous (aggregated daily per Recital 46)
+Data:    SoH, remaining capacity, cycle count, energy throughput
+</code></pre></div>
+<p><strong>The regulation does not specify how BMS data reaches the passport.</strong></p>
+<p>Article 14 says the BMS must <em>contain</em> up-to-date SoH data ("shall be <strong>contained in</strong> the battery management system"). Article 77 says the passport must have this data. But <strong>the bridge between Article 14 and Article 77 is completely unspecified</strong>. No telematics, no internet, no API, no protocol is mandated.</p>
+<p>The "at least daily" update frequency (Recital 46) refers to the BMS's internal SoH computation refresh — not to passport updates.</p>
+<p>This is a recognized open problem:</p>
+<div class="admonition warning">
+<p class="admonition-title">Unsolved implementation gap</p>
+<p>The <a href="../../../references/#battery-pass">Battery Pass consortium</a> states that Annex VII data attributes "urgently require further elaboration and definitions, which are decisive for economic operators to determine system requirements for implementation" (Content Requirements position paper, July 2023). Analysis from <a href="../../../references/#ceps-battery">CEPS</a>, <a href="../../../references/#seraph-bms">Seraph</a>, and <a href="../../../references/#dataart-battery">DataArt</a> all identify the BMS-to-passport data transfer as the biggest unsolved challenge before the Feb 2027 deadline.</p>
+</div>
+<p>The challenge varies dramatically by battery category:</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Connectivity</th>
+<th>BMS-to-passport path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>New EVs</strong> (Tesla, VW, etc.)</td>
+<td>Always-on cellular telematics</td>
+<td>Feasible: BMS → ECU → telematics → cloud → passport</td>
+</tr>
+<tr>
+<td><strong>Older EVs</strong></td>
+<td>Limited or no telematics</td>
+<td>Unknown: may require dealer visit to read BMS</td>
+</tr>
+<tr>
+<td><strong>LMT (e-bikes, scooters)</strong></td>
+<td>No internet connectivity</td>
+<td>Unknown: BMS is local only, no standard extraction method</td>
+</tr>
+<tr>
+<td><strong>Industrial (forklifts, UPS)</strong></td>
+<td>Usually no internet</td>
+<td>Unknown: may require on-site diagnostic tool</td>
+</tr>
+<tr>
+<td><strong>Stationary storage</strong></td>
+<td>Varies (some have SCADA)</td>
+<td>Case-by-case</td>
+</tr>
+</tbody>
+</table>
+<p>For non-connected batteries, the only practical option today may be <strong>manual reads</strong> — a technician connects to the BMS via diagnostic port and extracts data, which is then uploaded to the passport. This could happen at service visits, inspections, or point of sale.</p>
+<p><strong>Who is the actor?</strong> The manufacturer is legally responsible for keeping the passport up-to-date (Art. 77(4)). But the regulation doesn't say how they should get the data from a battery they no longer physically control. This is the fundamental tension.</p>
+<p><strong>Implication for Cardano:</strong> The BMS-to-passport data bridge is an open design space. A Cardano-based solution could define a standard for this: e.g., a signed BMS data dump (read at service or via diagnostic tool) that can be independently verified and anchored on-chain, regardless of whether the battery is internet-connected.</p>
+<h3 id="event-3-service-maintenance">Event 3: Service / maintenance<a class="headerlink" href="#event-3-service-maintenance" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Actor:   Authorized service provider (delegated by manufacturer)
+Trigger: Customer brings battery/vehicle for service
+Data:    Maintenance record, parts replaced, diagnostic results
+</code></pre></div>
+<p>The service provider logs the event in the manufacturer's dealer management system, which propagates to the passport backend. The service provider doesn't directly write to the passport — they write to the manufacturer's system, which updates the passport.</p>
+<h3 id="event-4-sale-ownership-transfer">Event 4: Sale / ownership transfer<a class="headerlink" href="#event-4-sale-ownership-transfer" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Actor:   Seller and buyer (mediated by manufacturer&#39;s system)
+Trigger: Battery or vehicle changes hands
+Data:    Operator information field updated
+</code></pre></div>
+<p>The regulation requires the passport to reflect the current "economic operator." On a private sale, the new owner registers with the manufacturer (like registering a vehicle). The manufacturer's backend updates the passport.</p>
+<h3 id="event-5-repurposing-new-passport">Event 5: Repurposing (new passport)<a class="headerlink" href="#event-5-repurposing-new-passport" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Actor:   New economic operator (repurposing company)
+Trigger: Battery removed from original application for second-life use
+Data:    NEW passport created, linked to original
+</code></pre></div>
+<p>This is the only event where <strong>a different party creates a passport</strong>. The repurposing operator becomes the new economic operator and must:</p>
+<ol>
+<li>Create a new passport for the repurposed battery</li>
+<li>Link it to the original passport</li>
+<li>Take over responsibility for keeping it up-to-date</li>
+</ol>
+<p>The original passport is not deleted — it becomes historical.</p>
+<h3 id="event-6-end-of-life">Event 6: End of life<a class="headerlink" href="#event-6-end-of-life" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Actor:   Waste operator / recycler
+Trigger: Battery declared waste
+Data:    Status → Waste, then material recovery data
+</code></pre></div>
+<h3 id="event-7-recycling-passport-cessation">Event 7: Recycling (passport cessation)<a class="headerlink" href="#event-7-recycling-passport-cessation" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Actor:   Recycler
+Trigger: Battery has been recycled
+Data:    Passport ceases to exist (Art. 77(6b))
+</code></pre></div>
+<h2 id="where-is-the-state-stored">Where is the state stored?<a class="headerlink" href="#where-is-the-state-stored" title="Permanent link">&para;</a></h2>
+<p>The regulation does not prescribe a storage technology. It requires:</p>
+<ul>
+<li>Accessible via QR code</li>
+<li>Data accurate, complete, up-to-date</li>
+<li>Tiered access (public / restricted / authority)</li>
+<li>Available for the battery's lifetime</li>
+<li>Independent third-party backup (even if manufacturer goes bankrupt)</li>
+</ul>
+<h3 id="without-blockchain">Without blockchain<a class="headerlink" href="#without-blockchain" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    A[Manufacturer's backend] --&gt;|writes| B[DPP Platform / Database]
+    C[QR code] --&gt;|resolves to| B
+    D[Consumer] --&gt;|reads| B
+    E[Authority] --&gt;|reads| B</code></pre>
+<p>The manufacturer controls the data. They can alter historical records. The third-party backup requirement mitigates this, but doesn't prevent manipulation before backup.</p>
+<h3 id="with-cardano">With Cardano<a class="headerlink" href="#with-cardano" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    A[Manufacturer's backend] --&gt;|writes| B[Off-chain store: IPFS / cloud]
+    A --&gt;|anchors hash| C[Cardano L1: CIP-68 datum]
+
+    D[QR code] --&gt;|resolves to| E[Resolver]
+    E --&gt;|reads datum| C
+    E --&gt;|fetches data| B
+    E --&gt;|verifies hash| F{match?}
+
+    F --&gt;|yes| G[Data verified: untampered]
+    F --&gt;|no| H[Data has been altered since anchoring]</code></pre>
+<p>Cardano adds one thing: <strong>tamper evidence</strong>. The hash anchored on-chain at time T proves the passport data existed in that exact form at time T. If the manufacturer later alters the off-chain data, the hash won't match.</p>
+<p>This matters for:</p>
+<ul>
+<li><strong>Used battery buyers</strong>: verifying that the SoH history hasn't been inflated</li>
+<li><strong>Authorities</strong>: auditing that data wasn't changed after the fact</li>
+<li><strong>Insurance</strong>: confirming battery condition at a specific date</li>
+<li><strong>Disputes</strong>: proving what the passport said at any point in time</li>
+</ul>
+<h2 id="state-summary">State summary<a class="headerlink" href="#state-summary" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Actor</th>
+<th>Trigger</th>
+<th>Frequency</th>
+<th>What changes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Creation</td>
+<td>Manufacturer</td>
+<td>Production</td>
+<td>Once</td>
+<td>Everything (initial state)</td>
+</tr>
+<tr>
+<td>SoH update</td>
+<td>Manufacturer backend (from BMS)</td>
+<td>Automated</td>
+<td>Daily</td>
+<td>Dynamic performance</td>
+</tr>
+<tr>
+<td>Service</td>
+<td>Service provider → manufacturer</td>
+<td>Per visit</td>
+<td>Occasional</td>
+<td>Maintenance log</td>
+</tr>
+<tr>
+<td>Ownership transfer</td>
+<td>Seller/buyer → manufacturer</td>
+<td>Per sale</td>
+<td>Rare</td>
+<td>Operator info</td>
+</tr>
+<tr>
+<td>Repurposing</td>
+<td>New operator</td>
+<td>Business decision</td>
+<td>Once</td>
+<td>New passport (linked)</td>
+</tr>
+<tr>
+<td>End of life</td>
+<td>Waste operator</td>
+<td>Declaration</td>
+<td>Once</td>
+<td>Status → Waste</td>
+</tr>
+<tr>
+<td>Recycling</td>
+<td>Recycler</td>
+<td>Completion</td>
+<td>Once</td>
+<td>Passport ceases</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The manufacturer's backend is the single writer for the entire first life.</strong> Other actors (service providers, BMS) feed data into the manufacturer's system, which is the sole entity that assembles and publishes the passport state. The blockchain anchor is downstream — it doesn't change who writes, it adds a verifiable timestamp to what was written.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy", "navigation.sections", "navigation.expand", "toc.integrate"], "search": "../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
