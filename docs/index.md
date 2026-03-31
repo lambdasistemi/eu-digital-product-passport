@@ -6,33 +6,17 @@ Feasibility study for storing EU Digital Product Passports on the Cardano blockc
 
 The European Union is rolling out mandatory Digital Product Passports across virtually all physical products placed on its market. The [ESPR (EU) 2024/1781](references.md#reg-espr) provides the framework; sector-specific regulations and delegated acts define the details.
 
-```mermaid
-timeline
-    title EU DPP rollout
-    section In force
-        2023 : Battery Regulation enters into force
-        2024 : ESPR enters into force
-             : Construction Products Regulation enters into force
-        2025 : Battery carbon footprint declaration
-             : Separate textile collection mandatory (WFD)
-    section 2026–2027
-        2026 : EU DPP Registry operational
-             : Destruction ban on unsold textiles
-             : First ESPR delegated acts (iron/steel, textiles, tyres)
-        2027 : Battery passport mandatory
-             : Tyre DPP compliance expected
-             : Detergents DPP mandatory
-    section 2028–2030
-        2028 : Battery recycled content thresholds
-             : Textile DPP compliance expected
-             : Electronics/ICT DPP expected
-             : Furniture DPP expected
-        2029 : Toys DPP mandatory
-        2030 : Construction products DPP
-             : ELV Environmental Vehicle Passport
-    section 2031+
-        2031 : Stricter battery recycled content
-```
+| Phase | Year | Milestone |
+|-------|------|-----------|
+| **In force** | 2023 | Battery Regulation enters into force |
+| | 2024 | ESPR enters into force · Construction Products Regulation enters into force |
+| | 2025 | Battery carbon footprint declaration · Separate textile collection mandatory |
+| **2026–2027** | 2026 | **EU DPP Registry operational** · Destruction ban on unsold textiles · First ESPR delegated acts (iron/steel, textiles, tyres) |
+| | 2027 | **Battery passport mandatory** · Tyre DPP compliance expected · Detergents DPP mandatory |
+| **2028–2030** | 2028 | Battery recycled content thresholds · Textile DPP compliance expected · Electronics/ICT · Furniture |
+| | 2029 | Toys DPP mandatory |
+| | 2030 | Construction products DPP · ELV Environmental Vehicle Passport |
+| **2031+** | 2031 | Stricter battery recycled content |
 
 This study analyses three sectors with the earliest deadlines and deepest Cardano integration potential:
 
