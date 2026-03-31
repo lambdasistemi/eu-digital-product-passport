@@ -57,7 +57,7 @@ The cost of adding this capability is negligible for automotive BMS:
 
 | Application | BMS cost | Signing cost | Impact |
 |------------|----------|-------------|--------|
-| EV battery | $200-400 | $0.55 | 0.1-0.3% |
+| EV battery | $150-400 ([BatPaC](../references.md#batpac)) | $0.55 | 0.1-0.4% |
 | Industrial ESS | $200-2,000 | $0.55 | 0.03-0.3% |
 | E-bike (mid-range) | $20-60 | $0.55 | 1-3% |
 

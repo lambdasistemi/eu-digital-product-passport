@@ -80,7 +80,7 @@ Total time from tap to signed reading: **200-500 ms**. The user holds their phon
 !!! note "Pricing estimates"
     Component prices are approximate, based on distributor indicative pricing (Mouser/DigiKey) at the stated volumes. Actual production pricing depends on supply agreements and may differ.
 
-For an EV battery BMS ($200-400), this adds ~0.2-0.6% to the cost. For an e-bike BMS ($20-60), it adds ~1.3-6.4%.
+For an EV battery BMS ($150-400, per [BatPaC](../references.md#batpac) model), this adds ~0.2-0.8% to the cost. For an e-bike BMS ($20-60), it adds ~1.3-6.4%.
 
 ## Energy budget
 
@@ -135,6 +135,6 @@ This could be:
 |---------|-------------|------|-----------|
 | [Tangem](../references.md#tangem) wallet cards | NFC tap → ECDSA signature of transaction | [SECORA Blockchain](../references.md#secora-blockchain) | Same sign-on-tap pattern |
 | Abbott FreeStyle Libre | NFC tap → 14 days of glucose sensor data | NFC + MCU + sensor | Same read-sensor-via-NFC pattern |
-| NXP DNA authentication | NFC tap → AES-CMAC proof of authenticity | NTAG 22x DNA | Same tap-to-authenticate pattern (but symmetric, not ECDSA) |
-| Rémy Martin connected bottles | NFC tap → product authentication | NTAG 22x DNA | Anti-counterfeit for physical products |
+| NXP DNA authentication | NFC tap → AES-CMAC proof of authenticity | [NTAG 22x DNA](../references.md#ntag-22x-dna) | Same tap-to-authenticate pattern (but symmetric, not ECDSA) |
+| Rémy Martin connected bottles | NFC tap → product authentication | [NTAG 22x DNA](../references.md#ntag-22x-dna) | Anti-counterfeit for physical products ([NXP case study](https://www.nxp.com/company/about-nxp/remy-martin-club-connected-bottle:REMY-MARTIN-CLUB-CONNECTED)) |
 | Cold chain loggers | NFC tap → signed temperature history | NFC + crypto tag | Same sensor-data-via-NFC pattern |
