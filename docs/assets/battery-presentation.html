@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battery Digital Product Passport on Cardano</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css">
+<style>
+  :root {
+    --bg: #0a0a1a;
+    --card: #141428;
+    --accent: #00d2ff;
+    --accent2: #00cc88;
+    --orange: #ff9900;
+    --red: #ff5555;
+    --text: #e8e8f0;
+    --muted: #8888aa;
+  }
+  .reveal { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; color: var(--text); }
+  .reveal .slides { text-align: left; }
+  .reveal .slides section { padding: 20px 30px; box-sizing: border-box; }
+  .reveal h1, .reveal h2, .reveal h3 { color: var(--accent); font-weight: 700; text-transform: none; letter-spacing: -0.02em; }
+  .reveal h1 { font-size: 2.8em; line-height: 1.1; }
+  .reveal h2 { font-size: 1.6em; margin-bottom: 0.3em; }
+  .reveal h3 { font-size: 1em; color: var(--muted); font-weight: 400; }
+  .reveal p, .reveal li { font-size: 0.85em; line-height: 1.5; color: var(--text); }
+  .reveal .muted { color: var(--muted); }
+  .reveal .accent { color: var(--accent); }
+  .reveal .green { color: var(--accent2); }
+  .reveal .orange { color: var(--orange); }
+  .reveal .red { color: var(--red); }
+  .reveal .big-number { font-size: 2.6em; font-weight: 800; color: var(--accent); line-height: 1; }
+  .reveal .big-number-row { display: flex; gap: 40px; margin: 30px 0; justify-content: center; }
+  .reveal .big-number-item { text-align: center; }
+  .reveal .big-number-label { font-size: 0.55em; color: var(--muted); margin-top: 8px; display: block; }
+  .reveal section { background: var(--bg) !important; }
+
+  /* Cards */
+  .card-row { display: flex; gap: 12px; margin: 16px 0; }
+  .card { background: var(--card); border-radius: 12px; padding: 16px; flex: 1; border: 1px solid #222244; min-width: 0; }
+  .card h4 { color: var(--accent); margin: 0 0 6px 0; font-size: 0.8em; }
+  .card p { font-size: 0.65em; margin: 0; color: var(--muted); line-height: 1.3; }
+  .card .card-stat { font-size: 1.5em; font-weight: 700; color: var(--text); margin: 4px 0; }
+  .card.highlight { border-color: var(--accent); background: linear-gradient(135deg, #141428, #0d1a2a); }
+
+  /* Flow diagrams */
+  .flow { display: flex; align-items: center; gap: 0; margin: 30px 0; }
+  .flow-step { background: var(--card); border-radius: 14px; padding: 20px 24px; text-align: center; border: 1px solid #222244; min-width: 140px; }
+  .flow-step.active { border-color: var(--accent); box-shadow: 0 0 20px rgba(0,210,255,0.15); }
+  .flow-step h4 { color: var(--accent); font-size: 0.8em; margin: 0 0 6px 0; }
+  .flow-step p { font-size: 0.65em; color: var(--muted); margin: 0; }
+  .flow-arrow { color: var(--accent); font-size: 1.5em; padding: 0 8px; flex-shrink: 0; }
+
+  /* SVG styles */
+  svg text { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+  .svg-box { fill: #141428; stroke: #333355; stroke-width: 1.5; rx: 12; }
+  .svg-box-accent { fill: #0d1a2a; stroke: #00d2ff; stroke-width: 2; rx: 12; }
+  .svg-arrow { stroke: #00d2ff; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+  .svg-arrow-muted { stroke: #555577; stroke-width: 1.5; fill: none; marker-end: url(#arrowhead-muted); stroke-dasharray: 6,4; }
+  .svg-label { fill: #e8e8f0; font-size: 14px; font-weight: 600; }
+  .svg-sublabel { fill: #8888aa; font-size: 11px; }
+  .svg-accent-label { fill: #00d2ff; font-size: 12px; font-weight: 600; }
+
+  /* Table override */
+  .reveal table { border-collapse: separate; border-spacing: 0; width: 100%; margin: 20px 0; }
+  .reveal table th { background: var(--accent); color: var(--bg); font-size: 0.65em; padding: 8px 12px; text-align: left; }
+  .reveal table th:first-child { border-radius: 10px 0 0 0; }
+  .reveal table th:last-child { border-radius: 0 10px 0 0; }
+  .reveal table td { background: var(--card); font-size: 0.6em; padding: 7px 12px; border-bottom: 1px solid #1a1a30; }
+  .reveal table tr:last-child td:first-child { border-radius: 0 0 0 10px; }
+  .reveal table tr:last-child td:last-child { border-radius: 0 0 10px 0; }
+
+  /* Timeline */
+  .timeline { position: relative; margin: 30px 0; padding-left: 30px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, var(--accent), var(--accent2)); border-radius: 2px; }
+  .timeline-item { position: relative; margin-bottom: 12px; }
+  .timeline-item::before { content: ''; position: absolute; left: -26px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); }
+  .timeline-item.future::before { background: var(--card); border: 2px solid var(--accent); }
+  .timeline-item .date { color: var(--accent); font-size: 0.6em; font-weight: 700; }
+  .timeline-item .desc { color: var(--muted); font-size: 0.6em; }
+
+  /* Gap visual */
+  .gap-visual { display: flex; align-items: center; margin: 20px 0; gap: 20px; justify-content: center; }
+  .gap-box { background: var(--card); border-radius: 14px; padding: 20px 28px; text-align: center; border: 1px solid #222244; }
+  .gap-box h4 { margin: 0; font-size: 0.9em; }
+  .gap-box p { margin: 4px 0 0; font-size: 0.7em; color: var(--muted); }
+  .gap-question { font-size: 2.5em; color: var(--red); font-weight: 800; padding: 0 10px; }
+
+  /* Title slide special */
+  .title-slide h1 { margin-bottom: 20px; }
+  .title-accent-line { width: 120px; height: 4px; background: var(--accent); border-radius: 2px; margin: 20px 0; }
+
+  /* Fragment fade */
+  .reveal .fragment.fade-up { transform: translateY(20px); }
+
+  /* Value add icons */
+  .value-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
+  .value-item { background: var(--card); border-radius: 10px; padding: 12px 16px; border: 1px solid #222244; }
+  .value-num { font-size: 0.9em; font-weight: 800; margin-bottom: 4px; }
+  .value-item h4 { color: var(--text); font-size: 0.7em; margin: 0 0 2px; }
+  .value-item p { color: var(--muted); font-size: 0.55em; margin: 0; }
+
+  /* Comparison */
+  .compare { display: flex; gap: 12px; margin: 16px 0; align-items: stretch; }
+  .compare-side { flex: 1; padding: 16px; border-radius: 12px; min-width: 0; }
+  .compare-side.before { background: linear-gradient(135deg, #1a0a0a, #141428); border: 1px solid #442222; }
+  .compare-side.after { background: linear-gradient(135deg, #0a1a1a, #141428); border: 1px solid #224444; }
+  .compare-side h4 { font-size: 0.8em; margin: 0 0 8px; }
+  .compare-side li { font-size: 0.6em; color: var(--muted); margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ==================== SLIDE 1: TITLE ==================== -->
+<section class="title-slide">
+  <div style="margin-top: 80px;">
+    <h3 class="muted" style="margin-bottom: 10px;">Feasibility Study</h3>
+    <h1>Battery Passport<br>on Cardano</h1>
+    <div class="title-accent-line"></div>
+    <p class="muted" style="font-size: 0.8em;">Lambda Sistemi &middot; 2026</p>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 2: THE NUMBERS ==================== -->
+<section>
+  <h2>The EU Battery Regulation</h2>
+  <h3>Regulation (EU) 2023/1542 &mdash; first product passport ever mandated</h3>
+
+  <div class="big-number-row" style="margin-top: 50px;">
+    <div class="big-number-item">
+      <div class="big-number">Feb 2027</div>
+      <span class="big-number-label">Mandatory deadline</span>
+    </div>
+    <div class="big-number-item">
+      <div class="big-number">4&ndash;5M</div>
+      <span class="big-number-label">Batteries / year in EU</span>
+    </div>
+    <div class="big-number-item">
+      <div class="big-number" style="color: var(--orange);">Item-level</div>
+      <span class="big-number-label">Each battery gets its own passport</span>
+    </div>
+  </div>
+
+  <p class="muted" style="font-size: 0.65em; margin-top: 40px;">Art. 77(1): "each LMT battery, each industrial battery >2 kWh and each EV battery shall have an electronic record"</p>
+</section>
+
+<!-- ==================== SLIDE 3: POLICY DRIVERS ==================== -->
+<section>
+  <h2>Five regulations converge on batteries</h2>
+  <div class="card-row" style="margin-top: 16px; gap: 8px;">
+    <div class="card" style="padding: 12px;">
+      <h4>Raw Materials</h4>
+      <p>CRMA 2024/1252</p>
+      <div class="card-stat">16%</div>
+      <p>Recycled cobalt 2031</p>
+    </div>
+    <div class="card" style="padding: 12px;">
+      <h4>Carbon</h4>
+      <p>Battery Reg Art. 7</p>
+      <div class="card-stat">A&ndash;E</div>
+      <p>Class per site</p>
+    </div>
+    <div class="card" style="padding: 12px;">
+      <h4>Second Life</h4>
+      <p>Art. 77(2)</p>
+      <div class="card-stat">SoH</div>
+      <p>History per battery</p>
+    </div>
+    <div class="card" style="padding: 12px;">
+      <h4>Consumer</h4>
+      <p>Empowering Dir.</p>
+      <div class="card-stat" style="font-size: 1em;">Verified</div>
+      <p>No greenwashing</p>
+    </div>
+    <div class="card" style="padding: 12px;">
+      <h4>Recycling</h4>
+      <p>Battery Ch. VIII</p>
+      <div class="card-stat" style="font-size: 1em;">Chem ID</div>
+      <p>Hazardous, disassembly</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 4: THE GAP ==================== -->
+<section>
+  <h2>The unsolved problem</h2>
+
+  <div class="gap-visual">
+    <div class="gap-box" style="border-color: var(--accent);">
+      <h4 class="accent">Article 14</h4>
+      <p>BMS must <strong>contain</strong><br>SoH data</p>
+    </div>
+    <div class="gap-question">?</div>
+    <div class="gap-box" style="border-color: var(--accent2);">
+      <h4 class="green">Article 77</h4>
+      <p>Passport must <strong>have</strong><br>SoH data</p>
+    </div>
+  </div>
+
+  <div class="card" style="border-color: var(--red); margin-top: 20px; background: linear-gradient(135deg, #1a0a0a, #141428);">
+    <h4 style="color: var(--red);">The bridge is undefined</h4>
+    <p style="color: var(--text); font-size: 0.8em;">The regulation creates two obligations and leaves the data path between them completely unspecified. Battery Pass consortium, CEPS, and Seraph all flag this as the biggest unsolved challenge before Feb 2027.</p>
+    <p style="margin-top: 12px; font-size: 0.8em;">Connected EVs: maybe telematics. <strong>E-bikes, forklifts, UPS: no internet, no path.</strong></p>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 5: RESPONSIBILITY ==================== -->
+<section>
+  <h2>Who is responsible?</h2>
+
+  <svg viewBox="0 0 760 280" style="width: 100%; margin-top: 10px;">
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#00d2ff"/>
+      </marker>
+    </defs>
+    <!-- Boxes -->
+    <rect x="10" y="15" width="130" height="65" class="svg-box-accent"/>
+    <text x="75" y="43" class="svg-label" text-anchor="middle" font-size="12">Manufacturer</text>
+    <text x="75" y="60" class="svg-sublabel" text-anchor="middle">Creates passport</text>
+
+    <rect x="170" y="15" width="120" height="65" class="svg-box"/>
+    <text x="230" y="43" class="svg-label" text-anchor="middle" font-size="12">OEM / Dealer</text>
+    <text x="230" y="60" class="svg-sublabel" text-anchor="middle">Sells vehicle</text>
+
+    <rect x="320" y="15" width="120" height="65" class="svg-box"/>
+    <text x="380" y="43" class="svg-label" text-anchor="middle" font-size="12">Consumer</text>
+    <text x="380" y="60" class="svg-sublabel" text-anchor="middle">Uses battery</text>
+
+    <rect x="470" y="15" width="120" height="65" class="svg-box"/>
+    <text x="530" y="43" class="svg-label" text-anchor="middle" font-size="12">Repurposer</text>
+    <text x="530" y="60" class="svg-sublabel" text-anchor="middle">New passport</text>
+
+    <rect x="620" y="15" width="100" height="65" class="svg-box"/>
+    <text x="670" y="43" class="svg-label" text-anchor="middle" font-size="12">Recycler</text>
+    <text x="670" y="60" class="svg-sublabel" text-anchor="middle">End</text>
+
+    <!-- Arrows -->
+    <line x1="140" y1="47" x2="168" y2="47" class="svg-arrow"/>
+    <line x1="290" y1="47" x2="318" y2="47" class="svg-arrow"/>
+    <line x1="440" y1="47" x2="468" y2="47" class="svg-arrow"/>
+    <line x1="590" y1="47" x2="618" y2="47" class="svg-arrow"/>
+
+    <!-- Responsibility bar -->
+    <rect x="10" y="105" width="430" height="40" rx="8" fill="none" stroke="#00d2ff" stroke-width="2" stroke-dasharray="6,3"/>
+    <text x="225" y="130" class="svg-accent-label" text-anchor="middle" font-size="11">Manufacturer responsible for ENTIRE first life (Recital 94)</text>
+
+    <!-- Key insight -->
+    <rect x="10" y="170" width="740" height="55" rx="10" fill="#141428" stroke="#ff9900" stroke-width="1.5"/>
+    <text x="25" y="193" fill="#ff9900" font-size="12" font-weight="700">KEY TENSION</text>
+    <text x="25" y="212" fill="#8888aa" font-size="10">The manufacturer has a legal obligation to keep the passport up-to-date but no practical way to get data from batteries they no longer control.</text>
+  </svg>
+</section>
+
+<!-- ==================== SLIDE 6: PROPOSAL TITLE ==================== -->
+<section class="title-slide" style="text-align: center;">
+  <div style="margin-top: 100px;">
+    <h3 class="muted">Our proposal</h3>
+    <h1 style="text-align: center; font-size: 2.4em;">Incentivize users<br>to bridge the gap</h1>
+    <div class="title-accent-line" style="margin: 20px auto;"></div>
+    <p style="font-size: 1em; color: var(--muted); text-align: center;">The manufacturer needs data.<br>The user has physical access.<br><span class="accent">A smart contract coordinates the exchange.</span></p>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 7: ARCHITECTURE ==================== -->
+<section>
+  <h2>System architecture</h2>
+
+  <svg viewBox="0 0 920 400" style="width: 100%; margin-top: 10px;">
+    <defs>
+      <marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#00d2ff"/>
+      </marker>
+      <marker id="ah2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#555577"/>
+      </marker>
+    </defs>
+
+    <!-- Battery + NFC module -->
+    <rect x="20" y="100" width="180" height="200" rx="16" fill="#0d1a2a" stroke="#00d2ff" stroke-width="2"/>
+    <text x="110" y="135" fill="#00d2ff" font-size="15" font-weight="700" text-anchor="middle">Battery</text>
+    <rect x="40" y="155" width="140" height="50" rx="8" fill="#141428" stroke="#333355" stroke-width="1"/>
+    <text x="110" y="178" fill="#e8e8f0" font-size="11" text-anchor="middle">NTAG 5 Link</text>
+    <text x="110" y="195" fill="#8888aa" font-size="9" text-anchor="middle">NFC + I2C master</text>
+    <rect x="40" y="215" width="140" height="50" rx="8" fill="#141428" stroke="#333355" stroke-width="1"/>
+    <text x="110" y="238" fill="#e8e8f0" font-size="11" text-anchor="middle">OPTIGA Trust M</text>
+    <text x="110" y="255" fill="#8888aa" font-size="9" text-anchor="middle">ECDSA signing</text>
+    <text x="110" y="285" fill="#00cc88" font-size="12" font-weight="600" text-anchor="middle">$0.81 / battery</text>
+
+    <!-- Phone -->
+    <rect x="270" y="120" width="140" height="170" rx="14" fill="#141428" stroke="#333355" stroke-width="1.5"/>
+    <text x="340" y="155" fill="#e8e8f0" font-size="14" font-weight="600" text-anchor="middle">Phone</text>
+    <text x="340" y="180" fill="#8888aa" font-size="11" text-anchor="middle">NFC tap</text>
+    <text x="340" y="200" fill="#8888aa" font-size="11" text-anchor="middle">Wallet</text>
+    <text x="340" y="220" fill="#8888aa" font-size="11" text-anchor="middle">Submit tx</text>
+    <rect x="285" y="240" width="110" height="30" rx="6" fill="#00d2ff" fill-opacity="0.15" stroke="#00d2ff" stroke-width="1"/>
+    <text x="340" y="260" fill="#00d2ff" font-size="10" text-anchor="middle">< 500ms tap</text>
+
+    <!-- Cardano -->
+    <rect x="480" y="60" width="200" height="230" rx="16" fill="#0d1a2a" stroke="#00d2ff" stroke-width="2"/>
+    <text x="580" y="95" fill="#00d2ff" font-size="15" font-weight="700" text-anchor="middle">Cardano L1</text>
+    <rect x="500" y="110" width="160" height="40" rx="8" fill="#141428" stroke="#333355" stroke-width="1"/>
+    <text x="580" y="135" fill="#e8e8f0" font-size="11" text-anchor="middle">MPFS trie root / operator</text>
+    <rect x="500" y="160" width="160" height="40" rx="8" fill="#141428" stroke="#333355" stroke-width="1"/>
+    <text x="580" y="185" fill="#e8e8f0" font-size="11" text-anchor="middle">COSE signature verify</text>
+    <rect x="500" y="210" width="160" height="40" rx="8" fill="#141428" stroke="#333355" stroke-width="1"/>
+    <text x="580" y="235" fill="#e8e8f0" font-size="11" text-anchor="middle">Reward release</text>
+    <text x="580" y="275" fill="#00cc88" font-size="12" font-weight="600" text-anchor="middle">$18/year per operator</text>
+
+    <!-- Off-chain -->
+    <rect x="750" y="60" width="150" height="120" rx="14" fill="#141428" stroke="#333355" stroke-width="1.5"/>
+    <text x="825" y="95" fill="#e8e8f0" font-size="14" font-weight="600" text-anchor="middle">Off-chain</text>
+    <text x="825" y="120" fill="#8888aa" font-size="11" text-anchor="middle">IPFS / cloud</text>
+    <text x="825" y="140" fill="#8888aa" font-size="11" text-anchor="middle">Full passport data</text>
+
+    <!-- EU Registry -->
+    <rect x="750" y="220" width="150" height="80" rx="14" fill="#141428" stroke="#ff9900" stroke-width="1.5"/>
+    <text x="825" y="253" fill="#ff9900" font-size="13" font-weight="600" text-anchor="middle">EU Registry</text>
+    <text x="825" y="275" fill="#8888aa" font-size="10" text-anchor="middle">Art. 13 sync</text>
+
+    <!-- Arrows -->
+    <path d="M 200 200 L 268 200" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+    <text x="234" y="192" fill="#00d2ff" font-size="9" text-anchor="middle">NFC</text>
+
+    <path d="M 410 200 L 478 175" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+    <text x="444" y="178" fill="#00d2ff" font-size="9" text-anchor="middle">tx</text>
+
+    <path d="M 680 120 L 748 120" stroke="#555577" stroke-width="1.5" fill="none" marker-end="url(#ah2)" stroke-dasharray="6,4"/>
+    <path d="M 680 260 L 748 260" stroke="#555577" stroke-width="1.5" fill="none" marker-end="url(#ah2)" stroke-dasharray="6,4"/>
+
+    <!-- Legend -->
+    <text x="20" y="380" fill="#8888aa" font-size="10">Each operator: 1 UTxO holding MPT root. Millions of batteries as leaves. No on-chain bloat.</text>
+  </svg>
+</section>
+
+<!-- ==================== SLIDE 8: NFC TAP EXPERIENCE ==================== -->
+<section>
+  <h2>The user experience: one NFC tap</h2>
+
+  <svg viewBox="0 0 780 200" style="width: 100%; margin-top: 10px;">
+    <defs>
+      <marker id="a3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#00d2ff"/>
+      </marker>
+    </defs>
+
+    <!-- Step 1 -->
+    <rect x="10" y="10" width="200" height="180" rx="14" fill="#0d1a2a" stroke="#00d2ff" stroke-width="2"/>
+    <text x="110" y="42" fill="#00d2ff" font-size="24" font-weight="800" text-anchor="middle">1</text>
+    <text x="110" y="65" fill="#e8e8f0" font-size="14" font-weight="700" text-anchor="middle">COMMIT</text>
+    <text x="110" y="90" fill="#8888aa" font-size="10" text-anchor="middle">User mints commitment</text>
+    <text x="110" y="106" fill="#8888aa" font-size="10" text-anchor="middle">UTxO on-chain</text>
+    <rect x="30" y="120" width="160" height="28" rx="6" fill="#141428" stroke="#00d2ff" stroke-width="1"/>
+    <text x="110" y="139" fill="#00d2ff" font-size="10" text-anchor="middle">Proves intent NOW</text>
+    <text x="110" y="172" fill="#8888aa" font-size="9" text-anchor="middle">~0.2 ADA</text>
+
+    <path d="M 220 100 L 270 100" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#a3)"/>
+
+    <!-- Step 2 -->
+    <rect x="280" y="10" width="200" height="180" rx="14" fill="#0d1a2a" stroke="#00cc88" stroke-width="2"/>
+    <text x="380" y="42" fill="#00cc88" font-size="24" font-weight="800" text-anchor="middle">2</text>
+    <text x="380" y="65" fill="#e8e8f0" font-size="14" font-weight="700" text-anchor="middle">TAP</text>
+    <text x="380" y="90" fill="#8888aa" font-size="10" text-anchor="middle">Phone taps battery NFC</text>
+    <text x="380" y="106" fill="#8888aa" font-size="10" text-anchor="middle">with commitment tx hash</text>
+    <rect x="300" y="120" width="160" height="28" rx="6" fill="#141428" stroke="#00cc88" stroke-width="1"/>
+    <text x="380" y="139" fill="#00cc88" font-size="10" text-anchor="middle">BMS signs state + hash</text>
+    <text x="380" y="172" fill="#8888aa" font-size="9" text-anchor="middle">< 500ms, no internet</text>
+
+    <path d="M 490 100 L 540 100" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#a3)"/>
+
+    <!-- Step 3 -->
+    <rect x="550" y="10" width="200" height="180" rx="14" fill="#0d1a2a" stroke="#ff9900" stroke-width="2"/>
+    <text x="650" y="42" fill="#ff9900" font-size="24" font-weight="800" text-anchor="middle">3</text>
+    <text x="650" y="65" fill="#e8e8f0" font-size="14" font-weight="700" text-anchor="middle">SUBMIT</text>
+    <text x="650" y="90" fill="#8888aa" font-size="10" text-anchor="middle">Submit reading on-chain</text>
+    <text x="650" y="106" fill="#8888aa" font-size="10" text-anchor="middle">consuming commitment</text>
+    <rect x="570" y="120" width="160" height="28" rx="6" fill="#141428" stroke="#ff9900" stroke-width="1"/>
+    <text x="650" y="139" fill="#ff9900" font-size="10" text-anchor="middle">Reward released</text>
+    <text x="650" y="172" fill="#8888aa" font-size="9" text-anchor="middle">~0.3 ADA + reward</text>
+  </svg>
+
+  <div style="display: flex; gap: 8px; margin-top: 6px;">
+    <div style="flex:1; background:var(--card); border-radius:8px; padding:8px 12px; text-align:center; border:1px solid #222244;">
+      <div style="color:var(--accent); font-size:0.85em; font-weight:700;">Single-use</div>
+      <div style="color:var(--muted); font-size:0.55em;">Commitment consumed — no replay</div>
+    </div>
+    <div style="flex:1; background:var(--card); border-radius:8px; padding:8px 12px; text-align:center; border:1px solid #222244;">
+      <div style="color:var(--accent2); font-size:0.85em; font-weight:700;">No internet</div>
+      <div style="color:var(--muted); font-size:0.55em;">NFC powered by phone field</div>
+    </div>
+    <div style="flex:1; background:var(--card); border-radius:8px; padding:8px 12px; text-align:center; border:1px solid #222244;">
+      <div style="color:var(--orange); font-size:0.85em; font-weight:700;">Trustless clock</div>
+      <div style="color:var(--muted); font-size:0.55em;">Blockchain slot = timestamp</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 9: SIGNED READINGS ==================== -->
+<section>
+  <h2>Hardware-signed BMS readings</h2>
+  <h3>A $0.81 module on every battery</h3>
+
+  <div class="card-row" style="margin-top: 30px;">
+    <div class="card highlight" style="flex: 2;">
+      <h4>What it proves</h4>
+      <table style="margin: 10px 0;">
+        <tr><td style="color: var(--accent2);">&#10003;</td><td>This specific BMS produced this data</td></tr>
+        <tr><td style="color: var(--accent2);">&#10003;</td><td>Nobody modified it after leaving the chip</td></tr>
+        <tr><td style="color: var(--accent2);">&#10003;</td><td>It was produced in response to a fresh challenge</td></tr>
+        <tr><td style="color: var(--red);">&#10007;</td><td>Sensors are physically accurate (residual risk)</td></tr>
+      </table>
+    </div>
+    <div class="card" style="flex: 1;">
+      <h4>Bill of materials</h4>
+      <p style="margin: 8px 0;"><span style="color: var(--text);">NTAG 5 Link</span><br>$0.35 (1M vol)</p>
+      <p style="margin: 8px 0;"><span style="color: var(--text);">OPTIGA Trust M</span><br>$0.40 (1M vol)</p>
+      <p style="margin: 8px 0;"><span style="color: var(--text);">Antenna + passives</span><br>$0.06</p>
+      <div style="border-top: 1px solid #333; margin-top: 12px; padding-top: 12px;">
+        <div class="card-stat" style="color: var(--accent2);">$0.81</div>
+        <p>0.2% of EV BMS cost</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 10: INCENTIVES ==================== -->
+<section>
+  <h2>User reporting incentives</h2>
+
+  <svg viewBox="0 0 900 250" style="width: 100%; margin-top: 20px;">
+    <defs>
+      <marker id="a4" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#00d2ff"/>
+      </marker>
+      <marker id="a5" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#00cc88"/>
+      </marker>
+    </defs>
+
+    <rect x="10" y="30" width="180" height="90" rx="14" fill="#141428" stroke="#333355" stroke-width="1.5"/>
+    <text x="100" y="65" fill="#e8e8f0" font-size="14" font-weight="600" text-anchor="middle">Manufacturer</text>
+    <text x="100" y="90" fill="#8888aa" font-size="11" text-anchor="middle">Funds reward pool</text>
+
+    <rect x="280" y="30" width="180" height="90" rx="14" fill="#0d1a2a" stroke="#00d2ff" stroke-width="2"/>
+    <text x="370" y="65" fill="#00d2ff" font-size="14" font-weight="600" text-anchor="middle">Smart Contract</text>
+    <text x="370" y="90" fill="#8888aa" font-size="11" text-anchor="middle">Validates + pays</text>
+
+    <rect x="550" y="30" width="180" height="90" rx="14" fill="#141428" stroke="#333355" stroke-width="1.5"/>
+    <text x="640" y="65" fill="#e8e8f0" font-size="14" font-weight="600" text-anchor="middle">User</text>
+    <text x="640" y="90" fill="#8888aa" font-size="11" text-anchor="middle">Taps + submits</text>
+
+    <path d="M 190 75 L 278 75" stroke="#ff9900" stroke-width="2" fill="none" marker-end="url(#a4)"/>
+    <text x="234" y="68" fill="#ff9900" font-size="10" text-anchor="middle">ADA deposit</text>
+
+    <path d="M 460 60 L 548 60" stroke="#00cc88" stroke-width="2" fill="none" marker-end="url(#a5)"/>
+    <text x="504" y="53" fill="#00cc88" font-size="10" text-anchor="middle">reward</text>
+
+    <path d="M 548 90 L 460 90" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#a4)"/>
+    <text x="504" y="108" fill="#00d2ff" font-size="10" text-anchor="middle">signed reading</text>
+
+    <!-- Guarantees -->
+    <rect x="10" y="155" width="880" height="80" rx="12" fill="#141428" stroke="#00d2ff" stroke-width="1"/>
+    <text x="30" y="183" fill="#00d2ff" font-size="13" font-weight="700">Smart contract guarantees:</text>
+    <text x="30" y="210" fill="#e8e8f0" font-size="12">&#8226; Manufacturer cannot refuse to pay for a valid report</text>
+    <text x="350" y="210" fill="#e8e8f0" font-size="12">&#8226; Cannot selectively ignore unfavorable readings</text>
+    <text x="680" y="210" fill="#e8e8f0" font-size="12">&#8226; All submissions are public</text>
+  </svg>
+</section>
+
+<!-- ==================== SLIDE 11: OWNERSHIP ==================== -->
+<section>
+  <h2>Ownership transfer</h2>
+  <h3>One atomic transaction at point of sale</h3>
+
+  <div class="compare" style="margin-top: 30px;">
+    <div class="compare-side before">
+      <h4 class="red">Before sale</h4>
+      <ul>
+        <li>Seller holds ownership token</li>
+        <li>Seller can claim reporting rewards</li>
+        <li>Buyer has no verified data</li>
+      </ul>
+    </div>
+    <div style="display: flex; align-items: center; font-size: 2em; color: var(--accent);">&rarr;</div>
+    <div class="compare-side after">
+      <h4 class="green">Transfer transaction</h4>
+      <ul>
+        <li>Token moves seller &rarr; buyer</li>
+        <li>Fresh signed BMS reading attached</li>
+        <li>Both parties sign (mutual consent)</li>
+        <li>Condition at handover: on-chain forever</li>
+      </ul>
+    </div>
+    <div style="display: flex; align-items: center; font-size: 2em; color: var(--accent);">&rarr;</div>
+    <div class="compare-side after" style="border-color: var(--accent);">
+      <h4 class="accent">After sale</h4>
+      <ul>
+        <li>Buyer holds token + reporting right</li>
+        <li>Seller can no longer claim rewards</li>
+        <li>Dispute? On-chain evidence exists</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="muted" style="text-align: center; font-size: 0.7em; margin-top: 20px;">Full chain: Manufacturing &rarr; Owner 1 &rarr; Owner 2 &rarr; &hellip; &rarr; Repurposing &rarr; Recycling. Each handover includes a signed condition snapshot.</p>
+</section>
+
+<!-- ==================== SLIDE 12: PAYLOAD ==================== -->
+<section>
+  <h2>Payload: CBOR + COSE_Sign1</h2>
+  <h3>Existing IETF standards, not invention</h3>
+
+  <div class="card-row" style="margin-top: 30px;">
+    <div class="card" style="flex: 1;">
+      <h4>COSE_Sign1 (RFC 9052)</h4>
+      <p style="color: var(--text);">Same signing envelope as:</p>
+      <p>&bull; EU Digital COVID Certificate</p>
+      <p>&bull; Mobile driving licences (ISO 18013-5)</p>
+      <p>&bull; WebAuthn / FIDO2</p>
+    </div>
+    <div class="card" style="flex: 1;">
+      <h4>CBOR (RFC 8949)</h4>
+      <p style="color: var(--text);">Why not JSON:</p>
+      <p>&bull; Deterministic encoding (signable)</p>
+      <p>&bull; Compact (integer keys, binary)</p>
+      <p>&bull; Integer-only: no floats, no strings</p>
+      <p>&bull; Cardano-native (ledger is CBOR)</p>
+    </div>
+    <div class="card highlight" style="flex: 1;">
+      <h4>Payload</h4>
+      <div class="card-stat" style="font-size: 1.4em;">160&ndash;200 B</div>
+      <p>Base reading (SoH, cycles, voltage, temp)</p>
+      <div class="card-stat" style="font-size: 1.4em;">360&ndash;430 B</div>
+      <p>With 96 cell voltages</p>
+      <p style="margin-top: 8px; color: var(--accent2);">Fits in 1 NFC tap. Fits in 1 Cardano tx.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 13: COSTS ==================== -->
+<section>
+  <h2>Cost breakdown</h2>
+
+  <table style="margin-top: 20px;">
+    <tr><th>Component</th><th>Cost</th><th>Notes</th></tr>
+    <tr><td>NFC + signing module</td><td style="color: var(--accent2); font-weight: 700;">$0.81 / battery</td><td>At 1M volume. 0.2% of EV BMS cost.</td></tr>
+    <tr><td>On-chain (all EU operators)</td><td style="color: var(--accent2); font-weight: 700;">$1,800&ndash;3,600 / year</td><td>~200 operators, daily trie root updates</td></tr>
+    <tr><td>Per operator (e.g. BMW)</td><td style="color: var(--accent2); font-weight: 700;">~$18 / year</td><td>One UTxO, one tx/day, regardless of battery count</td></tr>
+    <tr><td>User reward</td><td>1&ndash;2 ADA / reading</td><td>Monthly. Funded by manufacturer's reward pool.</td></tr>
+    <tr><td>Commit + submit</td><td>~0.5 ADA</td><td>Per reading (commitment + submission tx)</td></tr>
+    <tr><td>Off-chain storage</td><td>$0.10&ndash;0.50 / GB / month</td><td>IPFS pinning or equivalent</td></tr>
+  </table>
+
+  <div class="card" style="margin-top: 20px; border-color: var(--accent2); text-align: center;">
+    <p style="font-size: 1em; color: var(--text);">Even at <span style="color: var(--orange); font-weight: 700;">10x ADA price</span>, operator cost = ~$180/year. <span class="muted">Trivial for any battery manufacturer.</span></p>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 14: VALUE ADDS ==================== -->
+<section>
+  <h2>Five genuine blockchain value-adds</h2>
+  <h3>Each requires a blockchain. A centralized database cannot provide them.</h3>
+
+  <div class="value-grid" style="margin-top: 12px; grid-template-columns: 1fr 1fr 1fr;">
+    <div class="value-item">
+      <div class="value-num" style="color: var(--accent);">01</div>
+      <h4>Tamper-evident history</h4>
+      <p>Can't alter past readings</p>
+    </div>
+    <div class="value-item">
+      <div class="value-num" style="color: var(--accent2);">02</div>
+      <h4>Trustless incentives</h4>
+      <p>Contract guarantees reward</p>
+    </div>
+    <div class="value-item">
+      <div class="value-num" style="color: var(--orange);">03</div>
+      <h4>Commitment clock</h4>
+      <p>Proves intent to read NOW</p>
+    </div>
+    <div class="value-item">
+      <div class="value-num" style="color: var(--accent);">04</div>
+      <h4>Ownership-gated reporting</h4>
+      <p>Token = reporting right</p>
+    </div>
+    <div class="value-item">
+      <div class="value-num" style="color: var(--accent2);">05</div>
+      <h4>Single-use challenge</h4>
+      <p>eUTxO consumed: no replay</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 15: TRUST CHAIN ==================== -->
+<section>
+  <h2>Trust chain</h2>
+
+  <svg viewBox="0 0 760 250" style="width: 100%; margin-top: 10px;">
+    <defs>
+      <marker id="a6" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#00d2ff"/>
+      </marker>
+    </defs>
+
+    <!-- Layer boxes -->
+    <rect x="5" y="20" width="95" height="60" rx="8" fill="#141428" stroke="#00cc88" stroke-width="2"/>
+    <text x="52" y="45" fill="#00cc88" font-size="11" font-weight="700" text-anchor="middle">Cells</text>
+    <text x="52" y="62" fill="#8888aa" font-size="8" text-anchor="middle">Physics</text>
+
+    <rect x="120" y="20" width="95" height="60" rx="8" fill="#141428" stroke="#00cc88" stroke-width="1.5"/>
+    <text x="167" y="45" fill="#e8e8f0" font-size="11" font-weight="600" text-anchor="middle">Analog FE</text>
+    <text x="167" y="62" fill="#8888aa" font-size="8" text-anchor="middle">V, I, T</text>
+
+    <rect x="235" y="20" width="95" height="60" rx="8" fill="#141428" stroke="#ff9900" stroke-width="2"/>
+    <text x="282" y="45" fill="#ff9900" font-size="11" font-weight="600" text-anchor="middle">BMS MCU</text>
+    <text x="282" y="62" fill="#8888aa" font-size="8" text-anchor="middle">CBOR</text>
+
+    <rect x="350" y="20" width="110" height="60" rx="8" fill="#141428" stroke="#00d2ff" stroke-width="2"/>
+    <text x="405" y="45" fill="#00d2ff" font-size="11" font-weight="700" text-anchor="middle">Secure Element</text>
+    <text x="405" y="62" fill="#8888aa" font-size="8" text-anchor="middle">ECDSA sign</text>
+
+    <rect x="480" y="20" width="70" height="60" rx="8" fill="#141428" stroke="#333355" stroke-width="1.5"/>
+    <text x="515" y="45" fill="#e8e8f0" font-size="11" font-weight="600" text-anchor="middle">NFC</text>
+    <text x="515" y="62" fill="#8888aa" font-size="8" text-anchor="middle">Tap</text>
+
+    <rect x="570" y="20" width="70" height="60" rx="8" fill="#141428" stroke="#333355" stroke-width="1.5"/>
+    <text x="605" y="45" fill="#e8e8f0" font-size="11" font-weight="600" text-anchor="middle">Phone</text>
+    <text x="605" y="62" fill="#8888aa" font-size="8" text-anchor="middle">Submit</text>
+
+    <rect x="660" y="20" width="80" height="60" rx="8" fill="#0d1a2a" stroke="#00d2ff" stroke-width="2"/>
+    <text x="700" y="48" fill="#00d2ff" font-size="11" font-weight="700" text-anchor="middle">Cardano</text>
+    <text x="700" y="62" fill="#8888aa" font-size="8" text-anchor="middle">Verify</text>
+
+    <!-- Arrows -->
+    <line x1="100" y1="50" x2="118" y2="50" stroke="#00d2ff" stroke-width="1.5" marker-end="url(#a6)"/>
+    <line x1="215" y1="50" x2="233" y2="50" stroke="#00d2ff" stroke-width="1.5" marker-end="url(#a6)"/>
+    <line x1="330" y1="50" x2="348" y2="50" stroke="#00d2ff" stroke-width="1.5" marker-end="url(#a6)"/>
+    <line x1="460" y1="50" x2="478" y2="50" stroke="#00d2ff" stroke-width="1.5" marker-end="url(#a6)"/>
+    <line x1="550" y1="50" x2="568" y2="50" stroke="#00d2ff" stroke-width="1.5" marker-end="url(#a6)"/>
+    <line x1="640" y1="50" x2="658" y2="50" stroke="#00d2ff" stroke-width="1.5" marker-end="url(#a6)"/>
+
+    <!-- Weak link highlight -->
+    <rect x="235" y="105" width="225" height="45" rx="8" fill="#1a0a0a" stroke="#ff9900" stroke-width="1.5"/>
+    <text x="250" y="125" fill="#ff9900" font-size="10" font-weight="700">WEAKEST LINK</text>
+    <text x="250" y="140" fill="#8888aa" font-size="9">MCU → SE: signs whatever MCU gives it</text>
+
+    <!-- Mitigations -->
+    <rect x="5" y="175" width="735" height="55" rx="8" fill="#141428" stroke="#00cc88" stroke-width="1"/>
+    <text x="20" y="197" fill="#00cc88" font-size="10" font-weight="700">MITIGATIONS:</text>
+    <text x="130" y="197" fill="#e8e8f0" font-size="9">Schema validation</text>
+    <text x="280" y="197" fill="#e8e8f0" font-size="9">Plausibility checks</text>
+    <text x="430" y="197" fill="#e8e8f0" font-size="9">Workshop EIS</text>
+    <text x="580" y="197" fill="#e8e8f0" font-size="9">Physical tamper-evidence</text>
+    <text x="130" y="215" fill="#8888aa" font-size="8">(CBOR conformance)</text>
+    <text x="280" y="215" fill="#8888aa" font-size="8">(SoH can't increase)</text>
+    <text x="430" y="215" fill="#8888aa" font-size="8">(independent measurement)</text>
+    <text x="580" y="215" fill="#8888aa" font-size="8">(board modification = high bar)</text>
+  </svg>
+</section>
+
+<!-- ==================== SLIDE 16: EU INTEGRATION ==================== -->
+<section>
+  <h2>EU registry integration</h2>
+
+  <svg viewBox="0 0 900 220" style="width: 100%; margin-top: 20px;">
+    <defs>
+      <marker id="a7" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#00d2ff"/>
+      </marker>
+      <marker id="a8" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#ff9900"/>
+      </marker>
+    </defs>
+
+    <rect x="30" y="40" width="200" height="80" rx="14" fill="#0d1a2a" stroke="#00d2ff" stroke-width="2"/>
+    <text x="130" y="75" fill="#00d2ff" font-size="14" font-weight="700" text-anchor="middle">Cardano L1</text>
+    <text x="130" y="97" fill="#8888aa" font-size="11" text-anchor="middle">MPFS trie roots</text>
+
+    <rect x="330" y="40" width="200" height="80" rx="14" fill="#141428" stroke="#00d2ff" stroke-width="1.5"/>
+    <text x="430" y="75" fill="#e8e8f0" font-size="14" font-weight="700" text-anchor="middle">Adapter Middleware</text>
+    <text x="430" y="97" fill="#8888aa" font-size="11" text-anchor="middle">Sync + translate</text>
+
+    <rect x="630" y="40" width="230" height="80" rx="14" fill="#141428" stroke="#ff9900" stroke-width="2"/>
+    <text x="745" y="75" fill="#ff9900" font-size="14" font-weight="700" text-anchor="middle">EU DPP Registry (Art. 13)</text>
+    <text x="745" y="97" fill="#8888aa" font-size="11" text-anchor="middle">Operational July 2026</text>
+
+    <path d="M 230 80 L 328 80" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#a7)"/>
+    <path d="M 530 80 L 628 80" stroke="#ff9900" stroke-width="2" fill="none" marker-end="url(#a8)"/>
+
+    <rect x="30" y="155" width="830" height="50" rx="10" fill="#1a0a0a" stroke="#ff5555" stroke-width="1.5"/>
+    <text x="50" y="180" fill="#ff5555" font-size="12" font-weight="700">Without registry entry = legally non-compliant = product seized at border.</text>
+    <text x="50" y="195" fill="#8888aa" font-size="10">The EU is technology-neutral. Blockchain is permitted, not mandated. But the registry sync is mandatory.</text>
+  </svg>
+</section>
+
+<!-- ==================== SLIDE 17: NEXT STEPS ==================== -->
+<section>
+  <h2>Next steps</h2>
+
+  <div class="timeline" style="margin-top: 30px;">
+    <div class="timeline-item">
+      <div class="date">Q2 2026</div>
+      <div class="desc"><strong style="color: var(--text);">Hardware prototype</strong> &mdash; NTAG 5 Boost + OPTIGA Trust M on a reference BMS board</div>
+    </div>
+    <div class="timeline-item">
+      <div class="date">Q3 2026</div>
+      <div class="desc"><strong style="color: var(--text);">Standardization</strong> &mdash; Propose CIP for signed BMS readings + engage ISO/SAE</div>
+    </div>
+    <div class="timeline-item">
+      <div class="date">Q4 2026</div>
+      <div class="desc"><strong style="color: var(--text);">Pilot</strong> &mdash; Partner with a battery manufacturer for real-world test</div>
+    </div>
+    <div class="timeline-item future">
+      <div class="date">Q1 2027</div>
+      <div class="desc"><strong style="color: var(--text);">EU registry adapter</strong> &mdash; Build when Art. 13 API specification is published</div>
+    </div>
+    <div class="timeline-item future">
+      <div class="date">Feb 2027</div>
+      <div class="desc"><strong style="color: var(--orange);">Battery passport mandatory</strong> &mdash; System operational</div>
+    </div>
+    <div class="timeline-item future">
+      <div class="date">2027+</div>
+      <div class="desc"><strong style="color: var(--text);">Regulatory engagement</strong> &mdash; Propose signed BMS readings to Commission as implementing act</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 18: CLOSING ==================== -->
+<section class="title-slide" style="text-align: center;">
+  <div style="margin-top: 80px;">
+    <h1 style="text-align: center; font-size: 2.2em; line-height: 1.3;">The battery passport is coming.<br>The data bridge isn't built yet.<br><span class="accent">We can build it.</span></h1>
+    <div class="title-accent-line" style="margin: 30px auto;"></div>
+    <p class="muted" style="font-size: 0.9em;">lambdasistemi.github.io/eu-digital-product-passport</p>
+  </div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  width: 1200,
+  height: 680,
+  margin: 0.04,
+  minScale: 0.5,
+  maxScale: 1.5,
+  transition: 'fade',
+  transitionSpeed: 'fast',
+  backgroundTransition: 'none',
+  center: false,
+  controls: true,
+  progress: true,
+  slideNumber: 'c/t',
+});
+</script>
+</body>
+</html>

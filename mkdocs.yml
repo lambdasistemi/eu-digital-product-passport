@@ -29,6 +29,7 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
+  - attr_list
   - tables
   - toc:
       permalink: true
@@ -54,6 +55,7 @@ nav:
     - Payload Standard: sectors/batteries/payload-standard.md
     - User Reporting & Incentives: sectors/batteries/incentives.md
     - Ownership Transfer: sectors/batteries/ownership.md
+    - Presentation: sectors/batteries/presentation.md
   - Tyres:
     - Overview: sectors/tyres/index.md
   - Textiles:
