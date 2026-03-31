@@ -97,6 +97,9 @@ The UNTP spec supports all three levels via the `granularityLevel` property but 
 
 ## Volume requirements
 
+!!! note "Volume estimates"
+    Battery volumes are derived from IEA Global EV Outlook 2024 EU sales projections (~3M EVs/year by 2027) plus industrial and LMT batteries. Non-battery sector estimates are order-of-magnitude approximations based on the number of distinct product models/batches, not individual units — exact figures depend on delegated act granularity decisions.
+
 | Sector | Granularity | Estimated DPPs/year | L1 feasibility |
 |--------|------------|--------------------:|----------------|
 | Batteries (EV + industrial + LMT) | Item | ~4-5M | Comfortable |

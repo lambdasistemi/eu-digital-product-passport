@@ -85,7 +85,7 @@ Embedded tread sensors (e.g. [Bridgestone iTrack](../references.md#bridgestone-i
 
 ## Retreading as repurposing
 
-Tyre retreading is economically significant for truck/bus tyres (retread rate ~30-40% in Europe). A retreaded tyre is functionally a new product with a new tread on an old casing.
+Tyre retreading is economically significant for truck/bus tyres (retread rate ~30-40% in Europe, per [ETRMA](../references.md#etrma) industry data). A retreaded tyre is functionally a new product with a new tread on an old casing.
 
 Parallels with battery repurposing:
 

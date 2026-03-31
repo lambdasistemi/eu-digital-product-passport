@@ -6,7 +6,7 @@
 
 **Granularity**: Item-level — each battery gets its own passport with unique SoH tracking.
 
-**Volume**: ~4-5M DPPs/year (EV + industrial + LMT). Comfortable on Cardano L1.
+**Volume**: ~4-5M DPPs/year (EV + industrial + LMT).^[Estimate based on IEA Global EV Outlook 2024 EU EV sales projections (~3M by 2027), plus industrial and LMT batteries. See [scalability](../cardano/scalability.md#volume-requirements).] Comfortable on Cardano L1.
 
 ## Why batteries are different
 
