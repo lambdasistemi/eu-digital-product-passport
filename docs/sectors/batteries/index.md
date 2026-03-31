@@ -20,18 +20,31 @@ Batteries are the only EU product category with:
 
 This makes batteries the most technically demanding DPP use case and the best proving ground for Cardano's value proposition.
 
+## On-chain architecture: one MPT per operator
+
+CIP-68 per battery is not viable at this scale (see [architecture](architecture.md) for the full analysis). Instead, each economic operator who places batteries on the EU market manages a **Merkle Patricia Trie (MPT)**. Every battery is a leaf. One on-chain UTxO per operator holds the root hash.
+
+| Operator | Batteries | On-chain | Cost/year |
+|----------|-----------|----------|-----------|
+| BMW | ~500k | 1 UTxO | ~$18 (daily root updates) |
+| CATL | ~2M | 1 UTxO | ~$18 |
+| All EU operators combined | ~4-5M | ~100-200 UTxOs | ~$1,800-3,600 |
+
+This follows the regulation: the operator responsible for the passport ([Art. 77(4)](../references.md#bat-art77-4)) owns the trie. Repurposing creates a new trie under the new operator.
+
 ## Cardano value proposition for batteries
 
 | Value | What Cardano provides |
 |-------|----------------------|
-| Tamper-evident SoH history | Manufacturer cannot retroactively inflate readings |
+| Tamper-evident SoH history | MPT root anchored on-chain — operator cannot alter past readings without changing the root |
+| Per-operator accountability | Each operator's trie is independently verifiable; no shared mutable state |
 | Trustless incentive coordination | Smart contract guarantees reward for valid signed BMS readings |
 | On-chain commitment as trusted clock | Commitment UTxO proves intent to read — prevents replay and stockpiling |
-| Ownership-gated reporting | Token transfer = reporting right transfer, atomic handover with signed condition proof |
-| Single-use challenge (eUTxO) | Commitment UTxO is consumed on submission — one commitment, one reading |
+| Non-membership proofs | MPT proves a battery ID does NOT exist in an operator's trie (anti-counterfeiting) |
 
 ## Contents
 
+- [**Architecture**](architecture.md) — MPT per operator, why not CIP-68, verification flow
 - [Passport State](state.md) — who writes what, when, and how
 - [Battery Lifecycle](lifecycle.md) — chain of responsibility from manufacturing to recycling
 - [Signed BMS Readings](signed-bms.md) — secure element protocol, challenge-response

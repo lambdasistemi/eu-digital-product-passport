@@ -43,6 +43,7 @@ nav:
     - Existing Work: cardano/existing-work.md
   - Batteries:
     - Overview: sectors/batteries/index.md
+    - Architecture: sectors/batteries/architecture.md
     - Passport State: sectors/batteries/state.md
     - Lifecycle: sectors/batteries/lifecycle.md
     - Signed BMS Readings: sectors/batteries/signed-bms.md
