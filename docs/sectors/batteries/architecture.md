@@ -2,7 +2,7 @@
 
 ## Why not CIP-68 per battery
 
-CIP-68 is a [datum format and naming convention](../../../cardano/storage.md#cip-68-updatable-datum-format), not a scalable architecture. Each CIP-68 reference NFT requires its own UTxO with a min-ADA deposit (~1.5-2 ADA) locked for the battery's lifetime.
+CIP-68 is a [datum format and naming convention](../../cardano/storage.md#cip-68-updatable-datum-format), not a scalable architecture. Each CIP-68 reference NFT requires its own UTxO with a min-ADA deposit (~1.5-2 ADA) locked for the battery's lifetime.
 
 | Metric | CIP-68 per battery | Problem |
 |--------|-------------------|---------|
@@ -143,7 +143,7 @@ The consumer doesn't need a Cardano wallet or any blockchain knowledge. The reso
 
 Each operator's UTxO is controlled by their signing key. The link between the on-chain UTxO and the real-world legal entity is established via:
 
-- **[did:prism](../../../cardano/identity.md)**: The operator's DID Document references their Cardano public key
+- **[did:prism](../../cardano/identity.md)**: The operator's DID Document references their Cardano public key
 - **EU DPP Registry**: The operator registers their DPP endpoint (which resolves through the Cardano adapter)
 - **GS1 GLN**: The operator's Global Location Number links to their MPT via the resolver
 
