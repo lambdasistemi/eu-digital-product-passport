@@ -36,7 +36,7 @@ graph TD
 |----------|----------------|
 | **eUTxO model** | Each product's DPP is a discrete UTxO — naturally maps to per-product records |
 | **Native multi-asset** | DPP tokens are first-class citizens, no ERC-721-style contract overhead |
-| **[CIP-68](../references.md#cip-68) updatable datums** | DPP data evolves over product lifecycle (repairs, ownership, SoH updates) |
+| **[CIP-68](../references.md#cip-68) datum format** | Standard naming/datum convention for updatable per-product tokens (used for batteries; high-throughput batch anchoring for textiles) |
 | **[did:prism](../references.md#did-prism-w3c)** | W3C DID method anchored on Cardano — stronger assurance than did:web |
 | **[Hydra L2](../references.md#hydra)** | High-throughput channel for real-time lifecycle events |
 | **Formal verification** | Aiken/Plutus validators can be formally verified for compliance logic |

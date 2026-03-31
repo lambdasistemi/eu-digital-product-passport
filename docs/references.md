@@ -17,20 +17,20 @@ All factual claims in this feasibility study are backed by the sources listed he
 
 | ID | Article | Topic |
 |----|---------|-------|
-| <a id="bat-art77"></a>BAT-ART77 | Battery Reg. Art. 77 | Battery passport requirements, responsibilities, cessation |
+| <a id="bat-art77"></a>BAT-ART77 | Battery Reg. Art. 77 | Battery passport requirements, responsibilities, cessation. Art. 77(3) sets the 18 Feb 2027 application date. |
 | <a id="bat-art77-1"></a>BAT-ART77-1 | Battery Reg. Art. 77(1) | Each battery gets an individual passport |
 | <a id="bat-art77-3"></a>BAT-ART77-3 | Battery Reg. Art. 77(3) | Access rights to passport data |
 | <a id="bat-art77-4"></a>BAT-ART77-4 | Battery Reg. Art. 77(4) | Manufacturer responsibility for accuracy |
 | <a id="bat-art77-6a"></a>BAT-ART77-6A | Battery Reg. Art. 77(6)(a) | Repurposed battery requires new passport |
 | <a id="bat-art77-6b"></a>BAT-ART77-6B | Battery Reg. Art. 77(6)(b) | Passport ceases after recycling |
 | <a id="bat-art14"></a>BAT-ART14 | Battery Reg. Art. 14 | BMS must contain SoH data |
-| <a id="bat-art14-2"></a>BAT-ART14-2 | Battery Reg. Art. 14(2) | Read-only BMS access via diagnostic interface |
+| <a id="bat-art14-2"></a>BAT-ART14-2 | Battery Reg. Art. 14(2) | Read-only BMS access for purchaser or third party acting on their behalf (does not mandate a specific interface such as OBD) |
 | <a id="bat-annex-xiii"></a>BAT-ANNEX-XIII | Battery Reg. Annex XIII | Mandatory data fields for battery passport |
 | <a id="bat-rec46"></a>BAT-REC46 | Battery Reg. Recital 46 | SoH data refreshed at least daily in BMS |
 | <a id="bat-rec94"></a>BAT-REC94 | Battery Reg. Recital 94 | Compliance responsibility on placing-on-market operator |
 | <a id="espr-art9"></a>ESPR-ART9 | ESPR Art. 9 | DPP general requirements |
 | <a id="espr-art9-2d"></a>ESPR-ART9-2D | ESPR Art. 9(2)(d) | Delegated acts specify granularity (model/batch/item) |
-| <a id="espr-art10"></a>ESPR-ART10 | ESPR Art. 10 | DPP technical design, accessibility, role-based access |
+| <a id="espr-art10"></a>ESPR-ART10 | ESPR Art. 10 | DPP technical design, accessibility. Art. 10(1)(h) delegates access tiers to delegated acts. |
 | <a id="espr-art13"></a>ESPR-ART13 | ESPR Art. 13 | EU DPP Registry by 19 July 2026 |
 | <a id="espr-art23"></a>ESPR-ART23 | ESPR Art. 23 | Ban on destruction of unsold goods |
 
@@ -95,12 +95,17 @@ All factual claims in this feasibility study are backed by the sources listed he
 
 | ID | Reference | URL |
 |----|-----------|-----|
-| <a id="battery-pass"></a>BATTERY-PASS | Battery Pass Consortium — Content Guidance (v3, 2024) | [batterypass.org](https://thebatterypass.eu/resources/) |
+| <a id="battery-pass"></a>BATTERY-PASS | Battery Pass Consortium — Content Requirements (position paper, July 2023) | [PDF](https://thebatterypass.eu/assets/images/position-paper/pdf/2023_Battery_Passport_Content_Requirements.pdf), [resources](https://thebatterypass.eu/resources/) |
+| <a id="ceps-battery"></a>CEPS-BATTERY | CEPS In-Depth Analysis — Implementing the EU digital battery passport (2024) | [PDF](https://circulareconomy.europa.eu/platform/sites/default/files/2024-03/1qp5rxiZ-CEPS-InDepthAnalysis-2024-05_Implementing-the-EU-digital-battery-passport.pdf) |
+| <a id="seraph-bms"></a>SERAPH-BMS | Seraph — Why legacy systems cannot support the digital battery passport | [seraph.com](https://seraph.com/articles/why-legacy-systems-cannot-support-the-digital-battery-passport-the-hidden-technical-debt-inside-oem-plants/) |
+| <a id="dataart-battery"></a>DATAART-BATTERY | DataArt — Battery passport data management and EU regulations guide | [PDF](https://www.dataart.com/media/sj1f35dr/dataart-battery-passport-data-management-eu-regulations-guide.pdf) |
 | <a id="cirpass"></a>CIRPASS | CIRPASS — Collaborative Initiative for DPP Standards | [cirpassproject.eu](https://cirpassproject.eu/) |
 | <a id="eprel"></a>EPREL | EPREL — European Product Registry for Energy Labelling | [eprel.ec.europa.eu](https://eprel.ec.europa.eu/) |
 | <a id="etrma"></a>ETRMA | European Tyre & Rubber Manufacturers' Association — Statistics | [etrma.org](https://www.etrma.org/key-topics/statistics/) |
 | <a id="eu-textile-strategy"></a>EU-TEXTILE-STRATEGY | EU Strategy for Sustainable and Circular Textiles (March 2022) | [EUR-Lex COM(2022) 141](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A52022DC0141) |
-| <a id="espr-working-plan"></a>ESPR-WORKING-PLAN | ESPR Working Plan for Ecodesign and Energy Labelling 2025-2028 | [EUR-Lex](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52024DC0279) |
+| <a id="espr-working-plan"></a>ESPR-WORKING-PLAN | ESPR Working Plan 2025-2030 (adopted April 2025) | [EU Green Forum](https://green-forum.ec.europa.eu/news/2025-2030-working-plan-2025-07-11_en), [EUR-Lex](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52024DC0279) |
+| <a id="acea-ev"></a>ACEA-EV | ACEA — EU new car registrations (BEV 17.4% market share, 2025) | [acea.auto](https://www.acea.auto/pc-registrations/new-car-registrations-1-8-in-2025-battery-electric-17-4-market-share/) |
+| <a id="iea-gevo"></a>IEA-GEVO | IEA — Global EV Outlook 2025, trends in electric car markets | [iea.org](https://www.iea.org/reports/global-ev-outlook-2025/trends-in-electric-car-markets-2) |
 | <a id="eu-dcc-tech"></a>EU-DCC-TECH | EU Digital COVID Certificate — Technical Specifications (CBOR + COSE_Sign1) | [health.ec.europa.eu](https://health.ec.europa.eu/publications/technical-specifications-eu-digital-covid-certificates_en), [hcert-spec](https://github.com/ehn-dcc-development/hcert-spec) |
 
 ## Cardano Ecosystem Projects

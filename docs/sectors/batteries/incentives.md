@@ -38,7 +38,7 @@ sequenceDiagram
 
 ## How the user reports
 
-[Article 14(2)](../references.md#bat-art14-2) requires manufacturers to provide **read-only BMS access** via the on-board diagnostics port or another interface, on a non-discriminatory basis. This means the user has a legal right to read BMS data.
+[Article 14(2)](../references.md#bat-art14-2) requires manufacturers to grant read-only access to BMS data for the purchaser or any third party acting on their behalf — for assessing residual value, reuse, or repurposing. The regulation does not mandate a specific interface (such as OBD); the access method is left to the manufacturer. This means the user has a legal right to read BMS data.
 
 Practical methods:
 
