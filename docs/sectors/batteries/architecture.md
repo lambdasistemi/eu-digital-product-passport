@@ -235,13 +235,43 @@ This is a single transaction. If the operator doesn't incorporate, the readings 
 - The readings are signed by BMS hardware — the operator can't claim they're invalid
 - Users provide data the operator needs but can't easily obtain (especially for non-connected batteries)
 
+### Reward rules
+
+Each battery has a reward schedule enforced by the MPFS validator during the batch transaction. The `lastReadingSlot` field in the leaf tracks when the last rewarded reading was accepted. The validator checks this before releasing a reward.
+
+| Rule | Enforced by | Example |
+|------|------------|---------|
+| **Frequency cap** | `lastReadingSlot` + minimum interval ≤ current slot | One rewarded reading per month |
+| **Reader authorization** | `readerPkh` must match submitter | Only the assigned reader gets paid |
+| **Plausibility** | SoH ≤ previous, cycles ≥ previous | Readings that violate physics are rejected |
+| **Freshness** | Commitment slot within max age | Stale readings are rejected |
+
+The operator pre-funds a reward pool locked at the MPFS contract address. During the batch transaction, the validator checks each pending reading against the leaf's current state:
+
+```
+For each pending reading in this batch:
+  1. Look up battery leaf by batteryId
+  2. Check: reading.submitterPkh == leaf.readerPkh       → authorized?
+  3. Check: reading.commitmentSlot + maxAge ≥ currentSlot → fresh?
+  4. Check: currentSlot ≥ leaf.lastReadingSlot + minInterval → cooldown passed?
+  5. Check: reading.soH ≤ leaf.lastSoH                   → plausible?
+  6. If all pass:
+     - Update leaf: lastSoH, lastCycleCount, lastReadingSlot
+     - Release reward from pool to submitter
+  7. If cooldown not passed:
+     - Update leaf (data is still valid and useful)
+     - No reward released
+```
+
+This means: a user can submit readings more often than the reward interval — the data still gets incorporated into the passport (the operator needs it). But they only get paid once per interval. The readings between reward windows are "free" contributions from the operator's perspective.
+
 ### Reward funding
 
 The operator pre-funds a reward pool locked at the MPFS contract address. Rewards are released from this pool during the batch update transaction. The operator controls:
 
-- Reward amount per reading
-- Minimum interval between readings for the same battery
-- Batch cadence (how often they incorporate — hourly, daily, etc.)
+- **Reward amount** per reading (fixed or variable by battery category)
+- **Minimum interval** between rewarded readings (e.g. 30 days = ~129,600 slots)
+- **Batch cadence** (how often they run the incorporation transaction)
 
 ## Reading rights as MPT leaf state
 
