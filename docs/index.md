@@ -2,6 +2,15 @@
 
 Feasibility study for storing EU Digital Product Passports on the Cardano blockchain.
 
+!!! warning "Scope and limitations"
+    This is an **architectural exploration**, not compliance guidance. Three layers are clearly separated throughout:
+
+    1. **Regulatory layer** — what the EU mandates (ESPR, Battery Regulation, delegated acts). Cited from EUR-Lex with specific articles.
+    2. **Data model layer** — industry schemas (Battery Pass, UNTP, GS1). Not EU mandates — implementations aligned with regulatory requirements.
+    3. **Technical implementation layer** — Cardano-specific architecture (MPFS, Aiken, did:prism). **None of this is mandated by any EU regulation.** The EU is technology-neutral.
+
+    Do not use this study for compliance decisions without cross-checking against the [official regulation texts](references.md#eu-regulations).
+
 ## The EU DPP roadmap
 
 The European Union is rolling out mandatory Digital Product Passports across virtually all physical products placed on its market. The [ESPR (EU) 2024/1781](references.md#reg-espr) provides the framework; sector-specific regulations and delegated acts define the details.

@@ -316,6 +316,43 @@ This is a significant upgrade over unsigned user reports — the smart contract 
 | Trust requires multiple independent sources | Single reading is independently verifiable |
 | Buyer must trust seller's claims | Buyer requests fresh signed reading at point of sale |
 
+## Trust chain
+
+The full chain of trust from physical measurement to on-chain verification:
+
+```mermaid
+graph TD
+    A[Battery cells] -->|physics| B[Analog Front-End IC]
+    B -->|I2C: raw readings| C[BMS MCU]
+    C -->|formatted CBOR payload| D[Secure Element]
+    D -->|COSE_Sign1 signature| E[NTAG 5 Link]
+    E -->|NFC| F[User's Phone]
+    F -->|transaction| G[Cardano L1]
+
+    H[SE Manufacturer] -->|key injection at factory| D
+    D -->|public key| I[Battery Passport Datum]
+    G -->|verify signature against| I
+```
+
+| Link | Trust basis | Weakness |
+|------|------------|----------|
+| Cells → AFE | Physics (voltage, current, temperature) | Sensor failure or physical tampering |
+| AFE → MCU | I2C bus on PCB | Compromised MCU firmware could substitute readings |
+| MCU → SE | I2C, CBOR schema validation | SE signs whatever the MCU gives it |
+| SE → signature | Private key never leaves chip | Key extraction attacks (expensive, destructive) |
+| SE factory → public key | Pre-provisioned by chip vendor (e.g., Microchip Trust&GO) | Vendor compromise (extremely unlikely) |
+| Public key → passport datum | Registered at manufacturing by economic operator | Operator must correctly register the right key |
+| Signature → on-chain verification | Plutus built-in ECDSA/EdDSA | Correctness of validator code |
+
+**Root of trust**: the secure element vendor's provisioning process. For pre-provisioned chips (Microchip Trust&GO, Infineon OPTIGA Trust M Express), the vendor generates the key pair in their secure facility and provides a device certificate signed by their CA. The manufacturer registers the public key in the battery passport datum at production time.
+
+**Weakest link**: the MCU → SE boundary. The secure element cannot verify that the CBOR payload it signs corresponds to real sensor readings. This is mitigated by:
+
+- CBOR schema validation (contract rejects malformed payloads)
+- Plausibility checks (SoH can't increase, cycles can't decrease)
+- Cross-referencing with independent measurements (workshop EIS, charging session data)
+- Physical tamper-evidence of the BMS board itself
+
 ## Open questions
 
 1. **Standardization**: No standard exists for BMS signed readings. A CIP (Cardano Improvement Proposal) or an industry standard (SAE, ISO) would be needed to define the format, key algorithm, and serialization.
