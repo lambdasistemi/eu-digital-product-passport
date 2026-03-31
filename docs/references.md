@@ -48,6 +48,7 @@ All factual claims in this feasibility study are backed by the sources listed he
 | <a id="cip-100"></a>CIP-100 | Governance Metadata — JSON-LD | [CIP-0100](https://cips.cardano.org/cip/CIP-0100) |
 | <a id="cf-dpp"></a>CF-DPP | Cardano Foundation DPP Standards | [GitHub](https://github.com/cardano-foundation/cardano-dpp-standards) |
 | <a id="cf-dpp-page"></a>CF-DPP-PAGE | CF DPP Solution Page | [cardanofoundation.org](https://cardanofoundation.org/solutions/digital-product-passport) |
+| <a id="mpfs"></a>MPFS | Merkle Patricia Forestry Service — HTTP service + Aiken on-chain validators | [mpfs](https://github.com/cardano-foundation/mpfs), [onchain](https://github.com/cardano-foundation/cardano-mpfs-onchain), [cage](https://github.com/cardano-foundation/cardano-mpfs-cage) |
 | <a id="identus"></a>IDENTUS | Hyperledger Identus (did:prism) | [GitHub](https://github.com/hyperledger-identus) |
 | <a id="did-prism-w3c"></a>DID-PRISM-W3C | did:prism W3C DID Method registration | [W3C DID Extensions](https://www.w3.org/TR/did-extensions/) |
 | <a id="hydra"></a>HYDRA | Hydra L2 Documentation | [hydra.family](https://hydra.family/), [FAQ](https://hydra.family/head-protocol/docs/faqs) |
