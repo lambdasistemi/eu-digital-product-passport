@@ -199,6 +199,114 @@ For luxury textiles, the DPP doubles as an anti-counterfeiting measure. QR code 
 
 This is the strongest Cardano value proposition for textiles — **provenance authentication** rather than dynamic condition tracking.
 
+## What each operator must do
+
+### Brand / manufacturer (Zara, H&M, Patagonia, etc.)
+
+The brand placing the product on the EU market is the responsible economic operator. They create **one leaf per model or batch** in their MPT.
+
+| Field | Source | Regulation | Updates? |
+|-------|--------|-----------|----------|
+| Fibre composition | Manufacturing data | [Reg. 1007/2011](../../references.md#reg-textile-label) (already mandatory) | Never (per model) |
+| Country of origin per stage | Supply chain | [CSDDD (EU) 2024/1760](../../references.md#csddd) | Never (per batch) |
+| Carbon footprint (kgCO2e) | LCA (PEF) | ESPR delegated act | Per model |
+| Water footprint (litres) | LCA | ESPR delegated act | Per model |
+| Microfibre shedding (mg/wash) | Testing | ESPR delegated act | Per model |
+| Recycled content % | Manufacturing data | ESPR delegated act | Per batch |
+| Recyclability (mono-material %) | Design assessment | ESPR delegated act | Per model |
+| Chemical profile (SVHC, REACH) | Manufacturer / testing | REACH | Per batch |
+| Durability metrics | Type testing | ESPR delegated act | Per model |
+| Repair instructions | Manufacturer | Right to Repair | Per model |
+| Supply chain attestations | Audits, certifications | CSDDD | Per batch |
+| **Batch status** | Internal logistics | [ESPR Art. 23](../../references.md#espr-art23) (destruction ban) | **On events** |
+
+Most data is write-once. The **batch status** field is the exception — it must track whether unsold inventory was donated, recycled, or sold (never destroyed). This is the destruction ban audit trail.
+
+**On-chain cost**: < $10/year per brand. Model leaves inserted once, batch status transitions are rare events.
+
+### Supply chain actors (spinning mill, dyeing facility, sewing factory)
+
+Each actor in the chain produces attestations that feed into the brand's DPP:
+
+```mermaid
+sequenceDiagram
+    participant F as Cotton Farm
+    participant S as Spinning Mill
+    participant D as Dyeing Facility
+    participant W as Sewing Factory
+    participant B as Brand
+
+    F->>F: Create attestation leaf in own MPT
+    Note over F: Origin, GOTS cert, geolocation
+    F-->>S: Share Merkle proof of attestation
+
+    S->>S: Create attestation leaf
+    Note over S: SA8000 audit, labour conditions
+    S-->>D: Forward + own proof
+
+    D->>D: Create attestation leaf
+    Note over D: OEKO-TEX, chemical use, water discharge
+    D-->>W: Forward + own proof
+
+    W->>W: Create attestation leaf
+    Note over W: BSCI audit, factory safety
+    W-->>B: Full chain of proofs
+
+    B->>B: Compute supplyChainHash from all proofs
+    B->>B: Insert product leaf with supplyChainHash
+```
+
+Each supply chain actor maintains their **own MPT** with their own attestations. They share Merkle proofs downstream — not the raw data. The brand assembles the proofs into a supply chain Merkle tree and stores the root hash in the product leaf.
+
+**Privacy model**: the brand knows its full supply chain. A verifier (customs, auditor) can check one specific attestation via Merkle proof without seeing the others. Competitors cannot reconstruct the full supply chain from on-chain data — they only see the root hash.
+
+### Sorting / recycling facility
+
+When textiles reach end-of-life, the sorting facility needs composition data to route them correctly:
+
+| Data needed | Why | Impact |
+|-------------|-----|--------|
+| Fibre composition (exact %) | Determines recycling pathway | Cotton → mechanical; polyester → chemical; blends → difficult |
+| Mono-material % | >95% single fibre = recyclable; <80% = downcycle | Directly determines value |
+| Chemical treatments | Flame retardants, PFAS coatings | Safety, suitability for food-contact recycled output |
+| Colour/dye type | Some dyes contaminate recycling output | Affects rPET quality |
+| Hardware (zippers, buttons) | Must be removed before shredding | Labour cost estimation |
+
+The DPP enables **automated sorting**: scan QR → read composition → route to correct recycling stream. Without this, sorters rely on NIR spectroscopy (struggles with blends) or manual inspection (slow, expensive).
+
+### EPR scheme operator (Refashion in France, new schemes elsewhere)
+
+EPR operators need DPP data to calculate **eco-modulated fees**:
+
+| DPP field | Fee impact |
+|-----------|-----------|
+| Durability (cycles to failure) | Higher durability → lower fee |
+| Recyclability (mono-material %) | Higher recyclability → lower fee |
+| Recycled content % | Higher recycled content → lower fee |
+| Microfibre shedding rate | Lower shedding → lower fee |
+| Chemical profile (SVHC-free) | Cleaner chemistry → lower fee |
+| Repair instructions provided | Repairable → lower fee |
+
+The EPR scheme reads the DPP and applies a fee schedule. On Cardano, the fee calculation can reference the on-chain Merkle root — the brand cannot retroactively alter the data that determined their fee.
+
+## Why Cardano for textiles — honest assessment
+
+| Use case | Blockchain needed? | Why / why not |
+|----------|-------------------|---------------|
+| **Supply chain traceability** | **Yes** | 5-7 independent parties across jurisdictions; none should control the full chain; tamper-evident attestations |
+| **Destruction ban compliance** | **Yes** | Brand must prove unsold goods were donated/recycled, not destroyed; on-chain status transitions are tamper-evident |
+| **Anti-counterfeiting** | **Yes** | Luxury brands: QR → Merkle proof against brand's MPT root; counterfeits can't reproduce the anchor |
+| **Greenwashing prevention** | **Yes** | Environmental claims anchored at a specific time; brand can't retroactively inflate numbers |
+| **EPR eco-modulation** | **Marginal** | EPR scheme needs to trust the data, but a certified database with audit logs may suffice |
+| **Fibre composition** | **No** | Already mandatory under Reg. 1007/2011; static data, single author |
+| **Repair instructions** | **No** | Static content, no multi-party trust needed |
+
+**Bottom line**: textiles have the **strongest supply chain case** of all three sectors. 5-7 parties in different countries, each contributing attestations about labour, chemicals, and origin. The blockchain value is in making these attestations independently verifiable and tamper-evident — preventing both greenwashing by brands and certificate fraud by suppliers.
+
+The destruction ban (Art. 23) is a secondary but powerful use case: proving that no unsold inventory was destroyed requires a verifiable audit trail of batch status transitions.
+
+For static product data (composition, durability, repair instructions), a centralized database is sufficient.
+
 ## Open questions
 
 1. **Delegated act scope** — which data fields, which sub-sectors (apparel, footwear, home textiles)?
