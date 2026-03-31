@@ -16,6 +16,9 @@ theme:
     - navigation.expand
     - toc.integrate
 
+extra_css:
+  - stylesheets/mermaid-fix.css
+
 markdown_extensions:
   - admonition
   - pymdownx.details

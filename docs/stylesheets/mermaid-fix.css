@@ -1,0 +1,31 @@
+/* Fix mermaid timeline diagram readability on Material slate theme */
+/* The default uses light text on yellow/amber boxes which is unreadable */
+
+/* Timeline section backgrounds — use theme-consistent dark colours */
+.mermaid .timeline-section-0 { fill: #1a237e !important; }  /* dark blue */
+.mermaid .timeline-section-1 { fill: #004d40 !important; }  /* dark teal */
+.mermaid .timeline-section-2 { fill: #1b5e20 !important; }  /* dark green */
+.mermaid .timeline-section-3 { fill: #4a148c !important; }  /* dark purple */
+
+/* Timeline text — always white on dark backgrounds */
+.mermaid .timeline-section-0 text,
+.mermaid .timeline-section-1 text,
+.mermaid .timeline-section-2 text,
+.mermaid .timeline-section-3 text {
+  fill: #e0e0e0 !important;
+}
+
+/* Timeline event boxes */
+.mermaid .timeline-event {
+  fill: #263238 !important;
+  stroke: #546e7a !important;
+}
+
+.mermaid .timeline-event text {
+  fill: #e0e0e0 !important;
+}
+
+/* Timeline period labels */
+.mermaid .timeline-period text {
+  fill: #e0e0e0 !important;
+}
