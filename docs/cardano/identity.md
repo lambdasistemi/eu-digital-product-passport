@@ -24,7 +24,7 @@ The `did:prism` method is Cardano's W3C-registered DID method. Identity operatio
 
 ## Hyperledger Identus
 
-Formerly Atala PRISM. IOG contributed it to the [Hyperledger Foundation](../references.md#identus) in December 2023; promoted to full Hyperledger Project in April 2024.
+Formerly Atala PRISM. IOG contributed it to Hyperledger Labs as "Open Enterprise Agent" in October 2023; the community renamed it [Hyperledger Identus](../references.md#identus) and it was promoted to Hyperledger Project (Incubation) in April 2024 ([announcement](https://www.lfdecentralizedtrust.org/blog/announcing-hyperledger-identus-a-new-decentralized-identity-applications-project)).
 
 Implements:
 
@@ -56,7 +56,7 @@ graph TD
     H -->|checks| E
 ```
 
-The Universal Resolver already has `did:prism` support (funded through Catalyst).
+A `did:prism` driver for the Universal Resolver was funded through Catalyst (Fund 8 and Fund 10), though integration into the main resolver repository has not been confirmed as of March 2026.
 
 ## DPP as Verifiable Credential
 

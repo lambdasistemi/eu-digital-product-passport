@@ -134,7 +134,7 @@ This could be:
 | Product | What it does | Chip | Relevance |
 |---------|-------------|------|-----------|
 | [Tangem](../references.md#tangem) wallet cards | NFC tap → ECDSA signature of transaction | [SECORA Blockchain](../references.md#secora-blockchain) | Same sign-on-tap pattern |
-| Abbott FreeStyle Libre | NFC tap → 8 hours of glucose sensor data | NFC + MCU + sensor | Same read-sensor-via-NFC pattern |
+| Abbott FreeStyle Libre | NFC tap → 14 days of glucose sensor data | NFC + MCU + sensor | Same read-sensor-via-NFC pattern |
 | NXP DNA authentication | NFC tap → AES-CMAC proof of authenticity | NTAG 22x DNA | Same tap-to-authenticate pattern (but symmetric, not ECDSA) |
 | Rémy Martin connected bottles | NFC tap → product authentication | NTAG 22x DNA | Anti-counterfeit for physical products |
 | Cold chain loggers | NFC tap → signed temperature history | NFC + crypto tag | Same sensor-data-via-NFC pattern |

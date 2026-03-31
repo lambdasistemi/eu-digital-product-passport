@@ -32,7 +32,7 @@ graph TD
 | Property | Value |
 |----------|-------|
 | TPS per Hydra Head | ~1,000 |
-| Demonstrated peak | 1 million TPS (1,000 heads, gaming qualifier 2024) |
+| Demonstrated peak | [1 million TPS](../references.md#hydra-doom) (Hydra Doom Tournament, December 2024) |
 | Latency | Sub-second within a head |
 | Settlement | Periodic batch commits to L1 |
 
@@ -49,9 +49,9 @@ graph TD
 
 | Enhancement | Impact |
 |------------|--------|
-| **Ouroboros Leios** (Input Endorsers) | Significant L1 throughput increase |
+| [**Ouroboros Leios**](../references.md#leios) (Input Endorsers) | Significant L1 throughput increase |
 | **Block size increases** (governance) | Currently 90 KB, incrementally adjustable |
-| **CIP-150** (Block Data Compression) | Higher effective block capacity |
+| [**CIP-150**](../references.md#cip-150) (Block Data Compression) | Higher effective block capacity |
 | [**Mithril**](../references.md#mithril) | Fast chain sync for light clients / verifiers |
 
 ## DPP granularity
