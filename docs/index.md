@@ -19,20 +19,30 @@ graph LR
     E --> F[UNTP Verifiable Credential]
 ```
 
+## Sector studies
+
+This study covers three EU product sectors with the earliest DPP deadlines:
+
+| Sector | Regulation | Deadline | Granularity | Cardano fit |
+|--------|-----------|----------|-------------|-------------|
+| [**Batteries**](sectors/batteries/index.md) | (EU) 2023/1542 | Feb 2027 | Item | Dynamic SoH tracking, signed BMS readings, ownership transfer |
+| [**Tyres**](sectors/tyres/index.md) | ESPR delegated act | ~2027 | TBD | Wear monitoring, retreading lifecycle, DOT code identity |
+| [**Textiles**](sectors/textiles/index.md) | ESPR delegated act | ~2027-2028 | Batch/model | Supply chain provenance, anti-counterfeiting, destruction ban |
+
 ## Key findings
 
 | Aspect | Assessment |
 |--------|-----------|
 | **Technical feasibility** | High — CIP-68, Plutus, did:prism cover all requirements |
 | **Cost** | $0.01-0.13/product (L1 batched), ~$0.0001 (Hydra) |
-| **Scalability** | L1 sufficient for batteries; Hydra needed for textiles/electronics |
+| **Scalability** | L1 sufficient for all three sectors at expected volumes |
 | **EU compliance** | Technology-neutral regulation; adapter middleware needed for EU registry |
 | **Identity** | did:prism is W3C-registered, supplementary to UNTP's did:web |
 | **Existing work** | Cardano Foundation DPP standards, LW3 Hydra platform, pilots in wine/batteries |
 
 ## Contents
 
-**Cardano feasibility:**
+**Cardano platform** (shared infrastructure):
 
 - [Overview](cardano/overview.md) — architecture and rationale
 - [On-chain storage](cardano/storage.md) — CIP-68, datums, metadata labels
@@ -42,6 +52,12 @@ graph LR
 - [Scalability](cardano/scalability.md) — L1, Hydra L2, volume requirements
 - [EU integration](cardano/eu-integration.md) — registry, GS1, UNTP
 - [Existing work](cardano/existing-work.md) — CF DPP standards, pilots, CIPs
+
+**Sector studies:**
+
+- [Batteries](sectors/batteries/index.md) — signed BMS readings, NFC hardware, ownership transfer, incentives
+- [Tyres](sectors/tyres/index.md) — wear monitoring, retreading, DOT codes
+- [Textiles](sectors/textiles/index.md) — supply chain traceability, anti-counterfeiting, circular economy
 
 **EU DPP background:**
 

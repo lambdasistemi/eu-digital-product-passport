@@ -32,22 +32,28 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Cardano Feasibility:
+  - Cardano Platform:
     - Overview: cardano/overview.md
     - On-Chain Storage: cardano/storage.md
     - Access Control: cardano/access-control.md
     - Identity: cardano/identity.md
     - Cost Analysis: cardano/costs.md
-    - Passport State: cardano/state.md
-    - User Reporting & Incentives: cardano/incentives.md
-    - Signed BMS Readings: cardano/signed-bms.md
-    - NFC Hardware: cardano/nfc-hardware.md
-    - Payload Standard: cardano/payload-standard.md
-    - Ownership Transfer: cardano/ownership.md
-    - Battery Lifecycle: cardano/lifecycle.md
     - Scalability: cardano/scalability.md
     - EU Integration: cardano/eu-integration.md
     - Existing Work: cardano/existing-work.md
+  - Batteries:
+    - Overview: sectors/batteries/index.md
+    - Passport State: sectors/batteries/state.md
+    - Lifecycle: sectors/batteries/lifecycle.md
+    - Signed BMS Readings: sectors/batteries/signed-bms.md
+    - NFC Hardware: sectors/batteries/nfc-hardware.md
+    - Payload Standard: sectors/batteries/payload-standard.md
+    - User Reporting & Incentives: sectors/batteries/incentives.md
+    - Ownership Transfer: sectors/batteries/ownership.md
+  - Tyres:
+    - Overview: sectors/tyres/index.md
+  - Textiles:
+    - Overview: sectors/textiles/index.md
   - EU DPP Background:
     - Regulation: regulation.md
     - Timeline: timeline.md
