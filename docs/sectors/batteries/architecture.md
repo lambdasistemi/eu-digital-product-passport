@@ -2,7 +2,7 @@
 
 ## Why not CIP-68 per battery
 
-CIP-68 is a [datum format and naming convention](../../cardano/storage.md#cip-68-updatable-datum-format), not a scalable architecture. Each CIP-68 reference NFT requires its own UTxO with a min-ADA deposit (~1.5-2 ADA) locked for the battery's lifetime.
+CIP-68 is a [datum format and naming convention](../../../cardano/storage.md#cip-68-updatable-datum-format), not a scalable architecture. Each CIP-68 reference NFT requires its own UTxO with a min-ADA deposit (~1.5-2 ADA) locked for the battery's lifetime.
 
 | Metric | CIP-68 per battery | Problem |
 |--------|-------------------|---------|
@@ -15,7 +15,7 @@ This is not viable. It treats the blockchain as a database, minting one row per 
 
 ## The model: one Merkle Patricia Trie per responsible operator
 
-The [Battery Regulation Art. 77(4)](../references.md#bat-art77-4) assigns responsibility to the **economic operator who places the battery on the EU market** — the manufacturer or importer. This operator is the single writer for the passport throughout its first life.
+The [Battery Regulation Art. 77(4)](../../references.md#bat-art77-4) assigns responsibility to the **economic operator who places the battery on the EU market** — the manufacturer or importer. This operator is the single writer for the passport throughout its first life.
 
 This maps directly to a **Merkle Patricia Trie (MPT) per operator**:
 
@@ -78,7 +78,7 @@ The non-membership proof is important: an authority can ask "does this battery I
 | Regulatory concept | MPT mapping |
 |-------------------|------------|
 | Economic operator places battery on market | Creates an MPT, anchors root on-chain |
-| Legal responsibility for passport accuracy ([Art. 77(4)](../references.md#bat-art77-4)) | Operator holds the signing key for the UTxO containing their root |
+| Legal responsibility for passport accuracy ([Art. 77(4)](../../references.md#bat-art77-4)) | Operator holds the signing key for the UTxO containing their root |
 | Battery manufacturing (passport creation) | Insert new leaf into MPT |
 | SoH update (daily) | Update leaf data, recompute root, anchor on-chain |
 | Service / maintenance | Update leaf with maintenance event |
@@ -86,7 +86,7 @@ The non-membership proof is important: an authority can ask "does this battery I
 
 ### Repurposing = new trie, new operator
 
-When a battery is repurposed ([Art. 77(6)(a)](../references.md#bat-art77-6a)), a new economic operator takes responsibility:
+When a battery is repurposed ([Art. 77(6)(a)](../../references.md#bat-art77-6a)), a new economic operator takes responsibility:
 
 ```mermaid
 sequenceDiagram
@@ -109,7 +109,7 @@ The original battery's history is preserved in BMW's trie (immutable — the old
 
 ### Recycling = leaf removal
 
-When a battery is recycled ([Art. 77(6)(b)](../references.md#bat-art77-6b)), the recycler (if they have a role authorization) updates the leaf status to `Recycled`. The passport "ceases to exist" in regulatory terms, but the on-chain history of root hashes preserves the full audit trail.
+When a battery is recycled ([Art. 77(6)(b)](../../references.md#bat-art77-6b)), the recycler (if they have a role authorization) updates the leaf status to `Recycled`. The passport "ceases to exist" in regulatory terms, but the on-chain history of root hashes preserves the full audit trail.
 
 ## Verification flow
 
@@ -143,7 +143,7 @@ The consumer doesn't need a Cardano wallet or any blockchain knowledge. The reso
 
 Each operator's UTxO is controlled by their signing key. The link between the on-chain UTxO and the real-world legal entity is established via:
 
-- **[did:prism](../../cardano/identity.md)**: The operator's DID Document references their Cardano public key
+- **[did:prism](../../../cardano/identity.md)**: The operator's DID Document references their Cardano public key
 - **EU DPP Registry**: The operator registers their DPP endpoint (which resolves through the Cardano adapter)
 - **GS1 GLN**: The operator's Global Location Number links to their MPT via the resolver
 
@@ -151,7 +151,7 @@ The Aiken validator on the UTxO enforces that only the operator's key (or delega
 
 ## Updates via MPFS
 
-The [MPFS infrastructure](../references.md#mpfs) already solves the trie update problem. The architecture splits into an off-chain service and on-chain validators:
+The [MPFS infrastructure](../../references.md#mpfs) already solves the trie update problem. The architecture splits into an off-chain service and on-chain validators:
 
 ```mermaid
 graph TD
@@ -173,9 +173,9 @@ graph TD
     end
 ```
 
-- **Off-chain** ([`cardano-foundation/mpfs`](../references.md#mpfs)): Haskell HTTP service managing the trie. Handles inserts, updates, deletes, proof generation, transaction building. The operator runs this as part of their passport backend.
-- **On-chain** ([`cardano-foundation/cardano-mpfs-onchain`](../references.md#mpfs-onchain)): Aiken validators that verify MPT transition proofs — given the old root, a proof, and the new root, the validator confirms the transition is valid. This is what locks the operator's UTxO.
-- **Cage** ([`cardano-foundation/cardano-mpfs-cage`](../references.md#mpfs-cage)): Language-agnostic specification of the validator logic with cross-language test vectors, ensuring off-chain and on-chain implementations agree.
+- **Off-chain** ([`cardano-foundation/mpfs`](../../references.md#mpfs)): Haskell HTTP service managing the trie. Handles inserts, updates, deletes, proof generation, transaction building. The operator runs this as part of their passport backend.
+- **On-chain** ([`cardano-foundation/cardano-mpfs-onchain`](../../references.md#mpfs-onchain)): Aiken validators that verify MPT transition proofs — given the old root, a proof, and the new root, the validator confirms the transition is valid. This is what locks the operator's UTxO.
+- **Cage** ([`cardano-foundation/cardano-mpfs-cage`](../../references.md#mpfs-cage)): Language-agnostic specification of the validator logic with cross-language test vectors, ensuring off-chain and on-chain implementations agree.
 
 ### Update flow
 
@@ -224,7 +224,7 @@ sequenceDiagram
 
 ### Why the operator incorporates readings
 
-The operator (economic operator who placed the battery on the EU market) is **legally compelled** by [Art. 77(4)](../references.md#bat-art77-4) to keep the passport accurate and up-to-date. They don't incorporate readings out of goodwill — they do it because:
+The operator (economic operator who placed the battery on the EU market) is **legally compelled** by [Art. 77(4)](../../references.md#bat-art77-4) to keep the passport accurate and up-to-date. They don't incorporate readings out of goodwill — they do it because:
 
 - The regulation requires it
 - The readings are already on-chain (verified, timestamped, signed by BMS hardware)

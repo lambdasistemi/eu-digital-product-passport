@@ -2,15 +2,15 @@
 
 ## Chain of responsibility
 
-The [Battery Regulation](../references.md#reg-battery) defines a clear chain of responsibility. The key insight: **the manufacturer/importer who placed the battery on the EU market remains legally responsible for the passport throughout the battery's entire first life** — even after selling it.
+The [Battery Regulation](../../references.md#reg-battery) defines a clear chain of responsibility. The key insight: **the manufacturer/importer who placed the battery on the EU market remains legally responsible for the passport throughout the battery's entire first life** — even after selling it.
 
 The consumer never has write access. They can only read public data via QR scan.
 
 ### Regulatory basis
 
-[**Article 77(4)**](../references.md#bat-art77-4): The economic operator must "ensure that the information in the battery passport is accurate, complete and up-to-date."
+[**Article 77(4)**](../../references.md#bat-art77-4): The economic operator must "ensure that the information in the battery passport is accurate, complete and up-to-date."
 
-[**Recital 94**](../references.md#bat-rec94): "the responsibility of compliance with the provisions for the battery passport should lie with the economic operator placing the battery on the market" — this persists even when the battery is in someone else's hands.
+[**Recital 94**](../../references.md#bat-rec94): "the responsibility of compliance with the provisions for the battery passport should lie with the economic operator placing the battery on the market" — this persists even when the battery is in someone else's hands.
 
 **Article 3(22):** An "economic operator" includes the manufacturer, importer, distributor, or any person placing the battery on the market. But only the **manufacturer or importer** can "place on the market" (Recital 10).
 

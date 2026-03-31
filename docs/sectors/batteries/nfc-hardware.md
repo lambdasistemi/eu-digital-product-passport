@@ -35,8 +35,8 @@ graph LR
 
 | Component | Role | Why this one |
 |-----------|------|-------------|
-| [**NXP NTAG 5 Link**](../references.md#ntag5-link) (NT3H5111) | NFC interface + I2C master + energy harvesting | Only NFC tag with I2C master mode — can actively read sensors |
-| [**Infineon OPTIGA Trust M**](../references.md#optiga-trust-m) | Secure element — ECDSA signing | Pre-provisioned keys, I2C slave |
+| [**NXP NTAG 5 Link**](../../references.md#ntag5-link) (NT3H5111) | NFC interface + I2C master + energy harvesting | Only NFC tag with I2C master mode — can actively read sensors |
+| [**Infineon OPTIGA Trust M**](../../references.md#optiga-trust-m) | Secure element — ECDSA signing | Pre-provisioned keys, I2C slave |
 
 ## How a tap works
 
@@ -70,8 +70,8 @@ Total time from tap to signed reading: **200-500 ms**. The user holds their phon
 
 | Component | Description | 100k price | 1M price |
 |-----------|------------|-----------|----------|
-| [NXP NTAG 5 Link](../references.md#ntag5-link) (NT3H5111) | NFC Type 5 tag, I2C master, energy harvesting | ~$0.55 | ~$0.35 |
-| [Infineon OPTIGA Trust M](../references.md#optiga-trust-m) | Secure element, ECDSA-P256, pre-provisioned keys | ~$0.60 | ~$0.40 |
+| [NXP NTAG 5 Link](../../references.md#ntag5-link) (NT3H5111) | NFC Type 5 tag, I2C master, energy harvesting | ~$0.55 | ~$0.35 |
+| [Infineon OPTIGA Trust M](../../references.md#optiga-trust-m) | Secure element, ECDSA-P256, pre-provisioned keys | ~$0.60 | ~$0.40 |
 | NFC antenna | Printed or etched on PCB, or external foil | ~$0.08 | ~$0.04 |
 | Decoupling capacitor | 100µF, buffers energy harvest for crypto burst | ~$0.02 | ~$0.01 |
 | Passives | Pull-ups, bypass caps | ~$0.02 | ~$0.01 |
@@ -80,7 +80,7 @@ Total time from tap to signed reading: **200-500 ms**. The user holds their phon
 !!! note "Pricing estimates"
     Component prices are approximate, based on distributor indicative pricing (Mouser/DigiKey) at the stated volumes. Actual production pricing depends on supply agreements and may differ.
 
-For an EV battery BMS ($150-400, per [BatPaC](../references.md#batpac) model), this adds ~0.2-0.8% to the cost. For an e-bike BMS ($20-60), it adds ~1.3-6.4%.
+For an EV battery BMS ($150-400, per [BatPaC](../../references.md#batpac) model), this adds ~0.2-0.8% to the cost. For an e-bike BMS ($20-60), it adds ~1.3-6.4%.
 
 ## Energy budget
 
@@ -99,7 +99,7 @@ Using the **NTAG 5 Boost** variant (with boost regulator) provides a more stable
 
 ## Alternative: Infineon SECORA Blockchain
 
-The [SECORA Blockchain](../references.md#secora-blockchain) chip (SLC37 family) combines NFC + secure element + ECDSA in a single package. It is used in [Tangem](../references.md#tangem) hardware wallet cards. The phone taps, the chip signs, done.
+The [SECORA Blockchain](../../references.md#secora-blockchain) chip (SLC37 family) combines NFC + secure element + ECDSA in a single package. It is used in [Tangem](../../references.md#tangem) hardware wallet cards. The phone taps, the chip signs, done.
 
 | Aspect | NTAG 5 + OPTIGA | SECORA Blockchain |
 |--------|----------------|-------------------|
@@ -133,8 +133,8 @@ This could be:
 
 | Product | What it does | Chip | Relevance |
 |---------|-------------|------|-----------|
-| [Tangem](../references.md#tangem) wallet cards | NFC tap → ECDSA signature of transaction | [SECORA Blockchain](../references.md#secora-blockchain) | Same sign-on-tap pattern |
+| [Tangem](../../references.md#tangem) wallet cards | NFC tap → ECDSA signature of transaction | [SECORA Blockchain](../../references.md#secora-blockchain) | Same sign-on-tap pattern |
 | Abbott FreeStyle Libre | NFC tap → 14 days of glucose sensor data | NFC + MCU + sensor | Same read-sensor-via-NFC pattern |
-| NXP DNA authentication | NFC tap → AES-CMAC proof of authenticity | [NTAG 22x DNA](../references.md#ntag-22x-dna) | Same tap-to-authenticate pattern (but symmetric, not ECDSA) |
-| Rémy Martin connected bottles | NFC tap → product authentication | [NTAG 22x DNA](../references.md#ntag-22x-dna) | Anti-counterfeit for physical products ([NXP case study](https://www.nxp.com/company/about-nxp/remy-martin-club-connected-bottle:REMY-MARTIN-CLUB-CONNECTED)) |
+| NXP DNA authentication | NFC tap → AES-CMAC proof of authenticity | [NTAG 22x DNA](../../references.md#ntag-22x-dna) | Same tap-to-authenticate pattern (but symmetric, not ECDSA) |
+| Rémy Martin connected bottles | NFC tap → product authentication | [NTAG 22x DNA](../../references.md#ntag-22x-dna) | Anti-counterfeit for physical products ([NXP case study](https://www.nxp.com/company/about-nxp/remy-martin-club-connected-bottle:REMY-MARTIN-CLUB-CONNECTED)) |
 | Cold chain loggers | NFC tap → signed temperature history | NFC + crypto tag | Same sensor-data-via-NFC pattern |

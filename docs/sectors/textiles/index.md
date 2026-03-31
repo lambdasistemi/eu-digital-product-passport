@@ -1,10 +1,10 @@
 # Textiles
 
-**Regulation**: [ESPR (EU) 2024/1781](../references.md#reg-espr) delegated act — expected ~2025-2026 ([Working Plan 2025-2028](../references.md#espr-working-plan)).
+**Regulation**: [ESPR (EU) 2024/1781](../../references.md#reg-espr) delegated act — expected ~2025-2026 ([Working Plan 2025-2028](../../references.md#espr-working-plan)).
 
-**Deadline**: Compliance ~2027-2028 (18-24 months after delegated act, per [ESPR Art. 9](../references.md#espr-art9)).
+**Deadline**: Compliance ~2027-2028 (18-24 months after delegated act, per [ESPR Art. 9](../../references.md#espr-art9)).
 
-**Granularity**: Likely batch or model level ([ESPR Art. 9(2)(d)](../references.md#espr-art9-2d)). Individual t-shirts do not have unique serials.
+**Granularity**: Likely batch or model level ([ESPR Art. 9(2)(d)](../../references.md#espr-art9-2d)). Individual t-shirts do not have unique serials.
 
 **Volume**: ~100k-1M DPPs/year at batch/model level — trivially within Cardano L1 capacity.
 
@@ -14,11 +14,11 @@ Textiles are a high-priority ESPR product group. Multiple EU regulations converg
 
 | Regulation | Scope | Status |
 |-----------|-------|--------|
-| [**ESPR (EU) 2024/1781**](../references.md#reg-espr) | DPP requirements (via delegated act) | Delegated act pending |
-| [**ESPR Art. 23**](../references.md#espr-art23) | Ban on destruction of unsold textiles (large enterprises from July 2026) | In force |
-| [**Textile Labelling Regulation (EU) 1007/2011**](../references.md#reg-textile-label) | Fibre composition labels | In force |
-| [**EU Strategy for Sustainable and Circular Textiles**](../references.md#eu-textile-strategy) (March 2022) | Policy framework for textile DPP | Communication |
-| [**EUDR**](../references.md#reg-eudr) | Deforestation-free sourcing (cotton?) | Delayed |
+| [**ESPR (EU) 2024/1781**](../../references.md#reg-espr) | DPP requirements (via delegated act) | Delegated act pending |
+| [**ESPR Art. 23**](../../references.md#espr-art23) | Ban on destruction of unsold textiles (large enterprises from July 2026) | In force |
+| [**Textile Labelling Regulation (EU) 1007/2011**](../../references.md#reg-textile-label) | Fibre composition labels | In force |
+| [**EU Strategy for Sustainable and Circular Textiles**](../../references.md#eu-textile-strategy) (March 2022) | Policy framework for textile DPP | Communication |
+| [**EUDR**](../../references.md#reg-eudr) | Deforestation-free sourcing (cotton?) | Delayed |
 
 The unsold goods destruction ban (Art. 23 ESPR) is particularly significant — companies must prove they are not destroying unsold stock. A DPP with lifecycle tracking could provide this evidence.
 
