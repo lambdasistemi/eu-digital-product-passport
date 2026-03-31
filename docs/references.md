@@ -52,8 +52,13 @@ All factual claims in this feasibility study are backed by the sources listed he
 | <a id="did-prism-w3c"></a>DID-PRISM-W3C | did:prism W3C DID Method registration | [W3C DID Registry](https://www.w3.org/TR/did-spec-registries/#did-methods) |
 | <a id="hydra"></a>HYDRA | Hydra L2 Documentation | [hydra.family](https://hydra.family/) |
 | <a id="mithril"></a>MITHRIL | Mithril Documentation | [mithril.network](https://mithril.network/) |
-| <a id="cardano-params"></a>CARDANO-PARAMS | Cardano Protocol Parameters | [docs.cardano.org](https://docs.cardano.org/about-cardano/explore-more/cardano-network/about-the-cardano-network/) |
+| <a id="cip-150"></a>CIP-150 | Block Data Compression (ZStandard) | [CIP-0150](https://cips.cardano.org/cip/CIP-0150) |
+| <a id="cardano-params"></a>CARDANO-PARAMS | Cardano Protocol Parameters (live values) | [cardanoscan.io](https://cardanoscan.io/protocolparams), [parameter guide](https://docs.cardano.org/about-cardano/explore-more/parameter-guide) |
 | <a id="plutus-builtins"></a>PLUTUS-BUILTINS | Plutus Built-in Functions (including verifyEcdsaSecp256k1Signature) | [CIP-0049](https://cips.cardano.org/cip/CIP-0049) |
+| <a id="hydra-doom"></a>HYDRA-DOOM | Hydra Doom Tournament — 1M TPS demonstrated (Dec 2024) | [press release](https://www.newswire.com/news/hydra-demonstrates-cardanos-scalability-by-achieving-1-million-22486706) |
+| <a id="leios"></a>LEIOS | Ouroboros Leios — Input Endorsers research | [IOG paper](https://www.iog.io/papers/ouroboros-leios-design-goals-and-concepts) |
+| <a id="did-prism-spec"></a>DID-PRISM-SPEC | did:prism method specification | [GitHub](https://github.com/input-output-hk/prism-did-method-spec/blob/main/w3c-spec/PRISM-method.md) |
+| <a id="identus-announce"></a>IDENTUS-ANNOUNCE | Hyperledger Identus announcement (Labs Oct 2023, Project Apr 2024) | [LF blog](https://www.lfdecentralizedtrust.org/blog/announcing-hyperledger-identus-a-new-decentralized-identity-applications-project) |
 
 ## Hardware
 
@@ -91,7 +96,7 @@ All factual claims in this feasibility study are backed by the sources listed he
 | <a id="etrma"></a>ETRMA | European Tyre & Rubber Manufacturers' Association — Statistics | [etrma.org](https://www.etrma.org/key-topics/statistics/) |
 | <a id="eu-textile-strategy"></a>EU-TEXTILE-STRATEGY | EU Strategy for Sustainable and Circular Textiles (March 2022) | [EUR-Lex COM(2022) 141](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A52022DC0141) |
 | <a id="espr-working-plan"></a>ESPR-WORKING-PLAN | ESPR Working Plan for Ecodesign and Energy Labelling 2025-2028 | [EUR-Lex](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52024DC0279) |
-| <a id="eu-dcc-tech"></a>EU-DCC-TECH | EU Digital COVID Certificate — Technical Specifications | [health.ec.europa.eu](https://health.ec.europa.eu/publications/technical-specifications-eu-digital-covid-certificates_en) |
+| <a id="eu-dcc-tech"></a>EU-DCC-TECH | EU Digital COVID Certificate — Technical Specifications (CBOR + COSE_Sign1) | [health.ec.europa.eu](https://health.ec.europa.eu/publications/technical-specifications-eu-digital-covid-certificates_en), [hcert-spec](https://github.com/ehn-dcc-development/hcert-spec) |
 
 ## Cardano Ecosystem Projects
 
