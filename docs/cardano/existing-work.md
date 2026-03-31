@@ -21,9 +21,6 @@ The on-chain infrastructure that could actually support DPP at scale exists in t
 | [cardano-foundation/cardano-mpfs-onchain](https://github.com/cardano-foundation/cardano-mpfs-onchain) | Aiken on-chain validators — MPT transition proof verification, cage model | 34 commits, active (March 2026) |
 | [cardano-foundation/cardano-mpfs-cage](https://github.com/cardano-foundation/cardano-mpfs-cage) | Language-agnostic cage validator spec + cross-language test vectors | Active (March 2026) |
 
-!!! note "Supersedes merkle-tree-java"
-    An earlier [Java/TypeScript implementation](https://github.com/cardano-foundation/merkle-tree-java) exists but is dormant (last commit November 2024). The current MPFS repos are a ground-up rewrite with significant improvements in on-chain validator efficiency and off-chain service architecture.
-
 MPFS provides the per-operator Merkle Patricia Trie model described in the [battery architecture](../sectors/batteries/architecture.md). This is production-grade code with Aiken validators and QuickCheck property tests.
 
 ## LW3
