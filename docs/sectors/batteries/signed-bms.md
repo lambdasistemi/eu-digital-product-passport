@@ -51,21 +51,21 @@ The cost of adding this capability is negligible for automotive BMS:
 
 | Component | Cost at 100k volume |
 |-----------|-------------------|
-| Secure element ([ATECC608B](../references.md#atecc608b) / [OPTIGA Trust M](../references.md#optiga-trust-m)) | ~$0.50-0.70 |
+| Secure element ([ATECC608B](../../references.md#atecc608b) / [OPTIGA Trust M](../../references.md#optiga-trust-m)) | ~$0.50-0.70 |
 | Passives (caps, resistors) | $0.01 |
 | **Total BOM addition** | **$0.51-0.71** |
 
 | Application | BMS cost | Signing cost | Impact |
 |------------|----------|-------------|--------|
-| EV battery | $150-400 ([BatPaC](../references.md#batpac)) | $0.55 | 0.1-0.4% |
+| EV battery | $150-400 ([BatPaC](../../references.md#batpac)) | $0.55 | 0.1-0.4% |
 | Industrial ESS | $200-2,000 | $0.55 | 0.03-0.3% |
 | E-bike (mid-range) | $20-60 | $0.55 | 1-3% |
 
-Modern automotive MCUs ([NXP S32K3](../references.md#nxp-s32k3), [Infineon AURIX TC3xx](../references.md#aurix-tc3xx)) already include hardware security modules. For new BMS designs using these MCUs, the crypto capability is already present — it just needs firmware to use it.
+Modern automotive MCUs ([NXP S32K3](../../references.md#nxp-s32k3), [Infineon AURIX TC3xx](../../references.md#aurix-tc3xx)) already include hardware security modules. For new BMS designs using these MCUs, the crypto capability is already present — it just needs firmware to use it.
 
 One-time NRE (firmware + PCB): $20k-60k, amortized to $0.20-0.60/unit at 100k volume.
 
-Pre-provisioned secure elements ([Microchip Trust&GO](../references.md#trust-and-go)) come with keys injected at the factory — zero PKI infrastructure needed.
+Pre-provisioned secure elements ([Microchip Trust&GO](../../references.md#trust-and-go)) come with keys injected at the factory — zero PKI infrastructure needed.
 
 ## Signed reading format
 
@@ -265,7 +265,7 @@ The `monotonic_counter` is a strictly increasing value maintained by the secure 
 
 ## On-chain signature verification
 
-ECDSA signature verification is possible in Plutus (Cardano supports [`verifyEcdsaSecp256k1Signature`](../references.md#plutus-builtins) as a built-in, added via [CIP-49](https://cips.cardano.org/cip/CIP-0049)). If the BMS uses secp256k1 (like Bitcoin/Ethereum) or ed25519 (like Cardano native), the signature can be verified directly in the smart contract validator.
+ECDSA signature verification is possible in Plutus (Cardano supports [`verifyEcdsaSecp256k1Signature`](../../references.md#plutus-builtins) as a built-in, added via [CIP-49](https://cips.cardano.org/cip/CIP-0049)). If the BMS uses secp256k1 (like Bitcoin/Ethereum) or ed25519 (like Cardano native), the signature can be verified directly in the smart contract validator.
 
 ```
 CommitmentValidator:

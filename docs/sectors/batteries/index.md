@@ -1,21 +1,21 @@
 # Batteries
 
-**Regulation**: [Battery Regulation (EU) 2023/1542](https://eur-lex.europa.eu/eli/reg/2023/1542) — adopted July 2023. See [references](../references.md#reg-battery).
+**Regulation**: [Battery Regulation (EU) 2023/1542](https://eur-lex.europa.eu/eli/reg/2023/1542) — adopted July 2023. See [references](../../references.md#reg-battery).
 
-**Deadline**: Full battery passport mandatory **18 February 2027** for EV and industrial batteries > 2 kWh ([Art. 77(3)](../references.md#bat-art77)).
+**Deadline**: Full battery passport mandatory **18 February 2027** for EV and industrial batteries > 2 kWh ([Art. 77(3)](../../references.md#bat-art77)).
 
 **Granularity**: Item-level — each battery gets its own passport with unique SoH tracking.
 
-**Volume**: ~4-5M DPPs/year (EV + industrial + LMT).^[Estimate based on IEA Global EV Outlook 2024 EU EV sales projections (~3M by 2027), plus industrial and LMT batteries. See [scalability](../cardano/scalability.md#volume-requirements).] Comfortable on Cardano L1.
+**Volume**: ~4-5M DPPs/year (EV + industrial + LMT).^[Estimate based on IEA Global EV Outlook 2024 EU EV sales projections (~3M by 2027), plus industrial and LMT batteries. See [scalability](../../cardano/scalability.md#volume-requirements).] Comfortable on Cardano L1.
 
 ## Why batteries are different
 
 Batteries are the only EU product category with:
 
-- **Item-level tracking** confirmed in regulation ([Art. 77(1)](../references.md#bat-art77-1))
+- **Item-level tracking** confirmed in regulation ([Art. 77(1)](../../references.md#bat-art77-1))
 - **Dynamic data** that changes throughout the product lifecycle (State of Health, cycle count)
 - **A hardware data source** (BMS) that produces the dynamic data
-- **An unsolved data bridge** — how BMS data reaches the passport is unspecified ([Art. 14](../references.md#bat-art14) vs [Art. 77](../references.md#bat-art77))
+- **An unsolved data bridge** — how BMS data reaches the passport is unspecified ([Art. 14](../../references.md#bat-art14) vs [Art. 77](../../references.md#bat-art77))
 - **Repurposing** — a battery can have a second life with a new passport
 
 This makes batteries the most technically demanding DPP use case and the best proving ground for Cardano's value proposition.
@@ -30,7 +30,7 @@ CIP-68 per battery is not viable at this scale (see [architecture](architecture.
 | CATL | ~2M | 1 UTxO | ~$18 |
 | All EU operators combined | ~4-5M | ~100-200 UTxOs | ~$1,800-3,600 |
 
-This follows the regulation: the operator responsible for the passport ([Art. 77(4)](../references.md#bat-art77-4)) owns the trie. Repurposing creates a new trie under the new operator.
+This follows the regulation: the operator responsible for the passport ([Art. 77(4)](../../references.md#bat-art77-4)) owns the trie. Repurposing creates a new trie under the new operator.
 
 ## Cardano value proposition for batteries
 

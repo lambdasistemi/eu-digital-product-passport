@@ -2,7 +2,7 @@
 
 ## The problem
 
-The manufacturer is legally responsible for keeping the battery passport up-to-date ([Art. 77(4)](../references.md#bat-art77-4)). But after selling the battery, they have a practical problem: **they no longer have physical access to it**. The BMS contains the data they need, but the regulation doesn't specify how it reaches the passport.
+The manufacturer is legally responsible for keeping the battery passport up-to-date ([Art. 77(4)](../../references.md#bat-art77-4)). But after selling the battery, they have a practical problem: **they no longer have physical access to it**. The BMS contains the data they need, but the regulation doesn't specify how it reaches the passport.
 
 Meanwhile, the user (vehicle owner, fleet operator) **has daily physical access to the battery** and a direct interest in its condition being accurately recorded.
 
@@ -38,7 +38,7 @@ sequenceDiagram
 
 ## How the user reports
 
-[Article 14(2)](../references.md#bat-art14-2) requires manufacturers to grant read-only access to BMS data for the purchaser or any third party acting on their behalf — for assessing residual value, reuse, or repurposing. The regulation does not mandate a specific interface (such as OBD); the access method is left to the manufacturer. This means the user has a legal right to read BMS data.
+[Article 14(2)](../../references.md#bat-art14-2) requires manufacturers to grant read-only access to BMS data for the purchaser or any third party acting on their behalf — for assessing residual value, reuse, or repurposing. The regulation does not mandate a specific interface (such as OBD); the access method is left to the manufacturer. This means the user has a legal right to read BMS data.
 
 Practical methods:
 
