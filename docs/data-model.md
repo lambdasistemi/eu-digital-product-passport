@@ -11,11 +11,11 @@ A Digital Product Passport consists of:
 
 ## Identifier standards
 
-The ESPR mandates the use of **unique product identifiers** conforming to ISO/IEC 15459 (unique identification). In practice:
+The [ESPR](references.md#reg-espr) mandates the use of **unique product identifiers** conforming to ISO/IEC 15459 (unique identification). In practice:
 
 | Standard | Use |
 |----------|-----|
-| GS1 Digital Link | Primary identifier scheme — GTIN + serial via URI |
+| [GS1 Digital Link](references.md#gs1-digital-link) | Primary identifier scheme — GTIN + serial via URI |
 | ISO/IEC 15459 | Unique identification of transport units |
 | DID (W3C) | Decentralized identifiers for issuer/product identity |
 | UUID / URN | Passport-level identifiers |
@@ -32,7 +32,7 @@ The data carrier on the product must:
 
 ## Data schemas in use
 
-### Battery Pass (ESMF/SAMM)
+### [Battery Pass](references.md#battery-pass) (ESMF/SAMM)
 
 Built on the Eclipse Semantic Modeling Framework. Source definitions in RDF/Turtle, generated outputs in JSON Schema, JSON-LD, OpenAPI, and AAS (Asset Administration Shell) XML.
 
@@ -48,7 +48,7 @@ Built on the Eclipse Semantic Modeling Framework. Source definitions in RDF/Turt
 | Labels | CE marking, conformity declarations, regulatory labels |
 | SupplyChainDueDiligence | Third-party audits, sustainability reports |
 
-### UNTP Digital Product Passport (W3C VC)
+### [UNTP](references.md#untp) Digital Product Passport (W3C VC)
 
 The UN Transparency Protocol wraps the DPP as a **W3C Verifiable Credential** (VCDM 2.0) in JSON-LD.
 
