@@ -2,7 +2,7 @@
 
 ## Major EU-funded projects
 
-### Battery Pass
+### [Battery Pass](references.md#battery-pass)
 
 - **Consortium**: BMW, BASF, Umicore, and others
 - **Focus**: Battery passport data model and pilot implementation
@@ -10,7 +10,7 @@
 - **Status**: Version 1.2.0 released, schema generation in JSON Schema, JSON-LD, OpenAPI, AAS XML
 - **Website**: thebatterypass.eu
 
-### CIRPASS
+### [CIRPASS](references.md#cirpass)
 
 - **Funded by**: European Commission (Horizon Europe)
 - **Focus**: Cross-sector DPP architecture for batteries, textiles, and electronics
