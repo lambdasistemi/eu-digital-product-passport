@@ -21,23 +21,23 @@ The EU generates approximately **5.8 million tonnes of textile waste per year**.
 | Reused (mostly exported to Global South) | ~50-60% of collected | Quality declining; receiving countries increasingly refusing |
 | Downcycled (rags, insulation) | ~15-20% of collected | Low-value, not circular |
 | Fibre-to-fibre recycled | **< 1%** | Blended fabrics, lack of composition data |
-| Incinerated or landfilled | ~87% of total waste globally | Ellen MacArthur Foundation estimate |
+| Incinerated or landfilled | ~87% of total waste globally | [Ellen MacArthur Foundation](../../references.md#emf-textiles) estimate |
 
 The barrier to fibre-to-fibre recycling is **lack of composition data at the point of sorting**. NIR sorting can identify fibre types but struggles with blends and multi-layer garments. The DPP provides machine-readable composition data that enables automated sorting.
 
-**Separate collection mandate**: the Waste Framework Directive (as amended by Directive 2018/851) required all EU Member States to set up separate collection of textiles by **1 January 2025**. This creates a flood of collected textiles that need sorting infrastructure — and DPPs are the data layer for that infrastructure.
+**Separate collection mandate**: the [Waste Framework Directive (as amended by Directive 2018/851)](../../references.md#wfd-2018) required all EU Member States to set up separate collection of textiles by **1 January 2025**. This creates a flood of collected textiles that need sorting infrastructure — and DPPs are the data layer for that infrastructure.
 
 ### 2. Human rights — forced labour and unsafe factories
 
-- **Xinjiang cotton**: approximately 20% of global cotton comes from China's Xinjiang region. Reports from the Australian Strategic Policy Institute (ASPI) and Sheffield Hallam University ("In Broad Daylight", 2021) documented forced labour of Uyghurs in cotton harvesting and textile manufacturing.
+- **Xinjiang cotton**: approximately 20% of global cotton comes from China's Xinjiang region. Reports from the [Australian Strategic Policy Institute](../../references.md#aspi-uyghur) (ASPI, "Uyghurs for Sale", 2020) and [Sheffield Hallam University](../../references.md#sheffield-uyghur) ("In Broad Daylight", 2021) documented forced labour of Uyghurs in cotton harvesting and textile manufacturing.
 - **Rana Plaza**: the collapse of the Rana Plaza garment factory in Dhaka on 24 April 2013 killed 1,134 workers — the deadliest garment factory disaster in history. It led to the Bangladesh Accord on Fire and Building Safety.
-- **CSDDD**: the Corporate Sustainability Due Diligence Directive ([Directive (EU) 2024/1760](https://eur-lex.europa.eu/eli/dir/2024/1760)) requires large companies to identify, prevent, and mitigate human rights and environmental adverse impacts across their value chains. Textiles are a high-risk sector.
+- **CSDDD**: the [Corporate Sustainability Due Diligence Directive](../../references.md#csddd) (Directive (EU) 2024/1760) requires large companies to identify, prevent, and mitigate human rights and environmental adverse impacts across their value chains. Textiles are a high-risk sector.
 
 The DPP carries **product-level evidence** of due diligence: which factory, which country, which audit results, which certifications. CSDDD requires the process; the DPP carries the proof.
 
 ### 3. Greenwashing — unsubstantiated sustainability claims
 
-The Commission's 2020 screening found that **53.3% of environmental claims in the EU were vague, misleading, or unfounded** and 40% were entirely unsubstantiated. The Empowering Consumers Directive (EU) 2024/825 bans vague green claims ("eco-friendly", "sustainable") without substantiation.
+The Commission's 2020 screening found that **53.3% of environmental claims in the EU were vague, misleading, or unfounded** and 40% were entirely unsubstantiated. The [Empowering Consumers Directive](../../references.md#empowering-consumers) (EU) 2024/825 bans vague green claims ("eco-friendly", "sustainable") without substantiation.
 
 The DPP replaces self-declared labels with **machine-readable, auditable data** on actual environmental performance — carbon footprint, water footprint, recycled content, chemical use — verifiable against the on-chain anchor.
 
@@ -45,7 +45,7 @@ The DPP replaces self-declared labels with **machine-readable, auditable data** 
 
 Investigative reporting revealed that Amazon was destroying millions of unsold items in UK warehouses (ITV News, 2021). Burberry disclosed in its 2018 annual report that it had destroyed **£28.6 million worth of unsold stock** to protect brand exclusivity.
 
-Public backlash led to France's AGEC law (2020) — banning destruction of unsold non-food goods — and then [ESPR Art. 23](../../references.md#espr-art23) extended the principle EU-wide:
+Public backlash led to France's [AGEC law](../../references.md#agec-france) (2020) — banning destruction of unsold non-food goods — and then [ESPR Art. 23](../../references.md#espr-art23) extended the principle EU-wide:
 
 - **19 July 2026**: destruction ban for unsold textiles and footwear (large enterprises)
 - **19 July 2030**: extended to medium enterprises
@@ -59,14 +59,14 @@ Companies must disclose quantities of unsold products destroyed (transparency ob
 | Water consumption | ~79 billion m³/year globally; cotton = ~10,000 litres/kg |
 | Water pollution | Textile dyeing is the **2nd largest industrial water polluter** globally |
 | Carbon emissions | Fashion industry = **8-10% of global CO2** (UNEP) |
-| Microplastic fibres | Synthetic textiles release ~700,000 fibres per wash; ~35% of marine microplastics (IUCN) |
+| Microplastic fibres | Synthetic textiles release ~700,000 fibres per wash; ~35% of marine microplastics ([IUCN](../../references.md#iucn-microplastics)) |
 | Chemical use | >15,000 chemicals used in textile production; imports often contain restricted substances |
 
 The ESPR delegated act is expected to require disclosure of carbon footprint (PEF methodology), water footprint, and microfibre shedding rates via the DPP. REACH (EC 1907/2006) restricts substances of very high concern, but enforcement on imports is difficult — DPPs declaring substances of concern (ESPR Art. 9(d)) make chemical compliance verifiable at product level.
 
 ### 6. EPR eco-modulation — DPP as the data substrate
 
-The proposed revision of the Waste Framework Directive (COM(2023) 420) introduces **mandatory Extended Producer Responsibility (EPR) for textiles** across all Member States. France already operates textile EPR via Refashion (since 2007).
+The proposed [revision of the Waste Framework Directive](../../references.md#wfd-revision) (COM(2023) 420) introduces **mandatory Extended Producer Responsibility (EPR) for textiles** across all Member States. France already operates textile EPR via Refashion (since 2007).
 
 EPR fees would be modulated by environmental characteristics: more durable, recyclable, lower-impact products pay lower fees (**eco-modulation**). Without product-level DPP data on durability, recyclability, and environmental footprint, eco-modulation is impossible. The DPP is the **data substrate** for EPR fee differentiation.
 
@@ -94,12 +94,12 @@ Each step involves a different company in a different jurisdiction. The DPP must
 | [**ESPR Art. 23**](../../references.md#espr-art23) | Destruction ban for unsold textiles | DPP tracks batch destiny (sold/donated/recycled) |
 | [**Textile Labelling Reg. (EU) 1007/2011**](../../references.md#reg-textile-label) | Fibre composition labels | Existing data; DPP extends it |
 | [**EU Textile Strategy**](../../references.md#eu-textile-strategy) COM(2022) 141 | Policy framework | Defines DPP scope and goals |
-| **CSDDD (EU) 2024/1760** | Supply chain due diligence | DPP carries product-level evidence |
-| **Empowering Consumers Dir. (EU) 2024/825** | Bans unsubstantiated green claims | DPP provides verifiable data |
+| [**CSDDD (EU) 2024/1760**](../../references.md#csddd) | Supply chain due diligence | DPP carries product-level evidence |
+| [**Empowering Consumers Dir. (EU) 2024/825**](../../references.md#empowering-consumers) | Bans unsubstantiated green claims | DPP provides verifiable data |
 | **REACH (EC) 1907/2006** | Chemical restrictions | DPP declares substances of concern |
 | [**EUDR (EU) 2023/1115**](../../references.md#reg-eudr) | Deforestation-free sourcing | DPP carries raw material traceability (if cotton included) |
 | **Waste Framework Dir. 2008/98/EC** | Separate textile collection (Jan 2025) | DPP enables automated sorting |
-| **WFD revision COM(2023) 420** | Mandatory textile EPR | DPP data substrate for eco-modulation |
+| [**WFD revision COM(2023) 420**](../../references.md#wfd-revision) | Mandatory textile EPR | DPP data substrate for eco-modulation |
 
 ## Expected data model
 

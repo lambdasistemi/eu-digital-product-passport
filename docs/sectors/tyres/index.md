@@ -14,12 +14,12 @@ Tyres sit at the intersection of six EU policy streams. The DPP is the single da
 
 ### 1. Microplastics — tyres are source #1
 
-Tyre and road wear particles (TRWP) are the **largest source of microplastics** entering the EU environment — estimated ~500,000 tonnes/year (EEA). This dwarfs textile fibres, pellet spills, and all other sources. TRWP enter waterways via road runoff and carry toxic additives.
+Tyre and road wear particles (TRWP) are the **largest source of microplastics** entering the EU environment — estimated ~500,000 tonnes/year ([EEA](https://www.eea.europa.eu/publications/microplastics-from-textiles-towards-a)). This dwarfs textile fibres, pellet spills, and all other sources. TRWP enter waterways via road runoff and carry toxic additives.
 
-The Commission's Zero Pollution Action Plan (COM(2021) 400) targets a 30% reduction in microplastics by 2030. Tyre abrasion is the primary lever. The DPP would carry **abrasion rate data** per tyre model, enabling regulators to set and enforce minimum abrasion performance.
+The Commission's [Zero Pollution Action Plan](../../references.md#zero-pollution) (COM(2021) 400) targets a 30% reduction in microplastics by 2030. Tyre abrasion is the primary lever. The DPP would carry **abrasion rate data** per tyre model, enabling regulators to set and enforce minimum abrasion performance.
 
 !!! note "Abrasion measurement"
-    A standardized tyre abrasion test method is being developed by the UNECE Informal Working Group on Tyres (GRBP), based on internal drum testing. Euro 7 (Regulation (EU) 2024/1257) mandates **measurement and reporting** of abrasion rates but does not yet set limits — that will come via the ESPR delegated act. DPP carries the test data.
+    A standardized tyre abrasion test method is being developed by the UNECE Informal Working Group on Tyres (GRBP), based on internal drum testing. [Euro 7](../../references.md#euro7) (Regulation (EU) 2024/1257) mandates **measurement and reporting** of abrasion rates but does not yet set limits — that will come via the ESPR delegated act. DPP carries the test data.
 
 ### 2. 6PPD-quinone — emerging chemical crisis
 
@@ -40,7 +40,7 @@ Truck tyre retreading in Europe has fallen from ~50% in the 1990s to ~25-30% tod
 - **Liability concerns** without traceability — if a retread fails, who is responsible?
 - **Design resistance** — some manufacturers allegedly design casings to resist retreading
 
-The DPP directly addresses the data gap: a tyre passport with casing history, load/mileage data, and material specifications enables retreaders to assess casings digitally. The Circular Economy Action Plan (COM(2020) 98) explicitly identifies retreading as an underexploited circular strategy.
+The DPP directly addresses the data gap: a tyre passport with casing history, load/mileage data, and material specifications enables retreaders to assess casings digitally. The [Circular Economy Action Plan](../../references.md#ceap) (COM(2020) 98) explicitly identifies retreading as an underexploited circular strategy.
 
 !!! warning "Retreading is the only use case that genuinely needs item-level identity"
     Abrasion data, chemical composition, carbon footprint, EUDR compliance — all of these are properties of the tyre **model or batch**, not individual units. Only retreading needs to know the history of a specific casing. And retreading is relevant only for commercial tyres (truck/bus), not passenger cars.
@@ -67,7 +67,7 @@ The ESPR delegated act is expected to set **minimum mileage/durability requireme
 | Material recycling (granulate for surfaces, asphalt) | ~35-40% | Low-value applications; could be higher with better sorting |
 | Retreading | ~10-15% | Declining — see above |
 | Export | ~5-10% | Often to uncertain destinations |
-| Landfill | Banned since 2006 | Landfill Directive 1999/31/EC Art. 5(3) |
+| Landfill | Banned since 2006 | [Landfill Directive 1999/31/EC](../../references.md#landfill-dir) Art. 5(3) |
 
 The waste hierarchy demands prioritizing reuse (retreading) and material recycling over energy recovery. Composition data in the DPP — rubber compounds, reinforcement materials, chemical additives — enables better sorting and higher-value recycling. This is especially relevant for pyrolysis-derived carbon black (rCB), where knowing the input compound matters for output quality.
 
@@ -92,7 +92,7 @@ Given the six policy drivers above:
 |-----------|-------|-------------------|
 | [**ESPR (EU) 2024/1781**](../../references.md#reg-espr) | DPP requirements via delegated act | Primary vehicle for tyre DPP |
 | [**Tyre Labelling Regulation (EU) 2020/740**](../../references.md#reg-tyre-label) | Energy label (rolling resistance, wet grip, noise) | Existing data in [EPREL](../../references.md#eprel); DPP extends it |
-| **Euro 7 (EU) 2024/1257** | Measurement of tyre abrasion; minimum durability | DPP carries the abrasion test data |
+| [**Euro 7 (EU) 2024/1257**](../../references.md#euro7) | Measurement of tyre abrasion; minimum durability | DPP carries the abrasion test data |
 | [**EUDR (EU) 2023/1115**](../../references.md#reg-eudr) | Deforestation-free natural rubber | DPP carries supply chain traceability |
 | **REACH (EC) 1907/2006** | Chemical restrictions (PAHs restricted; 6PPD under evaluation) | DPP carries chemical composition |
 | **ELV Regulation** | Environmental Vehicle Passport | May reference tyre DPP data |
