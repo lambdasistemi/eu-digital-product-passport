@@ -64,13 +64,17 @@ All factual claims in this feasibility study are backed by the sources listed he
 
 | ID | Reference | URL |
 |----|-----------|-----|
-| <a id="ntag5-link"></a>NTAG5-LINK | NXP NTAG 5 Link (NT3H5111) — NFC Type 5 + I2C master + energy harvesting | [NXP product page](https://www.nxp.com/products/rfid-nfc/nfc-hf/ntag-5-link:NTAG-5-LINK) |
+| <a id="ntag5-link"></a>NTAG5-LINK | NXP NTAG 5 Link (NT3H5111) — NFC Type 5 + I2C master + energy harvesting | [NXP product page](https://www.nxp.com/products/rfid-nfc/nfc-hf/ntag/ntag-5-link-nfc-forum-compliant-ic-bridge-for-tiny-iot-devices:NT3H5111) |
 | <a id="optiga-trust-m"></a>OPTIGA-TRUST-M | Infineon OPTIGA Trust M — ECC-P256 secure element, I2C | [Infineon product page](https://www.infineon.com/cms/en/product/security-smart-card-solutions/optiga-embedded-security-solutions/optiga-trust/optiga-trust-m-sls32aia/) |
 | <a id="atecc608b"></a>ATECC608B | Microchip ATECC608B — ECDSA secure element | [Microchip product page](https://www.microchip.com/en-us/product/ATECC608B) |
 | <a id="trust-and-go"></a>TRUST-AND-GO | Microchip Trust&GO — pre-provisioned secure element | [Microchip product page](https://www.microchip.com/en-us/products/security/trust-platform/trust-and-go) |
-| <a id="secora-blockchain"></a>SECORA-BLOCKCHAIN | Infineon SECORA Blockchain — NFC + secure element in one chip | [Infineon product page](https://www.infineon.com/cms/en/product/security-smart-card-solutions/secora-security-solutions/secora-blockchain-security-solutions/) |
+| <a id="secora-blockchain"></a>SECORA-BLOCKCHAIN | Infineon SECORA Blockchain — NFC + secure element in one chip | [Infineon product page](https://www.infineon.com/cms/en/product/security-smart-card-solutions/secora-blockchain/) |
 | <a id="nxp-s32k3"></a>NXP-S32K3 | NXP S32K3 automotive MCU — includes HSM | [NXP product page](https://www.nxp.com/products/processors-and-microcontrollers/s32-automotive-platform/s32k-general-purpose-mcus/s32k3-microcontrollers-for-general-purpose:S32K3) |
 | <a id="aurix-tc3xx"></a>AURIX-TC3XX | Infineon AURIX TC3xx — automotive MCU with HSM | [Infineon product page](https://www.infineon.com/cms/en/product/microcontroller/32-bit-tricore-microcontroller/32-bit-tricore-aurix-tc3xx/) |
+
+| <a id="ntag-22x-dna"></a>NTAG-22X-DNA | NXP NTAG 22x DNA — AES-based NFC authentication | [NXP product page](https://www.nxp.com/products/rfid-nfc/nfc-hf/ntag/ntag-22x-dna:NTAG22xDNA) |
+| <a id="batpac"></a>BATPAC | BatPaC — Battery Performance and Cost model (Argonne National Lab) | [ANL](https://www.anl.gov/cse/batpac-model-software) |
+| <a id="emvco-contactless"></a>EMVCO-CONTACTLESS | EMVCo Contactless Payment Specifications | [emvco.com](https://www.emvco.com/emv-technologies/contactless/) |
 
 ## Data Standards
 
