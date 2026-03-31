@@ -50,7 +50,7 @@ The "at least daily" update frequency (Recital 46) refers to the BMS's internal 
 This is a recognized open problem:
 
 !!! warning "Unsolved implementation gap"
-    The [Battery Pass consortium](../references.md#battery-pass) states that Annex VII data attributes "urgently require further elaboration and definitions, which are decisive for economic operators to determine system requirements for implementation" (Battery Pass Content Guidance v3, 2024). Industry analyses consistently identify the BMS-to-passport data transfer as the biggest unsolved challenge before the Feb 2027 deadline.
+    The [Battery Pass consortium](../references.md#battery-pass) states that Annex VII data attributes "urgently require further elaboration and definitions, which are decisive for economic operators to determine system requirements for implementation" (Content Requirements position paper, July 2023). Analysis from [CEPS](../references.md#ceps-battery), [Seraph](../references.md#seraph-bms), and [DataArt](../references.md#dataart-battery) all identify the BMS-to-passport data transfer as the biggest unsolved challenge before the Feb 2027 deadline.
 
 The challenge varies dramatically by battery category:
 

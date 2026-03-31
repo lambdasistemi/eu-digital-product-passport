@@ -33,7 +33,7 @@ This study covers three EU product sectors with the earliest DPP deadlines:
 
 | Aspect | Assessment |
 |--------|-----------|
-| **Technical feasibility** | High — CIP-68, Plutus, did:prism cover all requirements |
+| **Technical feasibility** | High — CF DPP Blueprint patterns, Plutus/Aiken validators, did:prism cover all requirements |
 | **Cost** | $0.01-0.13/product (L1 batched), ~$0.0001 (Hydra) |
 | **Scalability** | L1 sufficient for all three sectors at expected volumes |
 | **EU compliance** | Technology-neutral regulation; adapter middleware needed for EU registry |

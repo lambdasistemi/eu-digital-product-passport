@@ -2,7 +2,7 @@
 
 ## The challenge
 
-The EU DPP mandates three access tiers ([ESPR Art. 10](../references.md#espr-art10), [Battery Reg. Art. 77(3)](../references.md#bat-art77-3)):
+The EU DPP defines differentiated access. The [ESPR Art. 10(1)(h)](../references.md#espr-art10) delegates the specific access groups to product-specific delegated acts. For batteries, [Annex XIII](../references.md#bat-annex-xiii) defines four access groups. In practice this maps to three tiers:
 
 | Level | Actors | Data |
 |-------|--------|------|

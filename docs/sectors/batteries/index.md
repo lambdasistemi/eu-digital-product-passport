@@ -2,7 +2,7 @@
 
 **Regulation**: [Battery Regulation (EU) 2023/1542](https://eur-lex.europa.eu/eli/reg/2023/1542) — adopted July 2023. See [references](../references.md#reg-battery).
 
-**Deadline**: Full battery passport mandatory **18 February 2027** for EV and industrial batteries > 2 kWh ([Art. 77](../references.md#bat-art77)).
+**Deadline**: Full battery passport mandatory **18 February 2027** for EV and industrial batteries > 2 kWh ([Art. 77(3)](../references.md#bat-art77)).
 
 **Granularity**: Item-level — each battery gets its own passport with unique SoH tracking.
 
