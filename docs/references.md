@@ -123,6 +123,8 @@ All factual claims in this feasibility study are backed by the sources listed he
 | <a id="iucn-microplastics"></a>IUCN-MICROPLASTICS | IUCN — Primary Microplastics in the Oceans (2017) | [iucn.org](https://www.iucn.org/resources/publication/primary-microplastics-oceans) |
 | <a id="aspi-uyghur"></a>ASPI-UYGHUR | ASPI — Uyghurs for Sale (2020) | [aspi.org.au](https://www.aspi.org.au/report/uyghurs-sale) |
 | <a id="sheffield-uyghur"></a>SHEFFIELD-UYGHUR | Sheffield Hallam University — In Broad Daylight (2021) | [shu.ac.uk](https://www.shu.ac.uk/helena-kennedy-centre/research-and-projects/all-projects/in-broad-daylight) |
+| <a id="crma"></a>CRMA | Critical Raw Materials Act (EU) 2024/1252 | [EUR-Lex](https://eur-lex.europa.eu/eli/reg/2024/1252) |
+| <a id="cbam"></a>CBAM | Carbon Border Adjustment Mechanism (EU) 2023/956 | [EUR-Lex](https://eur-lex.europa.eu/eli/reg/2023/956) |
 
 ## Cardano Ecosystem Projects
 
