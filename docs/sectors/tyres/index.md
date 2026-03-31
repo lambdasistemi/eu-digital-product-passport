@@ -96,18 +96,42 @@ Parallels with battery repurposing:
 
 ## Cardano architecture for tyres
 
-The simpler data model (mostly static, no continuous telemetry) means:
+Same MPFS pattern as [batteries](../batteries/architecture.md): one [Merkle Patricia Trie](../../references.md#mpfs) per tyre manufacturer. Each tyre (or batch/model, depending on delegated act) is a leaf. One on-chain UTxO per manufacturer holds the root hash.
 
-- **L1 is sufficient** — even at item level, batched minting handles the volume
-- **CIP-68 datum** stores hash anchor of tyre data (same pattern as batteries)
-- **No Hydra needed** — no real-time update stream
-- **User reporting** for tread depth could reuse the battery incentive contract pattern
+### Leaf value structure
+
+```
+TyreLeaf {
+  tyreId            : ByteString    -- DOT code or GTIN
+  granularity       : Level         -- Item | Batch | Model
+  status            : Status        -- InProduction | InUse | Retreaded | EndOfLife
+  labelClass        : LabelData     -- rolling resistance, wet grip, noise (Reg. 2020/740)
+  carbonFootprint   : Integer       -- kgCO2e per tyre
+  recycledContent   : RecycledData  -- % recycled rubber, % recycled steel
+  materialOrigin    : ByteString    -- natural rubber origin (EUDR if applicable)
+  retreatCount      : Integer       -- 0 for new, incremented on retreading
+  ...                               -- other fields per delegated act
+}
+```
+
+### Why simpler than batteries
+
+| Aspect | Batteries | Tyres |
+|--------|-----------|-------|
+| Dynamic data | SoH changes continuously → signed readings, rewards, commitment protocol | Mostly static after production |
+| Updates | Daily (BMS data) | Rare (retreading, end-of-life) |
+| User interaction | Users submit signed BMS readings for rewards | None needed |
+| On-chain cost | ~73 ADA/year per operator (daily root updates) | **< 10 ADA/year** per operator (lifecycle events only) |
+
+The tyre MPT is essentially write-once-at-manufacturing with rare lifecycle transitions. No reward pool, no commitment protocol, no reading rights.
+
+### Retreading = new leaf in retreader's MPT
+
+Same pattern as battery repurposing. The retreader becomes a new economic operator, creates a new leaf in their own MPT, and references the original manufacturer's trie root + proof path for casing provenance.
 
 ## Open questions
 
 1. **Delegated act scope** — what data fields will be required, at what granularity?
-2. **DOT code as identifier** — the DOT code is already a unique serial. Can it serve as the DPP identifier?
-3. **Retreading passport rules** — new passport or updated passport?
-4. **Tread depth reporting** — manual measurement vs embedded sensors vs photo-based ML?
-5. **TPMS integration** — can existing TPMS pressure/temp data feed the DPP?
-6. **EUDR overlap** — natural rubber supply chain traceability (deforestation regulation)
+2. **DOT code as MPT key** — the DOT code is already a unique serial on every tyre. It could serve directly as the MPT leaf key.
+3. **Retreading passport rules** — new leaf in retreader's MPT, or updated leaf in original manufacturer's MPT?
+4. **EUDR overlap** — if natural rubber falls under the deforestation regulation, the leaf needs geolocation data for raw material sourcing
