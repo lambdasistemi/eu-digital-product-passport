@@ -56,12 +56,15 @@ At this scale, Hydra becomes essential for cost-effectiveness.
 
 ## Comparison with alternatives
 
+!!! note "Estimates"
+    Competitor chain costs are approximate ranges based on typical gas prices as of early 2026. Ethereum gas varies significantly; Polygon costs reflect the PoS chain. Infrastructure costs (node, IPFS, API) are based on standard cloud hosting prices.
+
 | Platform | Cost per product | Notes |
 |----------|-----------------|-------|
 | Cardano L1 (batched) | $0.013-0.025 | Decentralized, immutable |
-| Cardano Hydra L2 | ~$0.0001 | Near-free, requires Hydra setup |
+| Cardano [Hydra](../references.md#hydra) L2 | ~$0.0001 | Near-free, requires Hydra setup |
 | Ethereum L1 | $0.50-5.00 | Gas price dependent |
-| Polygon PoS | $0.001-0.01 | Centralized validator set |
+| Polygon PoS | $0.001-0.01 | Semi-centralized validator set |
 | Centralized database | ~$0.001 | No tamper evidence |
 
 ## Update costs
