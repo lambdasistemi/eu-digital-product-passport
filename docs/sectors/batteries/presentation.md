@@ -2,9 +2,9 @@
 
 20-minute slide deck covering the battery sector feasibility study.
 
-[Open full-screen presentation](../../assets/battery-presentation.html){ .md-button .md-button--primary target="_blank" }
+[Open full-screen presentation](/eu-digital-product-passport/assets/battery-presentation.html){ .md-button .md-button--primary target="_blank" }
 
-<iframe src="../../assets/battery-presentation.html" style="width:100%; height:500px; border:1px solid #333; border-radius:8px;" allowfullscreen></iframe>
+<iframe src="/eu-digital-product-passport/assets/battery-presentation.html" style="width:100%; height:500px; border:1px solid #333; border-radius:8px;" allowfullscreen></iframe>
 
 ## Slides overview
 
