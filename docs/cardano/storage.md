@@ -2,7 +2,7 @@
 
 ## Transaction metadata
 
-Cardano transactions can carry arbitrary metadata as CBOR-encoded key-value maps.
+Cardano transactions can carry arbitrary metadata as [CBOR](../references.md#cbor)-encoded key-value maps.
 
 | Constraint | Value |
 |-----------|-------|
@@ -14,7 +14,9 @@ Cardano transactions can carry arbitrary metadata as CBOR-encoded key-value maps
 | Min transaction fee | ~0.155 ADA |
 | Fee per byte | ~0.000044 ADA |
 
-Metadata labels are registered via CIP-10. Relevant existing labels:
+All protocol parameters from [Cardano network documentation](../references.md#cardano-params). Values as of March 2026; subject to on-chain governance.
+
+Metadata labels are registered via [CIP-10](../references.md#cip-10). Relevant existing labels:
 
 | Label | Purpose |
 |-------|---------|
@@ -28,13 +30,13 @@ A DPP-specific label would need to be registered.
 
 ## CIP-25 vs CIP-68
 
-### CIP-25 (immutable)
+### [CIP-25](../references.md#cip-25) (immutable)
 
 Metadata stored in the minting transaction under label 721. No smart contract required — uses Cardano's native multi-asset ledger. Simple and cheap, but **immutable after mint**.
 
 Not suitable for DPP because passport data evolves over the product lifecycle (repairs, State of Health updates, ownership changes).
 
-### CIP-68 (updatable)
+### [CIP-68](../references.md#cip-68) (updatable)
 
 Uses **two tokens**:
 

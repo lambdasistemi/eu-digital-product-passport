@@ -1,12 +1,12 @@
 # Tyres
 
-**Regulation**: ESPR delegated act — expected ~2026.
+**Regulation**: [ESPR (EU) 2024/1781](../references.md#reg-espr) delegated act — expected ~2026 ([Working Plan 2025-2028](../references.md#espr-working-plan)).
 
-**Deadline**: Compliance ~2027 (18-24 months after delegated act).
+**Deadline**: Compliance ~2027 (18-24 months after delegated act, per [ESPR Art. 9](../references.md#espr-art9)).
 
-**Granularity**: Unknown. DOT codes provide item-level identification, but the delegated act may specify batch or model level.
+**Granularity**: Unknown. DOT codes provide item-level identification, but the delegated act may specify batch or model level ([ESPR Art. 9(2)(d)](../references.md#espr-art9-2d)).
 
-**Volume**: Depends on granularity. EU tyre market is ~350M units/year. At model level: trivial. At item level: requires batching or Hydra.
+**Volume**: Depends on granularity. EU tyre market is ~300M replacement + OE units/year ([ETRMA](../references.md#etrma)). At model level: trivial. At item level: requires batching or Hydra.
 
 ## Regulatory landscape
 
@@ -14,10 +14,10 @@ Tyres are in the ESPR priority product group (Working Plan 2025-2030). Two EU re
 
 | Regulation | Scope | Status |
 |-----------|-------|--------|
-| **ESPR (EU) 2024/1781** | DPP requirements (via delegated act) | Delegated act pending |
-| **Tyre Labelling Regulation (EU) 2020/740** | Energy label (rolling resistance, wet grip, noise) | In force since May 2021 |
+| [**ESPR (EU) 2024/1781**](../references.md#reg-espr) | DPP requirements (via delegated act) | Delegated act pending |
+| [**Tyre Labelling Regulation (EU) 2020/740**](../references.md#reg-tyre-label) | Energy label (rolling resistance, wet grip, noise) | In force since May 2021 |
 
-The tyre labelling regulation already mandates a product fiche in EPREL (EU Product Registry for Energy Labelling). The DPP delegated act will likely extend this with lifecycle and circularity data.
+The tyre labelling regulation already mandates a product fiche in [EPREL](../references.md#eprel) (EU Product Registry for Energy Labelling). The DPP delegated act will likely extend this with lifecycle and circularity data.
 
 ### End-of-Life Vehicles Regulation
 
@@ -79,7 +79,7 @@ Unlike batteries, most tyres have no embedded intelligence. Tread depth — the 
 | **Embedded tread sensors** | Chip in tyre + RFID/BLE | ±0.2mm | Continuous |
 | **TPMS + inference** | Existing TPMS data + ML model | Low | Continuous |
 
-Embedded tread sensors (e.g. Bridgestone iTrack, Continental ContiConnect) exist but are expensive and limited to commercial fleets. Consumer tyres do not have them.
+Embedded tread sensors (e.g. [Bridgestone iTrack](../references.md#bridgestone-itrack), [Continental ContiConnect](../references.md#continental-conticonnect)) exist but are expensive and limited to commercial fleets. Consumer tyres do not have them.
 
 **Opportunity for Cardano**: A user-reporting model similar to the battery incentive scheme — users report tread depth measurements (photo + depth gauge reading) for rewards. Less hardware-secure than BMS signed readings, but follows the same smart contract pattern.
 

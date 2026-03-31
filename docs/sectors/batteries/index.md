@@ -1,8 +1,8 @@
 # Batteries
 
-**Regulation**: [Battery Regulation (EU) 2023/1542](https://eur-lex.europa.eu/eli/reg/2023/1542) — adopted July 2023.
+**Regulation**: [Battery Regulation (EU) 2023/1542](https://eur-lex.europa.eu/eli/reg/2023/1542) — adopted July 2023. See [references](../references.md#reg-battery).
 
-**Deadline**: Full battery passport mandatory **18 February 2027** for EV and industrial batteries > 2 kWh.
+**Deadline**: Full battery passport mandatory **18 February 2027** for EV and industrial batteries > 2 kWh ([Art. 77](../references.md#bat-art77)).
 
 **Granularity**: Item-level — each battery gets its own passport with unique SoH tracking.
 
@@ -12,10 +12,10 @@
 
 Batteries are the only EU product category with:
 
-- **Item-level tracking** confirmed in regulation (Art. 77(1))
+- **Item-level tracking** confirmed in regulation ([Art. 77(1)](../references.md#bat-art77-1))
 - **Dynamic data** that changes throughout the product lifecycle (State of Health, cycle count)
 - **A hardware data source** (BMS) that produces the dynamic data
-- **An unsolved data bridge** — how BMS data reaches the passport is unspecified
+- **An unsolved data bridge** — how BMS data reaches the passport is unspecified ([Art. 14](../references.md#bat-art14) vs [Art. 77](../references.md#bat-art77))
 - **Repurposing** — a battery can have a second life with a new passport
 
 This makes batteries the most technically demanding DPP use case and the best proving ground for Cardano's value proposition.
