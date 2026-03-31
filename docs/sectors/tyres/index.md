@@ -186,6 +186,128 @@ The model leaf is write-once. The casing leaf (commercial tyres only) transition
 
 Same pattern as battery repurposing. The retreader becomes a new economic operator, creates a new casing leaf in their own MPT referencing the original manufacturer's trie root + proof path for provenance.
 
+## What each operator must do
+
+### Tyre manufacturer (Continental, Michelin, Bridgestone, etc.)
+
+Creates **one leaf per model** in their MPT. Almost entirely write-once — a manufacturer with 500 models publishes 500 leaves.
+
+| Field | Source | Regulation | Updates? |
+|-------|--------|-----------|----------|
+| Rolling resistance (A-E) | UNECE R117 type approval | [Reg. 2020/740](../../references.md#reg-tyre-label) | Never (per model) |
+| Wet grip (A-E) | Type approval | Reg. 2020/740 | Never |
+| Noise (dB) | Type approval | Reg. 2020/740 | Never |
+| **Abrasion rate (mg/km)** | Euro 7 test | [Euro 7 (EU) 2024/1257](../../references.md#euro7) | Never |
+| **Chemical profile** | Manufacturer | REACH (6PPD, PAH, PFAS) | Never (per batch) |
+| **Material composition** | Manufacturer | ESPR delegated act | Never |
+| **Recycled content %** | Manufacturer | ESPR delegated act | Per batch |
+| **Carbon footprint (kgCO2e)** | LCA (PEF methodology) | ESPR delegated act | Per model |
+| **Natural rubber origin** | Supply chain | [EUDR (EU) 2023/1115](../../references.md#reg-eudr) | Per batch |
+| Durability / mileage | Manufacturer testing | ESPR delegated act | Per model |
+| Retreadability class | Manufacturer | ESPR delegated act | Per model |
+| End-of-life routing | Manufacturer | ESPR delegated act | Per model |
+
+**On-chain cost**: < $10/year. Model leaves are inserted once. Batch-level fields (recycled content, rubber origin) may require periodic updates but affect the same leaf.
+
+### Retreader (commercial truck/bus tyres)
+
+The retreader is the tyre equivalent of a battery repurposer — they take a used casing, inspect it, apply a new tread, and create what the regulation considers a **new product**. They are the most interesting operator from a Cardano perspective.
+
+**What they need to do:**
+
+1. Look up the original manufacturer's model leaf (composition, retreadability class) — **cross-operator Merkle proof**
+2. Inspect the casing and record condition data
+3. Create a new **item-level casing leaf** in their own MPT
+4. Link back to the original manufacturer's trie root + proof path for provenance
+
+```mermaid
+sequenceDiagram
+    participant M as Manufacturer's MPT
+    participant R as Retreader
+    participant C as Cardano L1
+
+    R->>C: Query manufacturer's MPT for model leaf
+    C-->>R: Model data + Merkle proof (retreadability class, composition)
+
+    R->>R: Physical inspection of casing
+    R->>R: Decision: casing suitable for retreading
+
+    R->>C: Insert new TyreCasingLeaf in retreader's MPT
+    Note over C: Leaf contains:
+    Note over C: - DOT code (item identity)
+    Note over C: - Reference to manufacturer's model leaf
+    Note over C: - Manufacturer's trie root at time of query
+    Note over C: - Inspection results
+    Note over C: - Retread count (incremented)
+    Note over C: - New tread specification
+```
+
+**This solves retreading's core data problem**: today a retreader cannot know a casing's history — how many times it's been retreaded, what loads it carried, whether the casing design supports another retread. With the DPP, the retreader looks up the DOT code, finds the original model data and any previous retread records, and makes an informed decision.
+
+### Recycler
+
+Reads the chemical profile and composition data to route end-of-life tyres correctly:
+
+| Composition data needed | Why | Source |
+|------------------------|-----|--------|
+| 6PPD content | Granulate from 6PPD tyres may be restricted on sports pitches | Chemical profile in model leaf |
+| Natural vs synthetic rubber ratio | Affects pyrolysis yield and rCB quality | Composition in model leaf |
+| Steel reinforcement type | Determines separation process | Composition in model leaf |
+| Silica vs carbon black | Affects granulate properties | Composition in model leaf |
+| Previous chemical treatments | Retreaded tyres may have additional chemicals | Casing leaf (if commercial) |
+
+The recycler doesn't need to write to the tyre's DPP — they only read. Their own operations (material recovery rates, rCB output quality) may feed into their own DPP obligations if recycled content tracking becomes mandatory.
+
+## EUDR traceability: the supply chain challenge
+
+Natural rubber is the most complex supply chain element. A single tyre contains rubber from multiple plantations, processed through multiple intermediaries:
+
+```mermaid
+graph LR
+    A[Plantation 1<br>Thailand] --> D[Processor<br>aggregates latex]
+    B[Plantation 2<br>Indonesia] --> D
+    C[Plantation 3<br>Côte d'Ivoire] --> D
+    D --> E[Rubber trader]
+    E --> F[Tyre manufacturer]
+    F --> G[DPP: model leaf<br>with supply chain hash]
+
+    style A fill:#141428,stroke:#00cc88,color:#e8e8f0
+    style B fill:#141428,stroke:#00cc88,color:#e8e8f0
+    style C fill:#141428,stroke:#00cc88,color:#e8e8f0
+    style D fill:#141428,stroke:#ff9900,color:#e8e8f0
+    style E fill:#141428,stroke:#ff9900,color:#e8e8f0
+    style F fill:#141428,stroke:#00d2ff,color:#e8e8f0
+    style G fill:#0d1a2a,stroke:#00d2ff,color:#e8e8f0
+```
+
+EUDR requires the tyre manufacturer to prove that **every batch of natural rubber** was sourced from land not deforested after 31 December 2020. This means:
+
+- Plantation geolocation coordinates
+- Satellite imagery confirmation (deforestation-free)
+- Due diligence audit trail through each intermediary
+
+Each step in the chain produces an attestation. On Cardano:
+
+- Each supply chain actor (plantation, processor, trader, manufacturer) has their own MPT
+- Each attestation is a leaf in the attesting party's trie
+- The manufacturer's model/batch leaf contains a `supplyChainHash` — a Merkle root over all upstream attestations
+- A verifier (customs, market surveillance) can request selective disclosure via Merkle proofs — checking one supplier without seeing others
+
+**This is where Cardano adds value over a centralized system**: multiple independent parties each contribute attestations to the supply chain record. No single party controls the full chain. The on-chain Merkle roots ensure no party can retroactively alter their attestation after the fact.
+
+## Why Cardano for tyres — honest assessment
+
+| Use case | Blockchain needed? | Why / why not |
+|----------|-------------------|---------------|
+| Model-level static data | **No** — a database works fine | Write-once, single author (manufacturer), rarely queried |
+| EUDR supply chain traceability | **Yes** | Multiple independent parties, none should control the full chain, tamper-evident attestations |
+| Retreading provenance chain | **Yes** | Cross-manufacturer data (retreader reads manufacturer's data), verifiable handover, casing history |
+| Cross-manufacturer interop | **Yes** | A retreader works with casings from 50+ manufacturers — one system beats 50 API integrations |
+| Chemical composition claims | **Marginal** | Tamper-evidence is nice but a certified database with audit logs may suffice |
+| Consumer label data | **No** | Already in EPREL (EU product registry) |
+
+**Bottom line**: for passenger car tyres (no retreading, static data), Cardano adds little over a centralized DPP platform. The value is in **commercial tyres** (retreading provenance) and **EUDR compliance** (multi-party supply chain attestation). These are also the use cases where the delegated act is most likely to require item-level or batch-level traceability.
+
 ## Open questions
 
 1. **Delegated act** — the specific data fields, granularity split (model vs item for commercial), and compliance timeline are all pending
