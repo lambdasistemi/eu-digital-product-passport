@@ -161,7 +161,7 @@ This means one transaction per batch period, regardless of how many batteries we
 
 ## Open design questions
 
-1. **MPT implementation**: The CF DPP standards repo mentions both Merkle Trees and Merkle Patricia Tries. The [Aiken MPT library](https://github.com/cardano-foundation/merkle-tree-java) needs evaluation for production readiness.
+1. **MPT implementation**: The [MPFS infrastructure](../references.md#mpfs) (cardano-foundation/mpfs, cardano-mpfs-onchain, cardano-mpfs-cage) provides production-grade Merkle Patricia Trie support with Aiken on-chain validators and cross-language test vectors. This is the natural foundation for the per-operator trie model.
 2. **Proof size**: An MPT proof for a battery in a trie of 10M leaves is ~20 hash nodes (log₂ of depth). At 32 bytes per node, that's ~640 bytes — well within a QR-scannable response but needs benchmarking for on-chain verification.
 3. **Concurrent updates**: If the operator updates multiple batteries in the same batch, the MPT must handle concurrent modifications. This is a standard problem with well-known solutions (batch insert/update).
 4. **Signed readings integration**: The challenge-response protocol for [signed BMS readings](signed-bms.md) still works — the signed reading is verified and then incorporated into the leaf data before the root update.

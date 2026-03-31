@@ -2,7 +2,7 @@
 
 ## Summary
 
-Storing EU Digital Product Passports on Cardano is technically feasible. The Cardano Foundation is already building an [official DPP solution](../references.md#cf-dpp) with open-source standards, active pilots, and a monthly working group ([solution page](../references.md#cf-dpp-page)).
+Storing EU Digital Product Passports on Cardano is technically feasible. The Cardano Foundation has published a [DPP Blueprint](../references.md#cf-dpp) describing solution patterns, and the [MPFS infrastructure](https://github.com/cardano-foundation/mpfs) provides production-grade Merkle Patricia Trie support with Aiken on-chain validators. The ecosystem is early-stage — see [existing work](existing-work.md) for an honest assessment.
 
 The core pattern: **anchor hashes and identifiers on-chain, store full DPP data off-chain**.
 
@@ -54,10 +54,11 @@ graph TD
 
 ## Cardano Foundation DPP Standards
 
-The Cardano Foundation maintains an official open-source repository:
+### Key infrastructure
 
-- **Repository**: [github.com/cardano-foundation/cardano-dpp-standards](https://github.com/cardano-foundation/cardano-dpp-standards)
-- **Validator language**: Aiken
-- **Token standard**: CIP-68
-- **Data structure**: Merkle Trees (default) or Merkle Patricia Tries
-- **Pilots**: Textiles, EV batteries (with [LW3](../references.md#lw3) / [Hydra](../references.md#hydra))
+| Component | Maturity | Repository |
+|-----------|----------|-----------|
+| **DPP Blueprint** | Conceptual (docs only) | [cardano-dpp-standards](https://github.com/cardano-foundation/cardano-dpp-standards) |
+| **MPFS** (Merkle Patricia Tries) | Production-grade (Aiken + Haskell) | [mpfs](https://github.com/cardano-foundation/mpfs), [onchain](https://github.com/cardano-foundation/cardano-mpfs-onchain) |
+| **did:prism / Identus** | Active open source | [hyperledger-identus](https://github.com/hyperledger-identus) |
+| **Scantrust wine pilot** | Deployed (30+ wineries) | See [existing work](existing-work.md) |
