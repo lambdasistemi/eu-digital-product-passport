@@ -191,8 +191,57 @@ At ~0.2 ADA per transaction, daily root updates for an operator with millions of
 
 MPFS handles multiple leaf modifications in a single batch natively — the off-chain service applies all mutations to the trie and produces one new root with one transition proof. No contention at the on-chain level because there is exactly one UTxO per operator.
 
+## Signed readings and user incentives
+
+The [challenge-response protocol](signed-bms.md) for signed BMS readings plugs into MPFS via a two-phase on-chain interaction:
+
+```mermaid
+sequenceDiagram
+    participant U as User (battery holder)
+    participant C as Cardano L1 (MPFS)
+    participant B as BMS (NFC)
+    participant O as Operator (MPT owner)
+
+    Note over U,C: Phase 1 — Commitment
+    U->>C: Mint commitment in MPFS (challenge token)
+    Note over C: Commitment UTxO created at slot N
+
+    Note over U,B: Phase 2 — Reading
+    U->>B: NFC tap with challenge = commitment_tx_hash
+    B-->>U: COSE_Sign1 { state_data, commitment_tx_hash, signature }
+
+    Note over U,C: Phase 3 — Claim
+    U->>C: Submit reading, consume commitment UTxO
+    Note over C: Redeemer: "here is the signed reading, pay me"
+    Note over C: Validator checks: signature valid, commitment fresh,<br/>reading plausible, user holds battery token
+    C-->>U: Reward released
+
+    Note over O,C: Phase 4 — Incorporation
+    O->>C: Query on-chain: new verified readings for my batteries
+    O->>O: Update affected leaves in off-chain MPT
+    O->>C: Anchor new MPT root via MPFS on-chain validator
+```
+
+### Why the operator incorporates readings
+
+The operator (economic operator who placed the battery on the EU market) is **legally compelled** by [Art. 77(4)](../references.md#bat-art77-4) to keep the passport accurate and up-to-date. They don't incorporate readings out of goodwill — they do it because:
+
+- The regulation requires it
+- The readings are already on-chain (verified, timestamped, signed by BMS hardware)
+- Not incorporating them means their MPT diverges from the on-chain evidence
+- Market surveillance authorities can compare the operator's MPT leaves against the on-chain reading submissions
+
+The user provides data the operator needs but can't easily obtain (especially for non-connected batteries). The smart contract guarantees the reward. The regulation guarantees incorporation.
+
+### Reward funding
+
+The operator pre-funds a reward pool locked at the MPFS contract address. Each valid reading submission releases a reward to the user. The operator controls:
+
+- Reward amount per reading
+- Minimum interval between readings for the same battery
+- Which batteries are eligible (all in their MPT, or a subset)
+
 ## Open design questions
 
-1. **Signed readings integration**: The challenge-response protocol for [signed BMS readings](signed-bms.md) still works — the signed reading is verified off-chain and incorporated into the leaf data before the next root update. The on-chain commitment UTxO for the challenge remains a separate mechanism.
-2. **Ownership transfer**: The CIP-68 user token concept for ownership transfer needs rethinking in the MPT model. One option: a separate thin token (not CIP-68) that the owner holds, pointing to the battery's key in the operator's MPT. Alternatively, ownership is tracked as a field in the leaf data.
-3. **Proof size at scale**: An MPT proof for a battery in a trie of 10M leaves needs benchmarking against MPFS's actual proof format. The theoretical size (~20 hash nodes, ~640 bytes) is well within limits but should be validated empirically.
+1. **Ownership transfer**: The battery holder needs a token to claim rewards. When the battery changes hands, this token must transfer. Options: a thin native token (not CIP-68) minted per battery pointing to the MPT key, or a secondary trie of ownership mappings.
+2. **Proof size at scale**: An MPT proof for a battery in a trie of 10M leaves needs benchmarking against MPFS's actual proof format. The theoretical size (~20 hash nodes, ~640 bytes) is well within limits but should be validated empirically.
