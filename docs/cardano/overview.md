@@ -59,6 +59,6 @@ graph TD
 | Component | Maturity | Repository |
 |-----------|----------|-----------|
 | **DPP Blueprint** | Conceptual (docs only) | [cardano-dpp-standards](https://github.com/cardano-foundation/cardano-dpp-standards) |
-| **MPFS** (Merkle Patricia Tries) | Production-grade (Aiken + Haskell) | [mpfs](https://github.com/cardano-foundation/mpfs), [onchain](https://github.com/cardano-foundation/cardano-mpfs-onchain) |
+| **MPFS** (Merkle Patricia Tries) | Production-grade (Aiken + Haskell) | [off-chain](https://github.com/cardano-foundation/mpfs), [on-chain](https://github.com/cardano-foundation/cardano-mpfs-onchain), [cage](https://github.com/cardano-foundation/cardano-mpfs-cage) |
 | **did:prism / Identus** | Active open source | [hyperledger-identus](https://github.com/hyperledger-identus) |
 | **Scantrust wine pilot** | Deployed (30+ wineries) | See [existing work](existing-work.md) |

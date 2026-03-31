@@ -173,9 +173,9 @@ graph TD
     end
 ```
 
-- **Off-chain** (`cardano-foundation/mpfs`): HTTP service managing the trie. Handles inserts, updates, deletes, proof generation. The operator runs this as part of their passport backend.
-- **On-chain** (`cardano-foundation/cardano-mpfs-onchain`): Aiken validators that verify MPT transition proofs — given the old root, a proof, and the new root, the validator confirms the transition is valid. This is what locks the operator's UTxO.
-- **Cage** (`cardano-foundation/cardano-mpfs-cage`): Language-agnostic specification of the validator logic with cross-language test vectors.
+- **Off-chain** ([`cardano-foundation/mpfs`](../references.md#mpfs)): Haskell HTTP service managing the trie. Handles inserts, updates, deletes, proof generation, transaction building. The operator runs this as part of their passport backend.
+- **On-chain** ([`cardano-foundation/cardano-mpfs-onchain`](../references.md#mpfs-onchain)): Aiken validators that verify MPT transition proofs — given the old root, a proof, and the new root, the validator confirms the transition is valid. This is what locks the operator's UTxO.
+- **Cage** ([`cardano-foundation/cardano-mpfs-cage`](../references.md#mpfs-cage)): Language-agnostic specification of the validator logic with cross-language test vectors, ensuring off-chain and on-chain implementations agree.
 
 ### Update flow
 
