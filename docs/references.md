@@ -69,6 +69,7 @@ All factual claims in this feasibility study are backed by the sources listed he
 | ID | Reference | URL |
 |----|-----------|-----|
 | <a id="ntag5-link"></a>NTAG5-LINK | NXP NTAG 5 Link (NT3H5111) — NFC Type 5 + I2C master + energy harvesting | [NXP product page](https://www.nxp.com/products/rfid-nfc/nfc-hf/ntag/ntag-5-link-nfc-forum-compliant-ic-bridge-for-tiny-iot-devices:NT3H5111) |
+| <a id="se050"></a>SE050 | NXP EdgeLock SE050 — secure element, secp256k1 + Ed25519 + P-256, I2C, CC EAL 6+ | [NXP product page](https://www.nxp.com/products/security-and-authentication/edgelock-embedded-se/edgelock-se050-plug-trust-secure-element-family-enhanced-iot-security-with-high-flexibility:SE050) |
 | <a id="optiga-trust-m"></a>OPTIGA-TRUST-M | Infineon OPTIGA Trust M — ECC-P256 secure element, I2C | [Infineon product page](https://www.infineon.com/cms/en/product/security-smart-card-solutions/optiga-embedded-security-solutions/optiga-trust/optiga-trust-m-sls32aia/) |
 | <a id="atecc608b"></a>ATECC608B | Microchip ATECC608B — ECDSA secure element | [Microchip product page](https://www.microchip.com/en-us/product/ATECC608B) |
 | <a id="trust-and-go"></a>TRUST-AND-GO | Microchip Trust&GO — pre-provisioned secure element | [Microchip product page](https://www.microchip.com/en-us/products/security/trust-platform/trust-and-go) |

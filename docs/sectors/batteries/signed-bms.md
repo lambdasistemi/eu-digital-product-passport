@@ -51,9 +51,9 @@ The cost of adding this capability is negligible for automotive BMS:
 
 | Component | Cost at 100k volume |
 |-----------|-------------------|
-| Secure element ([ATECC608B](../../references.md#atecc608b) / [OPTIGA Trust M](../../references.md#optiga-trust-m)) | ~$0.50-0.70 |
+| Secure element ([NXP SE050](../../references.md#se050)) | ~$1.50-2.50 |
 | Passives (caps, resistors) | $0.01 |
-| **Total BOM addition** | **$0.51-0.71** |
+| **Total BOM addition** | **$1.51-2.51** |
 
 | Application | BMS cost | Signing cost | Impact |
 |------------|----------|-------------|--------|
@@ -344,7 +344,7 @@ graph TD
 | Public key → passport datum | Registered at manufacturing by economic operator | Operator must correctly register the right key |
 | Signature → on-chain verification | Plutus built-in ECDSA/EdDSA | Correctness of validator code |
 
-**Root of trust**: the secure element vendor's provisioning process. For pre-provisioned chips (Microchip Trust&GO, Infineon OPTIGA Trust M Express), the vendor generates the key pair in their secure facility and provides a device certificate signed by their CA. The manufacturer registers the public key in the battery passport datum at production time.
+**Root of trust**: the secure element vendor's provisioning process. For pre-provisioned chips (NXP SE050C1/C2), the vendor generates the key pair in their secure facility and provides a device certificate signed by their CA. The manufacturer registers the public key in the battery passport datum at production time.
 
 **Weakest link**: the MCU → SE boundary. The secure element cannot verify that the CBOR payload it signs corresponds to real sensor readings. This is mitigated by:
 

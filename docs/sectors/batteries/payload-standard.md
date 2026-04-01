@@ -47,10 +47,10 @@ The entire signed reading is a [COSE_Sign1](https://www.rfc-editor.org/rfc/rfc90
 
 ```
 COSE_Sign1 = [
-  protected   : bstr,    ; CBOR-encoded { 1: -7 }  (alg: ES256)
+  protected   : bstr,    ; CBOR-encoded { 1: alg }
   unprotected : {},      ; empty
   payload     : bstr,    ; CBOR-encoded BMS reading
-  signature   : bstr     ; ECDSA-P256 signature
+  signature   : bstr     ; ECDSA-secp256k1 or Ed25519 signature
 ]
 ```
 
@@ -58,19 +58,17 @@ This is the same structure used in the EU Digital COVID Certificate, mobile driv
 
 ### Protected header
 
-```cbor-diagnostic
-{
-  1: -7    ; Algorithm: ES256 (ECDSA w/ SHA-256 on P-256 curve)
-}
-```
-
-Or for Cardano-native curve:
+Two algorithms are supported, both with native Plutus built-in verifiers:
 
 ```cbor-diagnostic
-{
-  1: -8    ; Algorithm: EdDSA (Ed25519)
-}
+{ 1: -47 }   ; ES256K: ECDSA with SHA-256 on secp256k1
 ```
+
+```cbor-diagnostic
+{ 1: -8 }    ; EdDSA: Ed25519
+```
+
+The operator chooses at deployment time. The on-chain validator reads the algorithm from the protected header and dispatches to the appropriate Plutus built-in (`verifyEcdsaSecp256k1Signature` or `verifyEd25519Signature`). Both are supported by the NXP SE050 secure element.
 
 ### Signature computation
 
@@ -142,10 +140,10 @@ A COSE_Sign1 BMS reading in CBOR diagnostic notation:
 ```cbor-diagnostic
 18(                                    ; COSE_Sign1 tag
   [
-    h'a10126',                         ; protected: { 1: -7 } (ES256)
+    h'a10138...',                      ; protected: { 1: -47 } (ES256K) or { 1: -8 } (EdDSA)
     {},                                ; unprotected: empty
     h'a501....',                       ; payload: CBOR-encoded BMS reading
-    h'304502...'                       ; signature: ECDSA-P256
+    h'304502...'                       ; signature: secp256k1 or Ed25519
   ]
 )
 ```
@@ -165,7 +163,7 @@ The smart contract (or an off-chain verifier) checks:
 | Rule | Check |
 |------|-------|
 | Valid COSE_Sign1 structure | Four-element array with correct types |
-| Protected header contains known algorithm | ES256 (-7) or EdDSA (-8) |
+| Protected header contains known algorithm | ES256K (-47) or EdDSA (-8) |
 | All mandatory payload fields present | Keys 1-11 in state map |
 | Correct types | All values are integers, cell_voltages is an array |
 | Schema version recognized | Must be a known version |
@@ -195,7 +193,7 @@ The smart contract (or an off-chain verifier) checks:
 | Rule | Check |
 |------|-------|
 | Reconstruct Sig_structure | Per RFC 9052 §4.4 |
-| Verify signature | `verifyEcdsaSecp256k1Signature(bms_key, hash(Sig_structure), signature)` |
+| Verify signature | `verifyEcdsaSecp256k1Signature` (ES256K) or `verifyEd25519Signature` (EdDSA) |
 | Public key matches | bms_key matches the key registered in the CIP-68 datum |
 
 ## Separation of concerns
