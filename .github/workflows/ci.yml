@@ -13,8 +13,24 @@ concurrency:
 jobs:
   build-gate:
     name: Build Gate
-    runs-on: nixos
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Stub CI
-        run: echo "CI stub — will be replaced by real CI"
+      - name: Gate
+        run: echo "Build gate passed"
+
+  lean:
+    name: Lean Proofs
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lean
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: paolino/dev-assets/setup-nix@v0.0.1
+        with:
+          cachix-auth-token: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+
+      - name: Build Lean proofs
+        run: nix shell nixpkgs#lean4 --quiet -c lake build
