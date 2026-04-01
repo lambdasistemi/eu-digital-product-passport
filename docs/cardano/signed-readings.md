@@ -48,12 +48,16 @@ ItemLeaf {
   schemaVersion   : Integer
   metadata        : ByteString            -- product-specific (battery model, tyre DOT, etc.)
   reporter        : Maybe ReporterAssignment
-  commitment      : Maybe ByteString      -- set by operator, cleared on reading
+  commitment      : Maybe Commitment      -- set by operator (Tx 1), cleared on reading (Tx 2)
+}
+
+Commitment {
+  validFrom       : Integer               -- slot: reading accepted from this slot
+  validUntil      : Integer               -- slot: reading rejected after this slot
 }
 
 ReporterAssignment {
   reporterPubKey  : ByteString
-  nextWindowSlot  : Integer               -- earliest slot for next valid reading
   nextReward      : Integer               -- reward for the next reading (always > 0)
 }
 ```
@@ -74,11 +78,10 @@ ReporterLeaf {
 stateDiagram-v2
     [*] --> Virgin: Operator registers item
     Virgin --> Assigned: User claims (no reward)
-    Assigned --> Committed: Operator sets commitment
-    Committed --> Reading: User taps + submits
-    Reading --> Assigned: Commitment cleared, window updated
-    Assigned --> Committed: Next window opens, operator sets commitment
-    Reading --> Reassigned: Item changes hands
+    Assigned --> Committed: Tx 1: operator sets commitment
+    Committed --> Assigned: Tx 2: user submits reading
+    Assigned --> Committed: Next window, operator sets commitment
+    Assigned --> Reassigned: Item changes hands
     Reassigned --> Committed: New user, operator sets commitment
 
     note right of Virgin
@@ -87,11 +90,11 @@ stateDiagram-v2
     end note
 
     note right of Committed
-        commitment = Just hash
-        Waiting for user to tap
+        commitment = Just (validFrom, validUntil)
+        Single-use: cleared on Tx 2
     end note
 
-    note right of Reading
+    note right of Assigned
         commitment = Nothing
         Rewards accumulated
     end note
@@ -100,10 +103,10 @@ stateDiagram-v2
 | Step | What happens | Tx? | Who pays? |
 |------|-------------|-----|-----------|
 | **Registration** | Item leaf created: `reporter = Nothing, commitment = Nothing` | Yes (MPT insert) | Operator |
-| **Assignment** | `reporter = Just { pubKey, window, reward }` | Yes (MPT update) | Operator |
-| **Commitment** | `commitment = Just hash` | Yes (MPT update) | Operator |
-| **Reading** | Commitment cleared, reporter leaf updated, window/reward set for next | Yes (MPT update) | Operator |
-| **Transfer** | `reporter` changed to new user | Yes (MPT update) | Operator |
+| **Assignment** | `reporter = Just { pubKey, reward }` | Yes (MPT update) | Operator |
+| **Tx 1: Commitment** | `commitment = Just (validFrom, validUntil)` | Yes (MPT update) | Operator |
+| **Tx 2: Reading** | `commitment = Nothing`, reporter leaf rewards updated | Yes (MPT update) | Operator |
+| **Transfer** | `reporter` changed to new user's key | Yes (MPT update) | Operator |
 
 Key properties:
 
@@ -111,8 +114,9 @@ Key properties:
 - **Assignment pays nothing** — the user is registering as reporter, not earning.
 - **Every reading pays** — `nextReward` is always > 0.
 - **Rewards belong to the reporter, not the item** — old reporter keeps accumulated rewards on transfer.
-- **The contract decides the next window and reward** — set on each reading submission.
-- **Commitment is rate-limited by the window** — operator sets it when `nextWindowSlot` arrives. If the user doesn't consume it, they wait for the next window.
+- **Commitment is single-use** — created in Tx 1, cleared in Tx 2. Cannot be reused.
+- **Commitment has a validity window** — `validFrom ≤ currentSlot ≤ validUntil`. Outside this range it's inert even if still in the leaf.
+- **Rate limiting** — the operator decides when to create the next commitment. A burned commitment (never consumed) just sits inert until the operator overwrites it with the next one.
 
 ## Reward tokens
 
@@ -155,22 +159,22 @@ sequenceDiagram
     Note over U,O: Tx 1: Commitment
     U->>O: Request reading (itemPubKeyHash, reporterPubKey, signature)
     O->>O: Verify reporter matches item leaf
-    O->>O: Verify window is open (currentSlot ≥ nextWindowSlot)
-    O->>C: MPT update: set commitment = Just hash
+    O->>O: Rate limit check
+    O->>C: MPT update: set commitment = Just (validFrom, validUntil)
     C-->>O: Confirmed
-    O-->>U: {commitmentHash}
+    O-->>U: {validFrom, validUntil}
 
-    Note over U,I: Tap
-    U->>I: NFC: challenge = commitmentHash
+    Note over U,I: Tap (between validFrom and validUntil)
+    U->>I: NFC: validFrom, validUntil
     I->>I: Read sensors
-    I->>I: Sign(state ‖ commitmentHash) → COSE_Sign1
+    I->>I: Sign(state ‖ validFrom ‖ validUntil) → COSE_Sign1
     I-->>U: Signed reading
 
     Note over U,O: Tx 2: Reading inclusion
     U->>O: Submit signed reading
     O->>O: Verify COSE signature against itemPubKey
-    O->>O: Verify commitment hash matches item leaf
-    O->>C: MPT update: clear commitment, update reporter rewards, set next window/reward
+    O->>O: Verify (validFrom, validUntil) matches item leaf commitment
+    O->>C: MPT update: commitment = Nothing, reporter rewards updated
     C-->>O: Confirmed
     O-->>U: {txHash, rewardsEarned}
 ```
@@ -180,36 +184,46 @@ sequenceDiagram
 **Tx 1 — Commitment (operator → chain):**
 
 - Consumes operator's MPT UTxO (old root)
-- Produces operator's MPT UTxO (new root) with `commitment = Just hash` in the item leaf
+- Produces operator's MPT UTxO (new root) with `commitment = Just (validFrom, validUntil)` in the item leaf
 - Cost: ~0.2 ADA tx fee, 0 locked ADA
 
 **Tx 2 — Reading inclusion (operator → chain):**
 
 - Consumes operator's MPT UTxO (old root)
 - Produces operator's MPT UTxO (new root) with:
-    - Item leaf: `commitment = Nothing`, `nextWindowSlot` and `nextReward` updated
+    - Item leaf: `commitment = Nothing`
     - Reporter leaf: `rewardsAccumulated += nextReward` (insert if first reading)
 - Cost: ~0.2-0.3 ADA tx fee, 0 locked ADA
 
 ### What the commitment prevents
 
-The commitment binds the reading to a specific moment. Without it, a user could:
+The commitment binds the reading to a specific time window. Without it, a user could:
 
 - Tap the item today (good state), hold the signed reading, submit it months later (item degraded)
 - The signed reading would still be valid because the item key signed it
 
 With the commitment:
 
-- The commitment hash is set by the operator at a known slot
-- The item signs the reading over that specific hash
-- On Tx 2, the validator checks: COSE payload contains the hash that's currently in the leaf
-- A stale reading referencing an old commitment fails — the leaf no longer contains that hash
+- The item signs `(validFrom, validUntil, state)` — binding the reading to a specific window
+- The validator checks: COSE payload `validFrom` and `validUntil` match the commitment in the leaf
+- The validator checks: `validFrom ≤ currentSlot ≤ validUntil`
+- Tx 2 clears the commitment — the reading cannot be submitted twice
+- A reading from a different window fails because the slots don't match the leaf
+
+### Single-use guarantee
+
+The commitment is single-use by construction:
+
+1. **Tx 1** creates it (`Nothing → Just (validFrom, validUntil)`)
+2. **Tx 2** destroys it (`Just (validFrom, validUntil) → Nothing`)
+
+Between Tx 1 and Tx 2, exactly one reading can be submitted. After Tx 2, the commitment is gone. A second tap produces a signed reading that references a commitment no longer in the leaf — the validator rejects it.
 
 ### Burned commitment
 
-If the user requests a commitment but never submits a reading, the commitment sits in the leaf until the window expires. On the next window, the operator overwrites it with a new commitment (or clears it). No ADA is locked, no reclaim logic needed. The operator's only cost is the wasted Tx 1 fee (~0.2 ADA).
+If the user requests a commitment (Tx 1) but never submits a reading, the commitment sits in the leaf past `validUntil`. It's inert — no reading can use it because `currentSlot > validUntil`. The operator simply sets a new commitment when the next reading is due. No cleanup needed — the old commitment is overwritten.
 
-Rate limiting prevents abuse: one commitment per item per window. If the user burns it, they wait for the next window.
+The operator's only cost for a burned commitment is the wasted Tx 1 fee (~0.2 ADA). No ADA is locked.
 
 ## Cost per reading
 
@@ -252,9 +266,9 @@ ReadingValidator (Aiken):
   Validation:
 
   -- Commitment
-  1. Item leaf has commitment = Just hash
-  2. COSE payload challenge field matches hash
-  3. commitment slot is recent (within maxAge)
+  1. Item leaf has commitment = Just (validFrom, validUntil)
+  2. COSE payload fields validFrom and validUntil match the leaf commitment
+  3. validFrom ≤ currentSlot ≤ validUntil
 
   -- Item signature
   4. itemProof verifies leaf exists under current MPT root
@@ -263,23 +277,21 @@ ReadingValidator (Aiken):
   -- Reporter authorization
   6. Item leaf has reporter = Just assignment
   7. Transaction signed by assignment.reporterPubKey
-  8. current slot ≥ assignment.nextWindowSlot
 
   -- Leaf transitions
-  9. updatedItemLeaf.commitment = Nothing (cleared)
-  10. updatedItemLeaf.reporter.nextWindowSlot and nextReward set by contract logic
-  11. updatedItemLeaf.reporter.reporterPubKey unchanged
-  12. Reporter key = hash(assignment.reporterPubKey)
-  13. If first reading: reporter leaf is MPT insert (rewardsAccumulated = assignment.nextReward)
-  14. If subsequent: updatedReporter.rewardsAccumulated = old + assignment.nextReward
+  8. updatedItemLeaf.commitment = Nothing (cleared — single use)
+  9. updatedItemLeaf.reporter.reporterPubKey unchanged
+  10. Reporter key = hash(assignment.reporterPubKey)
+  11. If first reading: reporter leaf is MPT insert (rewardsAccumulated = assignment.nextReward)
+  12. If subsequent: updatedReporter.rewardsAccumulated = old + assignment.nextReward
 
   -- MPT
-  15. mptTransition proves old root → new root with both leaf updates
-  16. Operator output UTxO has new root hash
+  13. mptTransition proves old root → new root with both leaf updates
+  14. Operator output UTxO has new root hash
 
   -- Product-specific
-  17. CBOR payload conforms to schemaVersion
-  18. Plausibility checks per product type
+  15. CBOR payload conforms to schemaVersion
+  16. Plausibility checks per product type
 ```
 
 ## Signing format: COSE_Sign1
@@ -300,13 +312,16 @@ COSE_Sign1 = [
 ```cbor-diagnostic
 {
   1: h'...',           -- item_id (item public key hash, ByteString)
-  2: h'...',           -- challenge (commitment hash from item leaf, ByteString)
-  3: { ... },          -- state (sensor readings — schema varies by product)
-  4: 1                 -- schema_version (unsigned int)
+  2: 142857000,        -- valid_from (slot, from commitment)
+  3: 142900000,        -- valid_until (slot, from commitment)
+  4: { ... },          -- state (sensor readings — schema varies by product)
+  5: 1                 -- schema_version (unsigned int)
 }
 ```
 
-Fields 1, 2, and 4 are the same for every product. Field 3 (state) is product-specific:
+The item signs over `(itemPubKey, validFrom, validUntil, state, schemaVersion)`. The validator checks fields 2 and 3 match the commitment in the leaf and that `currentSlot` is within range.
+
+Fields 1-3 and 5 are the same for every product. Field 4 (state) is product-specific:
 
 | Product | Field 3 contents |
 |---------|-----------------|
