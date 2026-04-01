@@ -1,0 +1,7 @@
+packages: .
+
+source-repository-package
+  type: git
+  location: https://github.com/paolino/aiken-codegen
+  tag: 74f364c10e93
+  --sha256: 0jx25xvsvqmrl3ipxkvg4chj0wdylhbqnknpzxkk58ifiz2z6sy
