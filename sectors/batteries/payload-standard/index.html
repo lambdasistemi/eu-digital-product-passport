@@ -483,6 +483,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../cardano/signed-readings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Signed Readings Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../cardano/eu-integration/" class="md-nav__link">
         
   
@@ -1980,23 +2008,20 @@
 <h2 id="cose_sign1-envelope">COSE_Sign1 envelope<a class="headerlink" href="#cose_sign1-envelope" title="Permanent link">&para;</a></h2>
 <p>The entire signed reading is a <a href="https://www.rfc-editor.org/rfc/rfc9052#section-4.2">COSE_Sign1</a> structure:</p>
 <div class="highlight"><pre><span></span><code>COSE_Sign1 = [
-  protected   : bstr,    ; CBOR-encoded { 1: -7 }  (alg: ES256)
+  protected   : bstr,    ; CBOR-encoded { 1: alg }
   unprotected : {},      ; empty
   payload     : bstr,    ; CBOR-encoded BMS reading
-  signature   : bstr     ; ECDSA-P256 signature
+  signature   : bstr     ; ECDSA-secp256k1 or Ed25519 signature
 ]
 </code></pre></div>
 <p>This is the same structure used in the EU Digital COVID Certificate, mobile driving licences, and FIDO2 attestations. It's not an invention — it's a direct application of an existing standard.</p>
 <h3 id="protected-header">Protected header<a class="headerlink" href="#protected-header" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>{
-  1: -7    ; Algorithm: ES256 (ECDSA w/ SHA-256 on P-256 curve)
-}
+<p>Two algorithms are supported, both with native Plutus built-in verifiers:</p>
+<div class="highlight"><pre><span></span><code>{ 1: -47 }   ; ES256K: ECDSA with SHA-256 on secp256k1
 </code></pre></div>
-<p>Or for Cardano-native curve:</p>
-<div class="highlight"><pre><span></span><code>{
-  1: -8    ; Algorithm: EdDSA (Ed25519)
-}
+<div class="highlight"><pre><span></span><code>{ 1: -8 }    ; EdDSA: Ed25519
 </code></pre></div>
+<p>The operator chooses at deployment time. The on-chain validator reads the algorithm from the protected header and dispatches to the appropriate Plutus built-in (<code>verifyEcdsaSecp256k1Signature</code> or <code>verifyEd25519Signature</code>). Both are supported by the NXP SE050 secure element.</p>
 <h3 id="signature-computation">Signature computation<a class="headerlink" href="#signature-computation" title="Permanent link">&para;</a></h3>
 <p>Per RFC 9052, the signature is computed over the <code>Sig_structure</code>:</p>
 <div class="highlight"><pre><span></span><code>Sig_structure = [
@@ -2064,10 +2089,10 @@
 <p>A COSE_Sign1 BMS reading in CBOR diagnostic notation:</p>
 <div class="highlight"><pre><span></span><code>18(                                    ; COSE_Sign1 tag
   [
-    h&#39;a10126&#39;,                         ; protected: { 1: -7 } (ES256)
+    h&#39;a10138...&#39;,                      ; protected: { 1: -47 } (ES256K) or { 1: -8 } (EdDSA)
     {},                                ; unprotected: empty
     h&#39;a501....&#39;,                       ; payload: CBOR-encoded BMS reading
-    h&#39;304502...&#39;                       ; signature: ECDSA-P256
+    h&#39;304502...&#39;                       ; signature: secp256k1 or Ed25519
   ]
 )
 </code></pre></div>
@@ -2094,7 +2119,7 @@
 </tr>
 <tr>
 <td>Protected header contains known algorithm</td>
-<td>ES256 (-7) or EdDSA (-8)</td>
+<td>ES256K (-47) or EdDSA (-8)</td>
 </tr>
 <tr>
 <td>All mandatory payload fields present</td>
@@ -2195,7 +2220,7 @@
 </tr>
 <tr>
 <td>Verify signature</td>
-<td><code>verifyEcdsaSecp256k1Signature(bms_key, hash(Sig_structure), signature)</code></td>
+<td><code>verifyEcdsaSecp256k1Signature</code> (ES256K) or <code>verifyEd25519Signature</code> (EdDSA)</td>
 </tr>
 <tr>
 <td>Public key matches</td>

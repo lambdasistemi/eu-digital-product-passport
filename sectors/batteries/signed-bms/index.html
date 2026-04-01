@@ -483,6 +483,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../cardano/signed-readings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Signed Readings Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../cardano/eu-integration/" class="md-nav__link">
         
   
@@ -1909,8 +1937,8 @@
 </thead>
 <tbody>
 <tr>
-<td>Secure element (<a href="../../../references/#atecc608b">ATECC608B</a> / <a href="../../../references/#optiga-trust-m">OPTIGA Trust M</a>)</td>
-<td>~$0.50-0.70</td>
+<td>Secure element (<a href="../../../references/#se050">NXP SE050</a>)</td>
+<td>~$1.50-2.50</td>
 </tr>
 <tr>
 <td>Passives (caps, resistors)</td>
@@ -1918,7 +1946,7 @@
 </tr>
 <tr>
 <td><strong>Total BOM addition</strong></td>
-<td><strong>$0.51-0.71</strong></td>
+<td><strong>$1.51-2.51</strong></td>
 </tr>
 </tbody>
 </table>
@@ -2337,7 +2365,7 @@ ReportingValidator:
 </tr>
 </tbody>
 </table>
-<p><strong>Root of trust</strong>: the secure element vendor's provisioning process. For pre-provisioned chips (Microchip Trust&amp;GO, Infineon OPTIGA Trust M Express), the vendor generates the key pair in their secure facility and provides a device certificate signed by their CA. The manufacturer registers the public key in the battery passport datum at production time.</p>
+<p><strong>Root of trust</strong>: the secure element vendor's provisioning process. For pre-provisioned chips (NXP SE050C1/C2), the vendor generates the key pair in their secure facility and provides a device certificate signed by their CA. The manufacturer registers the public key in the battery passport datum at production time.</p>
 <p><strong>Weakest link</strong>: the MCU → SE boundary. The secure element cannot verify that the CBOR payload it signs corresponds to real sensor readings. This is mitigated by:</p>
 <ul>
 <li>CBOR schema validation (contract rejects malformed payloads)</li>

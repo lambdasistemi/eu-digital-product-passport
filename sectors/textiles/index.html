@@ -483,6 +483,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../cardano/signed-readings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Signed Readings Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../cardano/eu-integration/" class="md-nav__link">
         
   
@@ -1274,6 +1302,78 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-each-operator-must-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What each operator must do
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What each operator must do">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#brand-manufacturer-zara-hm-patagonia-etc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Brand / manufacturer (Zara, H&amp;M, Patagonia, etc.)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supply-chain-actors-spinning-mill-dyeing-facility-sewing-factory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supply chain actors (spinning mill, dyeing facility, sewing factory)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sorting-recycling-facility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sorting / recycling facility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#epr-scheme-operator-refashion-in-france-new-schemes-elsewhere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EPR scheme operator (Refashion in France, new schemes elsewhere)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-cardano-for-textiles-honest-assessment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Cardano for textiles — honest assessment
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2150,6 +2250,250 @@
 <h3 id="anti-counterfeiting">Anti-counterfeiting<a class="headerlink" href="#anti-counterfeiting" title="Permanent link">&para;</a></h3>
 <p>For luxury textiles, the DPP doubles as an anti-counterfeiting measure. QR code or NFC tag on the garment → Merkle proof against the brand's MPT root. Counterfeits cannot reproduce the on-chain anchor.</p>
 <p>This is the strongest Cardano value proposition for textiles — <strong>provenance authentication</strong> rather than dynamic condition tracking.</p>
+<h2 id="what-each-operator-must-do">What each operator must do<a class="headerlink" href="#what-each-operator-must-do" title="Permanent link">&para;</a></h2>
+<h3 id="brand-manufacturer-zara-hm-patagonia-etc">Brand / manufacturer (Zara, H&amp;M, Patagonia, etc.)<a class="headerlink" href="#brand-manufacturer-zara-hm-patagonia-etc" title="Permanent link">&para;</a></h3>
+<p>The brand placing the product on the EU market is the responsible economic operator. They create <strong>one leaf per model or batch</strong> in their MPT.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Source</th>
+<th>Regulation</th>
+<th>Updates?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fibre composition</td>
+<td>Manufacturing data</td>
+<td><a href="../../references/#reg-textile-label">Reg. 1007/2011</a> (already mandatory)</td>
+<td>Never (per model)</td>
+</tr>
+<tr>
+<td>Country of origin per stage</td>
+<td>Supply chain</td>
+<td><a href="../../references/#csddd">CSDDD (EU) 2024/1760</a></td>
+<td>Never (per batch)</td>
+</tr>
+<tr>
+<td>Carbon footprint (kgCO2e)</td>
+<td>LCA (PEF)</td>
+<td>ESPR delegated act</td>
+<td>Per model</td>
+</tr>
+<tr>
+<td>Water footprint (litres)</td>
+<td>LCA</td>
+<td>ESPR delegated act</td>
+<td>Per model</td>
+</tr>
+<tr>
+<td>Microfibre shedding (mg/wash)</td>
+<td>Testing</td>
+<td>ESPR delegated act</td>
+<td>Per model</td>
+</tr>
+<tr>
+<td>Recycled content %</td>
+<td>Manufacturing data</td>
+<td>ESPR delegated act</td>
+<td>Per batch</td>
+</tr>
+<tr>
+<td>Recyclability (mono-material %)</td>
+<td>Design assessment</td>
+<td>ESPR delegated act</td>
+<td>Per model</td>
+</tr>
+<tr>
+<td>Chemical profile (SVHC, REACH)</td>
+<td>Manufacturer / testing</td>
+<td>REACH</td>
+<td>Per batch</td>
+</tr>
+<tr>
+<td>Durability metrics</td>
+<td>Type testing</td>
+<td>ESPR delegated act</td>
+<td>Per model</td>
+</tr>
+<tr>
+<td>Repair instructions</td>
+<td>Manufacturer</td>
+<td>Right to Repair</td>
+<td>Per model</td>
+</tr>
+<tr>
+<td>Supply chain attestations</td>
+<td>Audits, certifications</td>
+<td>CSDDD</td>
+<td>Per batch</td>
+</tr>
+<tr>
+<td><strong>Batch status</strong></td>
+<td>Internal logistics</td>
+<td><a href="../../references/#espr-art23">ESPR Art. 23</a> (destruction ban)</td>
+<td><strong>On events</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Most data is write-once. The <strong>batch status</strong> field is the exception — it must track whether unsold inventory was donated, recycled, or sold (never destroyed). This is the destruction ban audit trail.</p>
+<p><strong>On-chain cost</strong>: &lt; $10/year per brand. Model leaves inserted once, batch status transitions are rare events.</p>
+<h3 id="supply-chain-actors-spinning-mill-dyeing-facility-sewing-factory">Supply chain actors (spinning mill, dyeing facility, sewing factory)<a class="headerlink" href="#supply-chain-actors-spinning-mill-dyeing-facility-sewing-factory" title="Permanent link">&para;</a></h3>
+<p>Each actor in the chain produces attestations that feed into the brand's DPP:</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant F as Cotton Farm
+    participant S as Spinning Mill
+    participant D as Dyeing Facility
+    participant W as Sewing Factory
+    participant B as Brand
+
+    F-&gt;&gt;F: Create attestation leaf in own MPT
+    Note over F: Origin, GOTS cert, geolocation
+    F--&gt;&gt;S: Share Merkle proof of attestation
+
+    S-&gt;&gt;S: Create attestation leaf
+    Note over S: SA8000 audit, labour conditions
+    S--&gt;&gt;D: Forward + own proof
+
+    D-&gt;&gt;D: Create attestation leaf
+    Note over D: OEKO-TEX, chemical use, water discharge
+    D--&gt;&gt;W: Forward + own proof
+
+    W-&gt;&gt;W: Create attestation leaf
+    Note over W: BSCI audit, factory safety
+    W--&gt;&gt;B: Full chain of proofs
+
+    B-&gt;&gt;B: Compute supplyChainHash from all proofs
+    B-&gt;&gt;B: Insert product leaf with supplyChainHash</code></pre>
+<p>Each supply chain actor maintains their <strong>own MPT</strong> with their own attestations. They share Merkle proofs downstream — not the raw data. The brand assembles the proofs into a supply chain Merkle tree and stores the root hash in the product leaf.</p>
+<p><strong>Privacy model</strong>: the brand knows its full supply chain. A verifier (customs, auditor) can check one specific attestation via Merkle proof without seeing the others. Competitors cannot reconstruct the full supply chain from on-chain data — they only see the root hash.</p>
+<h3 id="sorting-recycling-facility">Sorting / recycling facility<a class="headerlink" href="#sorting-recycling-facility" title="Permanent link">&para;</a></h3>
+<p>When textiles reach end-of-life, the sorting facility needs composition data to route them correctly:</p>
+<table>
+<thead>
+<tr>
+<th>Data needed</th>
+<th>Why</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fibre composition (exact %)</td>
+<td>Determines recycling pathway</td>
+<td>Cotton → mechanical; polyester → chemical; blends → difficult</td>
+</tr>
+<tr>
+<td>Mono-material %</td>
+<td>&gt;95% single fibre = recyclable; &lt;80% = downcycle</td>
+<td>Directly determines value</td>
+</tr>
+<tr>
+<td>Chemical treatments</td>
+<td>Flame retardants, PFAS coatings</td>
+<td>Safety, suitability for food-contact recycled output</td>
+</tr>
+<tr>
+<td>Colour/dye type</td>
+<td>Some dyes contaminate recycling output</td>
+<td>Affects rPET quality</td>
+</tr>
+<tr>
+<td>Hardware (zippers, buttons)</td>
+<td>Must be removed before shredding</td>
+<td>Labour cost estimation</td>
+</tr>
+</tbody>
+</table>
+<p>The DPP enables <strong>automated sorting</strong>: scan QR → read composition → route to correct recycling stream. Without this, sorters rely on NIR spectroscopy (struggles with blends) or manual inspection (slow, expensive).</p>
+<h3 id="epr-scheme-operator-refashion-in-france-new-schemes-elsewhere">EPR scheme operator (Refashion in France, new schemes elsewhere)<a class="headerlink" href="#epr-scheme-operator-refashion-in-france-new-schemes-elsewhere" title="Permanent link">&para;</a></h3>
+<p>EPR operators need DPP data to calculate <strong>eco-modulated fees</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>DPP field</th>
+<th>Fee impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Durability (cycles to failure)</td>
+<td>Higher durability → lower fee</td>
+</tr>
+<tr>
+<td>Recyclability (mono-material %)</td>
+<td>Higher recyclability → lower fee</td>
+</tr>
+<tr>
+<td>Recycled content %</td>
+<td>Higher recycled content → lower fee</td>
+</tr>
+<tr>
+<td>Microfibre shedding rate</td>
+<td>Lower shedding → lower fee</td>
+</tr>
+<tr>
+<td>Chemical profile (SVHC-free)</td>
+<td>Cleaner chemistry → lower fee</td>
+</tr>
+<tr>
+<td>Repair instructions provided</td>
+<td>Repairable → lower fee</td>
+</tr>
+</tbody>
+</table>
+<p>The EPR scheme reads the DPP and applies a fee schedule. On Cardano, the fee calculation can reference the on-chain Merkle root — the brand cannot retroactively alter the data that determined their fee.</p>
+<h2 id="why-cardano-for-textiles-honest-assessment">Why Cardano for textiles — honest assessment<a class="headerlink" href="#why-cardano-for-textiles-honest-assessment" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Use case</th>
+<th>Blockchain needed?</th>
+<th>Why / why not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Supply chain traceability</strong></td>
+<td><strong>Yes</strong></td>
+<td>5-7 independent parties across jurisdictions; none should control the full chain; tamper-evident attestations</td>
+</tr>
+<tr>
+<td><strong>Destruction ban compliance</strong></td>
+<td><strong>Yes</strong></td>
+<td>Brand must prove unsold goods were donated/recycled, not destroyed; on-chain status transitions are tamper-evident</td>
+</tr>
+<tr>
+<td><strong>Anti-counterfeiting</strong></td>
+<td><strong>Yes</strong></td>
+<td>Luxury brands: QR → Merkle proof against brand's MPT root; counterfeits can't reproduce the anchor</td>
+</tr>
+<tr>
+<td><strong>Greenwashing prevention</strong></td>
+<td><strong>Yes</strong></td>
+<td>Environmental claims anchored at a specific time; brand can't retroactively inflate numbers</td>
+</tr>
+<tr>
+<td><strong>EPR eco-modulation</strong></td>
+<td><strong>Marginal</strong></td>
+<td>EPR scheme needs to trust the data, but a certified database with audit logs may suffice</td>
+</tr>
+<tr>
+<td><strong>Fibre composition</strong></td>
+<td><strong>No</strong></td>
+<td>Already mandatory under Reg. 1007/2011; static data, single author</td>
+</tr>
+<tr>
+<td><strong>Repair instructions</strong></td>
+<td><strong>No</strong></td>
+<td>Static content, no multi-party trust needed</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Bottom line</strong>: textiles have the <strong>strongest supply chain case</strong> of all three sectors. 5-7 parties in different countries, each contributing attestations about labour, chemicals, and origin. The blockchain value is in making these attestations independently verifiable and tamper-evident — preventing both greenwashing by brands and certificate fraud by suppliers.</p>
+<p>The destruction ban (Art. 23) is a secondary but powerful use case: proving that no unsold inventory was destroyed requires a verifiable audit trail of batch status transitions.</p>
+<p>For static product data (composition, durability, repair instructions), a centralized database is sufficient.</p>
 <h2 id="open-questions">Open questions<a class="headerlink" href="#open-questions" title="Permanent link">&para;</a></h2>
 <ol>
 <li><strong>Delegated act scope</strong> — which data fields, which sub-sectors (apparel, footwear, home textiles)?</li>
