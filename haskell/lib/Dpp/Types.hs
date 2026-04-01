@@ -109,14 +109,14 @@ instance ToData Commitment where
 
 instance FromData Commitment where
     fromBuiltinData bd = case unD bd of
-        Constr 0 [I from, I until] ->
-            Just $ Commitment from until
+        Constr 0 [I vFrom, I vUntil] ->
+            Just $ Commitment vFrom vUntil
         _ -> Nothing
 
 instance UnsafeFromData Commitment where
     unsafeFromBuiltinData bd = case unD bd of
-        Constr 0 [I from, I until] ->
-            Commitment from until
+        Constr 0 [I vFrom, I vUntil] ->
+            Commitment vFrom vUntil
         _ -> error "unsafeFromBuiltinData: Commitment"
 
 -- ---------------------------------------------------------

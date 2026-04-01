@@ -1,6 +1,7 @@
+{-# OPTIONS_GHC -Wno-orphans #-}
+
 module Main (main) where
 
-import Data.ByteString (ByteString)
 import Data.ByteString qualified as BS
 import Dpp.Types
 import PlutusCore.Data (Data (..))
