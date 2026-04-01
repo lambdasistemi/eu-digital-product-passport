@@ -1,4 +1,22 @@
-packages: .
+index-state: 2025-12-07T00:00:00Z
+
+index-state:
+  , hackage.haskell.org 2025-12-07T00:00:00Z
+
+packages:
+  .
+
+repository cardano-haskell-packages
+  url: https://chap.intersectmbo.org/
+  secure: True
+  root-keys:
+    3e0cce471cf09815f930210f7827266fd09045445d65923e6d0238a6cd15126f
+    443abb7fb497a134c343faf52f0b659bd7999bc06b7f63fa76dc99d631f9bea1
+    a]86a1e1a61c0e68137bae8b37fc8c034d7d7667b4d1cf611c4f6533422ce7c
+    bcec67e8e99d3be1f315bb04710dfff4e181442d115f59f915f51ce257d5e2af
+    e6a8b89b5861220ecfa06d97f1d37e8eed8963a3e40c3f2bfec3a4462a33aa5a
+    f76d08be13e9a61a377a85e2fb63f4c5435d40f8e2a4c10f0ebbba2df4f5c4b5
+    1178b522f6e40b68f6be8007dc2f8e44b36bfcc4e16c2e4aff0548dd16d13c4b
 
 source-repository-package
   type: git
