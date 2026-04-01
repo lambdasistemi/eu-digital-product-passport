@@ -1,0 +1,6 @@
+name = "DppProofs"
+version = "0.1.0"
+defaultTargets = ["DppProofs"]
+
+[[lean_lib]]
+name = "DppProofs"
