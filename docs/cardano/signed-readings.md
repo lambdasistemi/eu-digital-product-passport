@@ -11,7 +11,7 @@ The foundational assumption: **the user is the transport layer**. The item has n
 | Component | Role | Product-agnostic? |
 |-----------|------|-------------------|
 | **Sensor(s)** | Measures physical state (voltage, temperature, pressure, depth, humidity, vibration...) | Sensor type varies by product |
-| **Secure element** | Holds private key, signs readings (ECDSA) | Yes — same chip for any product |
+| **Secure element** | Holds private key, signs readings (ECDSA/EdDSA) | Yes — same chip for any product |
 | **NFC interface** | Delivers signed reading to user's phone, powered by NFC field | Yes — same chip for any product |
 | **COSE_Sign1 envelope** | Signing format ([RFC 9052](../references.md#rfc9052)) | Yes — standard envelope |
 | **CBOR payload** | Structured reading data ([RFC 8949](../references.md#rfc8949)) | Schema varies by product |
@@ -27,9 +27,11 @@ Two chips on the item's board, connected via I2C:
 | Chip | Role | Cost (1M vol) |
 |------|------|--------------|
 | NXP NTAG 5 Link | NFC interface, I2C master, energy harvesting | $0.35 |
-| Infineon OPTIGA Trust M | Secure element, ECDSA-P256, pre-provisioned keys | $0.40 |
+| NXP EdgeLock SE050 | Secure element, secp256k1 + Ed25519, CC EAL 6+ | ~$1.50* |
 | NFC antenna + passives | | $0.06 |
-| **Total** | | **$0.81** |
+| **Total** | | **~$1.91** |
+
+\* Distributor pricing at 3k units is ~$1.71-2.49. Estimate assumes NXP direct volume negotiation at 1M+.
 
 The module is powered entirely by the phone's NFC field. No battery, no internet, no wiring beyond I2C to the item's existing sensor bus.
 
@@ -270,9 +272,11 @@ ReadingValidator (Aiken):
   2. COSE payload fields validFrom and validUntil match the leaf commitment
   3. validFrom ≤ currentSlot ≤ validUntil
 
-  -- Item signature
+  -- Item signature (algorithm from COSE protected header)
   4. itemProof verifies leaf exists under current MPT root
-  5. COSE_Sign1 signature valid against itemPubKey (the MPT key)
+  5. Protected header alg = -47 (ES256K) → verifyEcdsaSecp256k1Signature
+     Protected header alg = -8 (EdDSA) → verifyEd25519Signature
+     COSE_Sign1 signature valid against itemPubKey (the MPT key)
 
   -- Reporter authorization
   6. Item leaf has reporter = Just assignment
@@ -300,12 +304,23 @@ Every signed reading is a [COSE_Sign1](../references.md#rfc9052) structure — t
 
 ```
 COSE_Sign1 = [
-  protected   : bstr,    -- { 1: -7 } = ES256
+  protected   : bstr,    -- { 1: alg } where alg ∈ {-7 (ES256K), -8 (EdDSA)}
   unprotected : {},
   payload     : bstr,    -- CBOR-encoded sensor reading
-  signature   : bstr     -- ECDSA-P256 signature
+  signature   : bstr     -- ECDSA-secp256k1 or Ed25519 signature
 ]
 ```
+
+The protocol supports two signature algorithms, both with native Plutus built-in verifiers:
+
+| COSE alg | Curve | Plutus built-in | Notes |
+|----------|-------|----------------|-------|
+| -47 (ES256K) | secp256k1 | `verifyEcdsaSecp256k1Signature` (CIP-49) | Bitcoin/Ethereum compatible |
+| -8 (EdDSA) | Ed25519 | `verifyEd25519Signature` (native) | Cardano-native, cheapest on-chain |
+
+The operator chooses the algorithm at deployment time. The on-chain validator reads the protected header to determine which built-in verifier to call. Both are supported by the [NXP SE050](../sectors/batteries/nfc-hardware.md#why-nxp-se050) secure element.
+
+See [NFC Hardware — secure element alternatives](../sectors/batteries/nfc-hardware.md#why-nxp-se050) for the full analysis of P-256 secure elements (OPTIGA Trust M, ATECC608B) and the ZK wrapper / off-chain verification alternatives. Choosing a P-256-only SE is possible but means either adding a ZK proving infrastructure or renouncing on-chain signature verification.
 
 ### Payload structure
 
@@ -377,12 +392,42 @@ graph LR
 
 With CIP-118, the user could create a sub-transaction containing the signed reading, and any batcher (operator or third party) wraps it in a top-level transaction providing ADA. A [CIP-112](../references.md#cip112) guard script enforces the terms. This would eliminate the need for operator cooperation on the submission side, though the commitment phase still requires the operator to update their MPT.
 
+## Data visibility: on-chain or hash-only
+
+The operator configures how much reading data appears on-chain. This is a per-operator deployment decision, not a protocol constraint.
+
+### Option A: Full data on-chain
+
+The entire COSE_Sign1 object (including the CBOR payload) is included in the transaction — either as structured datum fields or in transaction metadata. Anyone can audit the reading history without the operator's cooperation.
+
+| Pro | Con |
+|-----|-----|
+| Fully auditable by third parties | Larger tx size (~200-430 bytes per reading) |
+| Survives operator shutdown | Higher tx fees |
+| Enables on-chain plausibility checks | Sensor data is public (may be commercially sensitive) |
+
+### Option B: Hash-only on-chain
+
+Only the hash of the COSE_Sign1 object is stored on-chain. The full reading data is held by the operator (and optionally shared via an API or IPFS).
+
+| Pro | Con |
+|-----|-----|
+| Minimal tx size | Requires operator cooperation to access data |
+| Lower tx fees | Data lost if operator disappears |
+| Sensor data stays private | Third-party audits need operator API |
+
+### Validator impact
+
+The on-chain validator always verifies the COSE signature (it needs the full COSE_Sign1 in the redeemer regardless). The difference is whether the full payload is also **persisted** on-chain in the output datum or metadata.
+
+In both modes, the redeemer contains the full COSE_Sign1 for signature verification. In hash-only mode, only `hash(coseSign1)` is stored in the datum/metadata for future reference.
+
 ## Applicability
 
 This protocol is foundational for signing IoT sensor data wherever:
 
 - A physical item has at least one sensor
-- A secure element can be added (~$0.81)
+- A secure element can be added (~$1.91 at volume)
 - A user has physical access and an incentive to report
 - The reading needs to be verifiable and timestamped
 
