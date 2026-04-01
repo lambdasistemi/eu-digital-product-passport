@@ -16,7 +16,6 @@ The foundational assumption: **the user is the transport layer**. The item has n
 | **COSE_Sign1 envelope** | Signing format ([RFC 9052](../../references.md#rfc9052)) | Yes — standard envelope |
 | **CBOR payload** | Structured reading data ([RFC 8949](../../references.md#rfc8949)) | Schema varies by product |
 | **Operator MPT** | Merkle Patricia Trie holding item registry + reporter rewards | Yes — same MPFS infrastructure |
-| **Commit-tap-submit** | On-chain challenge protocol | Yes — same validator logic |
 | **Operator reward tokens** | Native tokens redeemable with the operator | Yes — same minting pattern |
 
 The **only product-specific part** is the CBOR payload schema — which fields, which units, which plausibility checks. Everything else is reusable.
@@ -38,7 +37,7 @@ See [NFC Hardware](../sectors/batteries/nfc-hardware.md) for the detailed bill o
 
 ## Data model
 
-The operator's MPT contains two types of leaves, distinguished by their key:
+The operator's MPT contains two types of leaves, distinguished by their key.
 
 ### Item leaf
 
@@ -49,6 +48,7 @@ ItemLeaf {
   schemaVersion   : Integer
   metadata        : ByteString            -- product-specific (battery model, tyre DOT, etc.)
   reporter        : Maybe ReporterAssignment
+  commitment      : Maybe ByteString      -- set by operator, cleared on reading
 }
 
 ReporterAssignment {
@@ -73,38 +73,46 @@ ReporterLeaf {
 ```mermaid
 stateDiagram-v2
     [*] --> Virgin: Operator registers item
-    Virgin --> Assigned: User claims (assignment, no reward)
-    Assigned --> Reading: User taps + submits (earns nextReward)
-    Reading --> Reading: Next reading within window
+    Virgin --> Assigned: User claims (no reward)
+    Assigned --> Committed: Operator sets commitment
+    Committed --> Reading: User taps + submits
+    Reading --> Assigned: Commitment cleared, window updated
+    Assigned --> Committed: Next window opens, operator sets commitment
     Reading --> Reassigned: Item changes hands
-    Reassigned --> Reading: New user taps + submits
+    Reassigned --> Committed: New user, operator sets commitment
 
     note right of Virgin
         reporter = Nothing
-        Just schema + metadata
+        commitment = Nothing
     end note
 
-    note right of Assigned
-        reporter = Just { pubKey, window, reward }
-        No reward paid for assignment itself
+    note right of Committed
+        commitment = Just hash
+        Waiting for user to tap
+    end note
+
+    note right of Reading
+        commitment = Nothing
+        Rewards accumulated
     end note
 ```
 
-| Step | Item leaf change | Reporter leaf change | Reward paid? |
-|------|-----------------|---------------------|-------------|
-| **Registration** | Created with `reporter = Nothing` | — | No |
-| **Assignment** | `reporter = Just { reporterPubKey, nextWindowSlot, nextReward }` | — | No — assignment is free |
-| **First reading** | `nextWindowSlot` and `nextReward` updated by contract | Created with `rewardsAccumulated = nextReward` | Yes |
-| **Subsequent readings** | `nextWindowSlot` and `nextReward` updated by contract | `rewardsAccumulated += nextReward` | Yes |
-| **Transfer** | `reporter` updated to new user's key | Old reporter's leaf untouched — rewards preserved | No — new assignment is free |
+| Step | What happens | Tx? | Who pays? |
+|------|-------------|-----|-----------|
+| **Registration** | Item leaf created: `reporter = Nothing, commitment = Nothing` | Yes (MPT insert) | Operator |
+| **Assignment** | `reporter = Just { pubKey, window, reward }` | Yes (MPT update) | Operator |
+| **Commitment** | `commitment = Just hash` | Yes (MPT update) | Operator |
+| **Reading** | Commitment cleared, reporter leaf updated, window/reward set for next | Yes (MPT update) | Operator |
+| **Transfer** | `reporter` changed to new user | Yes (MPT update) | Operator |
 
 Key properties:
 
-- **Virgin items** have no reporter. Anyone can claim them.
-- **Assignment pays nothing** — the user is just registering as the reporter for this item.
+- **Virgin items** have no reporter and no commitment.
+- **Assignment pays nothing** — the user is registering as reporter, not earning.
 - **Every reading pays** — `nextReward` is always > 0.
-- **Rewards belong to the reporter, not the item** — when the item changes hands, the old reporter keeps their accumulated rewards.
-- **The contract decides the next window and reward** — the operator's business logic determines the schedule and payment for each subsequent reading.
+- **Rewards belong to the reporter, not the item** — old reporter keeps accumulated rewards on transfer.
+- **The contract decides the next window and reward** — set on each reading submission.
+- **Commitment is rate-limited by the window** — operator sets it when `nextWindowSlot` arrives. If the user doesn't consume it, they wait for the next window.
 
 ## Reward tokens
 
@@ -117,7 +125,7 @@ Rewards are **operator-issued native tokens**, not ADA.
 | **Accumulation** | Tracked in `ReporterLeaf.rewardsAccumulated` — no on-chain token movement to user |
 | **Redemption** | Off-chain, at point of sale — user proves ownership of reporter key, operator checks accumulated balance |
 
-The user never holds on-chain tokens or ADA. Their rewards are a counter in the MPT, redeemable by proving they own the reporter key.
+The user never holds on-chain tokens or ADA. Rewards are a counter in the MPT, redeemable by proving ownership of the reporter key.
 
 ## User identity: no wallet needed
 
@@ -129,15 +137,13 @@ The user needs only a **key pair** — generated in the phone app, never touches
 | Reporter public key registered in item leaf | On-chain (in operator's MPT) |
 | Accumulated rewards | On-chain (in operator's MPT, reporter leaf) |
 
-The user has **no UTxOs, no ADA, no tokens**. Their public key appears in two places in the MPT (item leaf as `reporterPubKey`, reporter leaf as the key). The operator pays all transaction fees.
+The user has **no UTxOs, no ADA, no tokens**. The operator pays all transaction fees.
 
 Redemption is off-chain: the user signs a message with their reporter key, the operator verifies it and checks the on-chain `rewardsAccumulated` balance.
 
-## The protocol: two paths
+## The protocol (cooperative path)
 
-### Cooperative path (user pays zero ADA)
-
-The operator funds all transactions. The user only needs their key pair and the phone app.
+Two transactions per reading, both paid by the operator. The user pays nothing.
 
 ```mermaid
 sequenceDiagram
@@ -146,139 +152,90 @@ sequenceDiagram
     participant C as Cardano L1
     participant I as Item (NFC)
 
-    Note over U,O: Step 1: Request commitment
-    U->>O: POST /commitment {itemPubKeyHash, reporterPubKey, signature}
-    O->>O: Verify: reporter matches item leaf?
-    O->>O: Verify: no burned commitments?
-    O->>C: Submit commitment tx (operator pays ADA)
-    C-->>O: Commitment confirmed (hash H)
-    O-->>U: {commitmentTxHash: H}
+    Note over U,O: Tx 1: Commitment
+    U->>O: Request reading (itemPubKeyHash, reporterPubKey, signature)
+    O->>O: Verify reporter matches item leaf
+    O->>O: Verify window is open (currentSlot ≥ nextWindowSlot)
+    O->>C: MPT update: set commitment = Just hash
+    C-->>O: Confirmed
+    O-->>U: {commitmentHash}
 
-    Note over U,I: Step 2: Tap
-    U->>I: NFC: challenge = H
+    Note over U,I: Tap
+    U->>I: NFC: challenge = commitmentHash
     I->>I: Read sensors
-    I->>I: Sign(state ‖ H) → COSE_Sign1
+    I->>I: Sign(state ‖ commitmentHash) → COSE_Sign1
     I-->>U: Signed reading
 
-    Note over U,O: Step 3: Submit
-    U->>U: Build partial tx (commitment ref + signed reading)
-    U->>U: Sign with reporter key
-    U->>O: POST /reading {partialTx}
-    O->>O: Complete tx: add operator MPT UTxO, add ADA
-    O->>C: Submit complete tx
-    C->>C: Validator: verify signature, check window, update leaves
+    Note over U,O: Tx 2: Reading inclusion
+    U->>O: Submit signed reading
+    O->>O: Verify COSE signature against itemPubKey
+    O->>O: Verify commitment hash matches item leaf
+    O->>C: MPT update: clear commitment, update reporter rewards, set next window/reward
     C-->>O: Confirmed
     O-->>U: {txHash, rewardsEarned}
 ```
 
-### Adversarial path (user pays own ADA)
+### What each transaction does
 
-If the operator refuses to cooperate, the user can do everything directly on-chain. This is the escape hatch.
+**Tx 1 — Commitment (operator → chain):**
 
-```mermaid
-sequenceDiagram
-    participant U as User App
-    participant C as Cardano L1
-    participant I as Item (NFC)
+- Consumes operator's MPT UTxO (old root)
+- Produces operator's MPT UTxO (new root) with `commitment = Just hash` in the item leaf
+- Cost: ~0.2 ADA tx fee, 0 locked ADA
 
-    U->>C: Submit commitment tx (user pays ~0.2 ADA)
-    C-->>U: Commitment confirmed (hash H)
+**Tx 2 — Reading inclusion (operator → chain):**
 
-    U->>I: NFC: challenge = H
-    I-->>U: Signed reading
+- Consumes operator's MPT UTxO (old root)
+- Produces operator's MPT UTxO (new root) with:
+    - Item leaf: `commitment = Nothing`, `nextWindowSlot` and `nextReward` updated
+    - Reporter leaf: `rewardsAccumulated += nextReward` (insert if first reading)
+- Cost: ~0.2-0.3 ADA tx fee, 0 locked ADA
 
-    U->>C: Submit reading tx (user pays ~0.3 ADA)
-    Note over C: Validator updates both leaves
-    C-->>U: Confirmed
-```
+### What the commitment prevents
 
-The user spends ~0.5 ADA but their rewards still accumulate in the reporter leaf. The on-chain validator doesn't care who submitted the transaction — only that the proofs are valid.
+The commitment binds the reading to a specific moment. Without it, a user could:
 
-### Burned commitment policy
+- Tap the item today (good state), hold the signed reading, submit it months later (item degraded)
+- The signed reading would still be valid because the item key signed it
 
-The operator tracks commitment usage off-chain:
+With the commitment:
 
-| Situation | Operator response |
-|-----------|------------------|
-| Commitment requested, reading submitted | Fund next commitment |
-| Commitment requested, never submitted | Strike — warn user |
-| N commitments burned | Refuse to fund — user must self-fund via adversarial path |
-| User self-funds and submits valid reading | Reset strikes — user is acting in good faith |
+- The commitment hash is set by the operator at a known slot
+- The item signs the reading over that specific hash
+- On Tx 2, the validator checks: COSE payload contains the hash that's currently in the leaf
+- A stale reading referencing an old commitment fails — the leaf no longer contains that hash
 
-This is off-chain policy. The on-chain protocol doesn't know about strikes.
+### Burned commitment
 
-## Commitment UTxO and operator ADA protection
+If the user requests a commitment but never submits a reading, the commitment sits in the leaf until the window expires. On the next window, the operator overwrites it with a new commitment (or clears it). No ADA is locked, no reclaim logic needed. The operator's only cost is the wasted Tx 1 fee (~0.2 ADA).
 
-Every commitment is a UTxO at a script address, locking min-ADA (~1.5 ADA) with a datum identifying the item and reporter.
-
-```
-CommitmentValidator:
-
-  Datum: {
-    itemPubKeyHash   : ByteString
-    reporterPubKey   : ByteString
-    windowCloseSlot  : Integer       -- after this slot, operator can reclaim
-  }
-
-  Redeemer:
-    UseForReading    -- consumed by reading submission (happy path)
-    | Reclaim        -- operator reclaims after window expires (expired path)
-
-  Validation:
-    UseForReading → normal reading flow (consumed by ReadingValidator)
-    Reclaim → currentSlot > windowCloseSlot AND signed by operator
-```
-
-The operator's ADA is never at risk:
-
-| Path | What happens | ADA returned to operator |
-|------|-------------|------------------------|
-| **Happy** | User taps and submits within window | Commitment consumed in reading tx → ADA back to operator |
-| **Expired** | User never submits | Operator reclaims after `windowCloseSlot` → ADA back to operator |
-
-The operator's maximum ADA exposure at any moment is `outstanding_commitments × ~1.5 ADA`. Rate limiting (one commitment per item at a time) bounds this.
-
-!!! note "MPT UTxO is always safe"
-    The operator's MPT UTxO (~2 ADA) is consumed and recreated in the same reading transaction. The operator is the oracle — only they can consume their own MPT UTxO. No ADA is ever at risk in the MPT.
+Rate limiting prevents abuse: one commitment per item per window. If the user burns it, they wait for the next window.
 
 ## Cost per reading
 
-Every reading costs the operator **two transactions**:
+| | Per reading | Notes |
+|-|-------------|-------|
+| **Tx fees** | ~0.4-0.5 ADA (~$0.10-0.13) | 2 transactions, operator pays both |
+| **Locked ADA** | 0 | No separate UTxOs, MPT UTxO is permanent |
+| **Reward cost** | Operator-defined tokens | Not ADA — loyalty points redeemed at next purchase |
 
-| Transaction | Who builds | Who pays ADA | Fee | ADA locked |
-|-------------|-----------|-------------|-----|-----------|
-| **1. Commitment** | Operator | Operator | ~0.2 ADA | ~1.5 ADA (min-UTxO, returned on consumption) |
-| **2. Reading inclusion** | User builds partial, operator completes | Operator | ~0.3 ADA | 0 (MPT UTxO recreated) |
-| **Total per reading** | | | **~0.5 ADA** | **~1.5 ADA temporary** |
+### At scale
 
-At ADA ~$0.25, the operator pays **~$0.13 per reading** in transaction fees. The ~1.5 ADA locked in the commitment is temporary — returned when the reading is submitted or the commitment expires.
+| Items | Reading frequency | Readings/year | Annual tx fees |
+|-------|------------------|---------------|---------------|
+| 1,000 | Monthly | 12,000 | ~6,000 ADA (~$1,500) |
+| 10,000 | Monthly | 120,000 | ~60,000 ADA (~$15,000) |
+| 100,000 | Monthly | 1,200,000 | ~600,000 ADA (~$150,000) |
+| 1,000,000 | Monthly | 12,000,000 | ~6,000,000 ADA (~$1,500,000) |
 
-For a battery manufacturer with 1 million items, each read monthly:
+For a €50 item over a 5-year lifetime with monthly readings: 60 readings × ~$0.12 = **~$7 in tx fees**. That's ~14% of the item price. Acceptable for high-value items (batteries, commercial tyres), challenging for low-value items.
 
-| Metric | Value |
-|--------|-------|
-| Readings per year | 12M |
-| Tx fee per reading | ~0.5 ADA (~$0.13) |
-| Annual tx fees | ~6M ADA (~$1.5M) |
-| Peak locked ADA (if all commitments outstanding) | ~1.5M ADA (~$375k) |
+!!! note "Future optimization"
+    [CIP-118](../../references.md#cip118) (nested transactions, expected H1-H2 2026) would allow batching multiple readings into a single top-level transaction, significantly reducing per-reading fees. L2 solutions (Hydra) could reduce costs further but introduce operational complexity. These are future design options, not current protocol requirements.
 
-This is significant at scale. The operator's cost structure is:
+## On-chain validator
 
-- **Tx fees**: real cost, scales linearly with readings
-- **Locked ADA**: temporary, returned, but requires capital
-- **Reward tokens**: operator-defined value, not ADA cost
-
-At these volumes, batching becomes important. CIP-118 (nested transactions) would allow bundling multiple readings into a single top-level transaction, reducing per-reading fees.
-
-## On-chain validators
-
-### CommitmentValidator
-
-See above — handles `UseForReading` (consumed in reading tx) and `Reclaim` (operator recovers ADA after window expires).
-
-### ReadingValidator
-
-A reading submission transaction consumes the commitment and atomically updates two MPT leaves:
+The reading validator checks the MPT transition:
 
 ```
 ReadingValidator (Aiken):
@@ -295,31 +252,34 @@ ReadingValidator (Aiken):
   Validation:
 
   -- Commitment
-  1. Commitment UTxO consumed in this tx
-  2. Commitment slot + maxAge ≥ current slot
-  3. Commitment tx hash matches challenge in COSE payload
+  1. Item leaf has commitment = Just hash
+  2. COSE payload challenge field matches hash
+  3. commitment slot is recent (within maxAge)
 
-  -- Item leaf
+  -- Item signature
   4. itemProof verifies leaf exists under current MPT root
-  5. item leaf has reporter = Just assignment (not virgin)
-  6. COSE_Sign1 signature valid against itemPubKey (the MPT key)
-  7. current slot ≥ assignment.nextWindowSlot (reading is within window)
-  8. updatedItemLeaf.reporter.nextWindowSlot and nextReward set by contract logic
-  9. updatedItemLeaf.reporter.reporterPubKey unchanged
+  5. COSE_Sign1 signature valid against itemPubKey (the MPT key)
 
-  -- Reporter leaf
-  10. Reporter key = hash(assignment.reporterPubKey)
-  11. If first reading: reporter leaf is an MPT insert (rewardsAccumulated = assignment.nextReward)
-  12. If subsequent: updatedReporter.rewardsAccumulated = old + assignment.nextReward
-  13. Transaction signed by reporterPubKey
+  -- Reporter authorization
+  6. Item leaf has reporter = Just assignment
+  7. Transaction signed by assignment.reporterPubKey
+  8. current slot ≥ assignment.nextWindowSlot
 
-  -- MPT transition
-  14. mptTransition proves old root → new root with both leaf updates
-  15. Operator output UTxO has new root hash
+  -- Leaf transitions
+  9. updatedItemLeaf.commitment = Nothing (cleared)
+  10. updatedItemLeaf.reporter.nextWindowSlot and nextReward set by contract logic
+  11. updatedItemLeaf.reporter.reporterPubKey unchanged
+  12. Reporter key = hash(assignment.reporterPubKey)
+  13. If first reading: reporter leaf is MPT insert (rewardsAccumulated = assignment.nextReward)
+  14. If subsequent: updatedReporter.rewardsAccumulated = old + assignment.nextReward
+
+  -- MPT
+  15. mptTransition proves old root → new root with both leaf updates
+  16. Operator output UTxO has new root hash
 
   -- Product-specific
-  16. CBOR payload conforms to schemaVersion
-  17. Plausibility checks per product type
+  17. CBOR payload conforms to schemaVersion
+  18. Plausibility checks per product type
 ```
 
 ## Signing format: COSE_Sign1
@@ -340,7 +300,7 @@ COSE_Sign1 = [
 ```cbor-diagnostic
 {
   1: h'...',           -- item_id (item public key hash, ByteString)
-  2: h'...',           -- challenge (commitment tx hash, ByteString)
+  2: h'...',           -- challenge (commitment hash from item leaf, ByteString)
   3: { ... },          -- state (sensor readings — schema varies by product)
   4: 1                 -- schema_version (unsigned int)
 }
@@ -366,8 +326,8 @@ graph LR
     C -->|CBOR| D[Secure<br/>Element]
     D -->|COSE_Sign1| E[NFC]
     E -->|tap| F[Phone]
-    F -->|partial tx| G[Operator API]
-    G -->|complete tx| H[Cardano]
+    F -->|reading| G[Operator API]
+    G -->|MPT update tx| H[Cardano]
 ```
 
 | Link | Trust basis | Weakness |
@@ -376,36 +336,31 @@ graph LR
 | Sensor → Controller | I2C bus on PCB | Compromised firmware could substitute readings |
 | Controller → SE | I2C, CBOR format | SE signs whatever controller gives it |
 | SE → signature | Private key in tamper-resistant hardware | Key extraction (expensive, destructive) |
-| Phone → Operator API | HTTPS | Operator could refuse (user escalates to adversarial path) |
-| Operator → Cardano | Tx submission | Operator could delay (user escalates to adversarial path) |
-| Signature → on-chain | Plutus built-in ECDSA verification | Correctness of validator code |
+| Phone → Operator API | HTTPS | Operator could delay (see adversarial path below) |
+| Operator → Cardano | Tx submission | Operator is the oracle — they control the MPT |
 
 **Root of trust**: the secure element vendor's key provisioning process.
 
 **Weakest link**: controller → SE boundary. Mitigated by schema validation, plausibility checks, and cross-referencing with independent measurements.
 
+## Adversarial path
+
+!!! warning "Open design problem"
+    In the cooperative path, the operator controls the MPT and submits all transactions. If the operator refuses to process a valid reading, the user currently has no on-chain recourse — the operator is the oracle for their own MPT.
+
+    Possible future approaches:
+
+    - **MPFS request mechanism**: user creates a request UTxO that the operator is contractually obligated to process (locks ~1.5 ADA until processed)
+    - **Timeout escalation**: if the operator doesn't process a request within N slots, the user can trigger a penalty or move to a different operator
+    - **CIP-118 nested transactions**: user creates a sub-transaction that any batcher can wrap, removing the need for operator cooperation
+
+    This is deferred. The cooperative path is sufficient for the initial design where operators have a business incentive to process readings (they need the data for DPP compliance).
+
 ## Future: CIP-118 (nested transactions)
 
 [CIP-118](../../references.md#cip118) introduces **nested transactions** in the Dijkstra ledger era. Actively being implemented — CIP merged January 2026, ledger code landing Q1-Q2 2026.
 
-With CIP-118, the cooperative path becomes fully trustless:
-
-1. User creates a **sub-transaction**: "here's my signed reading"
-2. Sub-transaction is **not balanced** (no ADA for fees)
-3. Any batcher (operator or third party) wraps it in a **top-level transaction** providing ADA
-4. A [CIP-112](../../references.md#cip112) **guard script** enforces the terms
-5. One atomic on-chain transaction. User holds zero ADA. No operator API needed.
-
-Until CIP-118 is deployed, the cooperative + adversarial dual-path design provides equivalent functionality.
-
-## Incentive alignment
-
-| Actor | Cooperates | Defects |
-|-------|-----------|---------|
-| **User** | Gets free commitments + readings + accumulated rewards | Burns commitments → loses free funding |
-| **Operator** | Gets fresh item data + customer loyalty + DPP compliance | Refuses readings → user escalates, operator gets no data |
-
-Both parties have skin in the game. The cooperative path is free for the user. The adversarial path exists as the escape hatch that keeps both honest.
+With CIP-118, the user could create a sub-transaction containing the signed reading, and any batcher (operator or third party) wraps it in a top-level transaction providing ADA. A [CIP-112](../../references.md#cip112) guard script enforces the terms. This would eliminate the need for operator cooperation on the submission side, though the commitment phase still requires the operator to update their MPT.
 
 ## Applicability
 
