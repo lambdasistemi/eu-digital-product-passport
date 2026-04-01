@@ -4,7 +4,7 @@
 
 Any physical product with at least one sensor and a secure element can produce cryptographically signed readings that are verifiable on Cardano. The protocol is not specific to any product category — batteries are the first application because the [Battery Regulation](../regulation.md) creates the regulatory demand.
 
-The foundational assumption: **the user is the transport layer**. The device has no internet connection. The user has physical access to the device and an incentive (reward) to carry signed readings from the device to the chain.
+The foundational assumption: **the user is the transport layer**. The item has no internet connection. The user has physical access to the item and an incentive (reward) to carry signed readings from the item to the chain.
 
 ## Components
 
@@ -15,16 +15,15 @@ The foundational assumption: **the user is the transport layer**. The device has
 | **NFC interface** | Delivers signed reading to user's phone, powered by NFC field | Yes — same chip for any product |
 | **COSE_Sign1 envelope** | Signing format ([RFC 9052](../../references.md#rfc9052)) | Yes — standard envelope |
 | **CBOR payload** | Structured reading data ([RFC 8949](../../references.md#rfc8949)) | Schema varies by product |
-| **Operator MPT** | Merkle Patricia Trie holding device registry + reward pools | Yes — same MPFS infrastructure |
+| **Operator MPT** | Merkle Patricia Trie holding item registry + reporter rewards | Yes — same MPFS infrastructure |
 | **Commit-tap-submit** | On-chain challenge protocol | Yes — same validator logic |
 | **Operator reward tokens** | Native tokens redeemable with the operator | Yes — same minting pattern |
-| **Ownership token** | Gates who can request funded commitments | Yes — same CIP-68 pattern |
 
 The **only product-specific part** is the CBOR payload schema — which fields, which units, which plausibility checks. Everything else is reusable.
 
 ## Hardware: signing module
 
-Two chips on the device board, connected via I2C:
+Two chips on the item's board, connected via I2C:
 
 | Chip | Role | Cost (1M vol) |
 |------|------|--------------|
@@ -33,179 +32,225 @@ Two chips on the device board, connected via I2C:
 | NFC antenna + passives | | $0.06 |
 | **Total** | | **$0.81** |
 
-The module is powered entirely by the phone's NFC field. No battery, no internet, no wiring beyond I2C to the device's existing sensor bus.
+The module is powered entirely by the phone's NFC field. No battery, no internet, no wiring beyond I2C to the item's existing sensor bus.
 
 See [NFC Hardware](../sectors/batteries/nfc-hardware.md) for the detailed bill of materials, energy budget analysis, and alternative chip options.
 
-## Device registration
+## Data model
 
-The operator registers each device by inserting a leaf into their MPT. This is the first on-chain action for any device.
+The operator's MPT contains two types of leaves, distinguished by their key:
 
-### MPT leaf structure
+### Item leaf
 
 ```
-DeviceLeaf {
-  publicKey       : ByteString    -- device secure element public key
-  rewardRemaining : Integer       -- operator tokens remaining for this device
-  rewardPerRead   : Integer       -- operator tokens paid per valid reading
-  lastCounter     : Integer       -- monotonic counter from last accepted reading (0 at registration)
-  schemaVersion   : Integer       -- which CBOR payload schema this device uses
-  metadata        : ByteString    -- product-specific (battery model, tyre DOT, etc.)
+-- MPT key: hash(itemPubKey)
+
+ItemLeaf {
+  schemaVersion   : Integer
+  metadata        : ByteString            -- product-specific (battery model, tyre DOT, etc.)
+  reporter        : Maybe ReporterAssignment
+}
+
+ReporterAssignment {
+  reporterPubKey  : ByteString
+  nextWindowSlot  : Integer               -- earliest slot for next valid reading
+  nextReward      : Integer               -- reward for the next reading (always > 0)
 }
 ```
 
-### Registration transaction
+### Reporter leaf
 
-```mermaid
-graph LR
-    A["Operator UTxO<br/>(old MPT root + tokens)"] --> B["MPT Insert tx"]
-    B --> C["Operator UTxO<br/>(new MPT root + remaining tokens)"]
-    B --> D["Insert proof verifies<br/>new leaf added correctly"]
+```
+-- MPT key: hash(reporterPubKey)
+
+ReporterLeaf {
+  rewardsAccumulated : Integer
+}
 ```
 
-The operator:
+### Lifecycle
 
-1. Mints reward tokens (or draws from an existing pool)
-2. Inserts a new leaf into their MPT: key = device public key hash, value = `DeviceLeaf`
-3. The Aiken validator verifies the MPT insert proof
-4. The new UTxO holds the updated root hash + the operator's token pool (including the newly allocated device reward)
+```mermaid
+stateDiagram-v2
+    [*] --> Virgin: Operator registers item
+    Virgin --> Assigned: User claims (assignment, no reward)
+    Assigned --> Reading: User taps + submits (earns nextReward)
+    Reading --> Reading: Next reading within window
+    Reading --> Reassigned: Item changes hands
+    Reassigned --> Reading: New user taps + submits
 
-The device's public key is now on-chain, linked to a reward budget. Anyone can verify it exists by querying the operator's MPT with a Merkle proof.
+    note right of Virgin
+        reporter = Nothing
+        Just schema + metadata
+    end note
+
+    note right of Assigned
+        reporter = Just { pubKey, window, reward }
+        No reward paid for assignment itself
+    end note
+```
+
+| Step | Item leaf change | Reporter leaf change | Reward paid? |
+|------|-----------------|---------------------|-------------|
+| **Registration** | Created with `reporter = Nothing` | — | No |
+| **Assignment** | `reporter = Just { reporterPubKey, nextWindowSlot, nextReward }` | — | No — assignment is free |
+| **First reading** | `nextWindowSlot` and `nextReward` updated by contract | Created with `rewardsAccumulated = nextReward` | Yes |
+| **Subsequent readings** | `nextWindowSlot` and `nextReward` updated by contract | `rewardsAccumulated += nextReward` | Yes |
+| **Transfer** | `reporter` updated to new user's key | Old reporter's leaf untouched — rewards preserved | No — new assignment is free |
+
+Key properties:
+
+- **Virgin items** have no reporter. Anyone can claim them.
+- **Assignment pays nothing** — the user is just registering as the reporter for this item.
+- **Every reading pays** — `nextReward` is always > 0.
+- **Rewards belong to the reporter, not the item** — when the item changes hands, the old reporter keeps their accumulated rewards.
+- **The contract decides the next window and reward** — the operator's business logic determines the schedule and payment for each subsequent reading.
 
 ## Reward tokens
 
-Rewards are **operator-issued native tokens**, not ADA. Each operator defines a minting policy and decides what their tokens are worth.
+Rewards are **operator-issued native tokens**, not ADA.
 
 | Property | Design |
 |----------|--------|
 | **Issuer** | The operator (manufacturer/brand) |
 | **Value** | Defined by operator (e.g., "10 tokens = free service", "50 tokens = €5 discount on next purchase") |
-| **Redemption** | Off-chain, at point of sale, via operator's portal — operator's business |
-| **Minting** | Operator mints into their MPT UTxO at device registration or top-up |
-| **Flow** | On valid reading: operator UTxO → user wallet |
+| **Accumulation** | Tracked in `ReporterLeaf.rewardsAccumulated` — no on-chain token movement to user |
+| **Redemption** | Off-chain, at point of sale — user proves ownership of reporter key, operator checks accumulated balance |
 
-This is a loyalty mechanism, not a payment. The operator creates tokens at negligible cost and redeems them as discounts on future purchases — bringing the customer back.
+The user never holds on-chain tokens or ADA. Their rewards are a counter in the MPT, redeemable by proving they own the reporter key.
+
+## User identity: no wallet needed
+
+The user needs only a **key pair** — generated in the phone app, never touches the chain as a UTxO.
+
+| What the user has | Where it lives |
+|-------------------|---------------|
+| Key pair (public + private) | Phone app |
+| Reporter public key registered in item leaf | On-chain (in operator's MPT) |
+| Accumulated rewards | On-chain (in operator's MPT, reporter leaf) |
+
+The user has **no UTxOs, no ADA, no tokens**. Their public key appears in two places in the MPT (item leaf as `reporterPubKey`, reporter leaf as the key). The operator pays all transaction fees.
+
+Redemption is off-chain: the user signs a message with their reporter key, the operator verifies it and checks the on-chain `rewardsAccumulated` balance.
 
 ## The protocol: two paths
 
 ### Cooperative path (user pays zero ADA)
 
-The operator funds all transactions. The user only needs a signing key and the phone app.
+The operator funds all transactions. The user only needs their key pair and the phone app.
 
 ```mermaid
 sequenceDiagram
     participant U as User App
     participant O as Operator API
     participant C as Cardano L1
-    participant D as Device (NFC)
+    participant I as Item (NFC)
 
     Note over U,O: Step 1: Request commitment
-    U->>O: POST /commitment {deviceId, ownershipProof}
-    O->>O: Verify: user owns this device?
+    U->>O: POST /commitment {itemPubKeyHash, reporterPubKey, signature}
+    O->>O: Verify: reporter matches item leaf?
     O->>O: Verify: no burned commitments?
     O->>C: Submit commitment tx (operator pays ADA)
-    C-->>O: Commitment tx confirmed (slot S, hash H)
+    C-->>O: Commitment confirmed (hash H)
     O-->>U: {commitmentTxHash: H}
 
-    Note over U,D: Step 2: Tap
-    U->>D: NFC: challenge = H
-    D->>D: Read sensors
-    D->>D: Sign(state ‖ H) → COSE_Sign1
-    D-->>U: Signed reading
+    Note over U,I: Step 2: Tap
+    U->>I: NFC: challenge = H
+    I->>I: Read sensors
+    I->>I: Sign(state ‖ H) → COSE_Sign1
+    I-->>U: Signed reading
 
     Note over U,O: Step 3: Submit
-    U->>U: Build partial tx (commitment input + signed reading)
-    U->>O: POST /reading {partialTx, signedReading}
-    O->>O: Verify COSE signature against device public key
-    O->>O: Verify monotonic counter > last
-    O->>O: Complete tx: add operator MPT UTxO, add ADA, add reward token output
+    U->>U: Build partial tx (commitment ref + signed reading)
+    U->>U: Sign with reporter key
+    U->>O: POST /reading {partialTx}
+    O->>O: Complete tx: add operator MPT UTxO, add ADA
     O->>C: Submit complete tx
-    C->>C: Validator checks all proofs
-    C-->>O: Tx confirmed
-    O-->>U: {rewardTxHash, tokensEarned}
-
-    Note over C: On-chain state updated:
-    Note over C: - Commitment UTxO consumed (single-use)
-    Note over C: - MPT leaf updated (counter, reward decremented)
-    Note over C: - Reward tokens sent to user
+    C->>C: Validator: verify signature, check window, update leaves
+    C-->>O: Confirmed
+    O-->>U: {txHash, rewardsEarned}
 ```
 
 ### Adversarial path (user pays own ADA)
 
-If the operator refuses to cooperate (won't fund commitments, won't submit readings), the user can do everything directly on-chain. This is the escape hatch that keeps the operator honest.
+If the operator refuses to cooperate, the user can do everything directly on-chain. This is the escape hatch.
 
 ```mermaid
 sequenceDiagram
     participant U as User App
     participant C as Cardano L1
-    participant D as Device (NFC)
+    participant I as Item (NFC)
 
     U->>C: Submit commitment tx (user pays ~0.2 ADA)
-    C-->>U: Commitment tx confirmed (hash H)
+    C-->>U: Commitment confirmed (hash H)
 
-    U->>D: NFC: challenge = H
-    D-->>U: Signed reading
+    U->>I: NFC: challenge = H
+    I-->>U: Signed reading
 
     U->>C: Submit reading tx (user pays ~0.3 ADA)
-    Note over C: Consumes commitment + updates MPT leaf
-    Note over C: Reward tokens sent to user
-    C-->>U: Tx confirmed
+    Note over C: Validator updates both leaves
+    C-->>U: Confirmed
 ```
 
-The user spends ~0.5 ADA per reading but receives reward tokens. This path is always available — the on-chain validator doesn't care who submitted the transaction, only that the proofs are valid.
+The user spends ~0.5 ADA but their rewards still accumulate in the reporter leaf. The on-chain validator doesn't care who submitted the transaction — only that the proofs are valid.
 
 ### Burned commitment policy
 
-The operator tracks commitment usage to prevent abuse:
+The operator tracks commitment usage off-chain:
 
 | Situation | Operator response |
 |-----------|------------------|
-| User requests commitment, taps, submits → all good | Fund next commitment |
-| User requests commitment, never submits | Strike 1 — fund next commitment with warning |
-| User burns N commitments without submitting | Refuse to fund — user must self-fund via adversarial path |
-| User self-funds and submits valid reading | Reset strike counter — user is acting in good faith |
+| Commitment requested, reading submitted | Fund next commitment |
+| Commitment requested, never submitted | Strike — warn user |
+| N commitments burned | Refuse to fund — user must self-fund via adversarial path |
+| User self-funds and submits valid reading | Reset strikes — user is acting in good faith |
 
-This is off-chain policy, not on-chain enforcement. The operator's API tracks behavior. The on-chain protocol doesn't know or care about strikes — it only validates proofs.
+This is off-chain policy. The on-chain protocol doesn't know about strikes.
 
 ## On-chain validator
 
-A single reading submission transaction does all of this atomically:
+A reading submission transaction atomically updates two MPT leaves:
 
 ```
 ReadingValidator (Aiken):
 
-  -- Inputs
-  Consumes: commitment UTxO (proves freshness)
-  References: operator MPT UTxO (current root)
-
-  -- Redeemer
-  SubmitReading {
-    coseSign1      : ByteString     -- full COSE_Sign1 from device
-    mptProof       : MerkleProof    -- proof that device leaf exists in operator's MPT
-    updatedLeaf    : DeviceLeaf     -- new leaf value (counter incremented, reward decremented)
-    mptUpdateProof : MerkleProof    -- proof that update is valid
+  Redeemer: SubmitReading {
+    coseSign1        : ByteString     -- COSE_Sign1 from item
+    itemProof        : MerkleProof    -- item leaf exists
+    reporterProof    : MerkleProof    -- reporter leaf exists (or insert proof if first reading)
+    updatedItemLeaf  : ItemLeaf       -- new item leaf value
+    updatedReporter  : ReporterLeaf   -- new reporter leaf value
+    mptTransition    : MerkleProof    -- proves old root → new root with both updates
   }
 
-  -- Validation (all must pass)
-  1. Commitment UTxO is consumed in this tx
-  2. Commitment slot + maxAge ≥ current slot (fresh)
-  3. Extract commitment tx hash from COSE payload challenge field
-  4. Commitment tx hash matches the consumed UTxO
-  5. mptProof verifies device leaf exists under operator's current root
-  6. COSE_Sign1 signature valid against leaf.publicKey
-  7. Extract monotonic counter from reading: must be > leaf.lastCounter
-  8. updatedLeaf.lastCounter = reading counter
-  9. updatedLeaf.rewardRemaining = leaf.rewardRemaining - leaf.rewardPerRead
-  10. updatedLeaf.rewardRemaining ≥ 0 (reward pool not exhausted)
-  11. mptUpdateProof verifies the root transition (old root → new root with updated leaf)
-  12. Operator output UTxO has new root hash
-  13. Reward tokens (leaf.rewardPerRead) appear in a user output
-  14. Submitter holds ownership token for this device (or is the operator)
-  15. Product-specific plausibility checks per schemaVersion
+  Validation:
 
-  -- Outputs
-  Produces: operator UTxO (new MPT root, less reward tokens)
-  Produces: user UTxO (reward tokens)
+  -- Commitment
+  1. Commitment UTxO consumed in this tx
+  2. Commitment slot + maxAge ≥ current slot
+  3. Commitment tx hash matches challenge in COSE payload
+
+  -- Item leaf
+  4. itemProof verifies leaf exists under current MPT root
+  5. item leaf has reporter = Just assignment (not virgin)
+  6. COSE_Sign1 signature valid against itemPubKey (the MPT key)
+  7. current slot ≥ assignment.nextWindowSlot (reading is within window)
+  8. updatedItemLeaf.reporter.nextWindowSlot and nextReward set by contract logic
+  9. updatedItemLeaf.reporter.reporterPubKey unchanged
+
+  -- Reporter leaf
+  10. Reporter key = hash(assignment.reporterPubKey)
+  11. If first reading: reporter leaf is an MPT insert (rewardsAccumulated = assignment.nextReward)
+  12. If subsequent: updatedReporter.rewardsAccumulated = old + assignment.nextReward
+  13. Transaction signed by reporterPubKey
+
+  -- MPT transition
+  14. mptTransition proves old root → new root with both leaf updates
+  15. Operator output UTxO has new root hash
+
+  -- Product-specific
+  16. CBOR payload conforms to schemaVersion
+  17. Plausibility checks per product type
 ```
 
 ## Signing format: COSE_Sign1
@@ -221,21 +266,20 @@ COSE_Sign1 = [
 ]
 ```
 
-### Payload structure (generic)
+### Payload structure
 
 ```cbor-diagnostic
 {
-  1: h'...',           -- device_id (public key hash, ByteString)
+  1: h'...',           -- item_id (item public key hash, ByteString)
   2: h'...',           -- challenge (commitment tx hash, ByteString)
-  3: 4891,             -- monotonic_counter (strictly increasing, unsigned int)
-  4: { ... },          -- state (sensor readings — schema varies by product)
-  5: 1                 -- schema_version (unsigned int)
+  3: { ... },          -- state (sensor readings — schema varies by product)
+  4: 1                 -- schema_version (unsigned int)
 }
 ```
 
-Fields 1-3 and 5 are the same for every product. Field 4 (state) is product-specific:
+Fields 1, 2, and 4 are the same for every product. Field 3 (state) is product-specific:
 
-| Product | Field 4 contents |
+| Product | Field 3 contents |
 |---------|-----------------|
 | Battery | SoH, SoC, cycle count, voltage, current, temperature, cell voltages |
 | Tyre (commercial) | Tread depth, casing condition, retread count |
@@ -249,7 +293,7 @@ CBOR with deterministic encoding (RFC 8949 §4.2) — integer-only values, integ
 ```mermaid
 graph LR
     A[Physical<br/>phenomenon] -->|physics| B[Sensor]
-    B -->|I2C| C[Device<br/>controller]
+    B -->|I2C| C[Item<br/>controller]
     C -->|CBOR| D[Secure<br/>Element]
     D -->|COSE_Sign1| E[NFC]
     E -->|tap| F[Phone]
@@ -271,41 +315,36 @@ graph LR
 
 **Weakest link**: controller → SE boundary. Mitigated by schema validation, plausibility checks, and cross-referencing with independent measurements.
 
-**Cooperation assumption**: the cooperative path trusts the operator to submit transactions promptly. The adversarial path removes this assumption at the cost of ADA.
-
 ## Future: CIP-118 (nested transactions)
 
-[CIP-118](../../references.md#cip118) introduces **nested transactions** in the Dijkstra ledger era. It is actively being implemented — CIP merged January 2026, ledger code landing Q1-Q2 2026, testnet expected H1 2026.
+[CIP-118](../../references.md#cip118) introduces **nested transactions** in the Dijkstra ledger era. Actively being implemented — CIP merged January 2026, ledger code landing Q1-Q2 2026.
 
 With CIP-118, the cooperative path becomes fully trustless:
 
-1. User creates a **sub-transaction**: "here's my signed reading, send me reward tokens"
+1. User creates a **sub-transaction**: "here's my signed reading"
 2. Sub-transaction is **not balanced** (no ADA for fees)
 3. Any batcher (operator or third party) wraps it in a **top-level transaction** providing ADA
-4. A [CIP-112](../../references.md#cip112) **guard script** at the top level enforces the terms: valid reading → tokens must flow to user
-5. One atomic on-chain transaction. User holds zero ADA.
+4. A [CIP-112](../../references.md#cip112) **guard script** enforces the terms
+5. One atomic on-chain transaction. User holds zero ADA. No operator API needed.
 
-This eliminates the need for the operator API as a trust intermediary. The user creates a sub-transaction, broadcasts it to a mempool-like coordination layer, and any willing batcher (the operator, a third-party relayer, or a DEX-style aggregator) completes it.
+Until CIP-118 is deployed, the cooperative + adversarial dual-path design provides equivalent functionality.
 
-Until CIP-118 is deployed, the cooperative + adversarial dual-path design provides equivalent functionality with a slightly weaker trust model.
-
-## Incentive alignment summary
+## Incentive alignment
 
 | Actor | Cooperates | Defects |
 |-------|-----------|---------|
-| **User** | Gets free commitment + free submission + reward tokens | Burns commitments → loses free funding, must self-fund |
-| **Operator** | Gets fresh device data + customer loyalty + DPP compliance | Refuses valid readings → user escalates, operator gets no data |
-| **Device** | Produces signed readings when tapped | N/A — hardware, no agency |
+| **User** | Gets free commitments + readings + accumulated rewards | Burns commitments → loses free funding |
+| **Operator** | Gets fresh item data + customer loyalty + DPP compliance | Refuses readings → user escalates, operator gets no data |
 
-Both parties have skin in the game. The cooperative path is cheaper for everyone. The adversarial path exists as the escape hatch that keeps both honest.
+Both parties have skin in the game. The cooperative path is free for the user. The adversarial path exists as the escape hatch that keeps both honest.
 
 ## Applicability
 
 This protocol is foundational for signing IoT sensor data wherever:
 
-- The device has at least one sensor
-- A secure element can be added to the board (~$0.81)
+- A physical item has at least one sensor
+- A secure element can be added (~$0.81)
 - A user has physical access and an incentive to report
 - The reading needs to be verifiable and timestamped
 
-Batteries are the first concrete application. The protocol itself is product-agnostic — the only adaptation needed for a new product category is defining the CBOR payload schema (field 4) and the associated plausibility checks.
+Batteries are the first concrete application. The protocol is product-agnostic — the only adaptation for a new product category is defining the CBOR payload schema (field 3) and the associated plausibility checks.
