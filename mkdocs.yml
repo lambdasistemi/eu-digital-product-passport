@@ -43,6 +43,7 @@ nav:
     - Identity: cardano/identity.md
     - Cost Analysis: cardano/costs.md
     - Scalability: cardano/scalability.md
+    - Signed Readings Protocol: cardano/signed-readings.md
     - EU Integration: cardano/eu-integration.md
     - Existing Work: cardano/existing-work.md
   - Batteries:
