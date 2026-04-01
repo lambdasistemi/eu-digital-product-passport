@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: lean
+        working-directory: proofs
     steps:
       - uses: actions/checkout@v4
 
