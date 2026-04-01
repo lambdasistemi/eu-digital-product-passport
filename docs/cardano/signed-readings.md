@@ -207,9 +207,78 @@ The operator tracks commitment usage off-chain:
 
 This is off-chain policy. The on-chain protocol doesn't know about strikes.
 
-## On-chain validator
+## Commitment UTxO and operator ADA protection
 
-A reading submission transaction atomically updates two MPT leaves:
+Every commitment is a UTxO at a script address, locking min-ADA (~1.5 ADA) with a datum identifying the item and reporter.
+
+```
+CommitmentValidator:
+
+  Datum: {
+    itemPubKeyHash   : ByteString
+    reporterPubKey   : ByteString
+    windowCloseSlot  : Integer       -- after this slot, operator can reclaim
+  }
+
+  Redeemer:
+    UseForReading    -- consumed by reading submission (happy path)
+    | Reclaim        -- operator reclaims after window expires (expired path)
+
+  Validation:
+    UseForReading → normal reading flow (consumed by ReadingValidator)
+    Reclaim → currentSlot > windowCloseSlot AND signed by operator
+```
+
+The operator's ADA is never at risk:
+
+| Path | What happens | ADA returned to operator |
+|------|-------------|------------------------|
+| **Happy** | User taps and submits within window | Commitment consumed in reading tx → ADA back to operator |
+| **Expired** | User never submits | Operator reclaims after `windowCloseSlot` → ADA back to operator |
+
+The operator's maximum ADA exposure at any moment is `outstanding_commitments × ~1.5 ADA`. Rate limiting (one commitment per item at a time) bounds this.
+
+!!! note "MPT UTxO is always safe"
+    The operator's MPT UTxO (~2 ADA) is consumed and recreated in the same reading transaction. The operator is the oracle — only they can consume their own MPT UTxO. No ADA is ever at risk in the MPT.
+
+## Cost per reading
+
+Every reading costs the operator **two transactions**:
+
+| Transaction | Who builds | Who pays ADA | Fee | ADA locked |
+|-------------|-----------|-------------|-----|-----------|
+| **1. Commitment** | Operator | Operator | ~0.2 ADA | ~1.5 ADA (min-UTxO, returned on consumption) |
+| **2. Reading inclusion** | User builds partial, operator completes | Operator | ~0.3 ADA | 0 (MPT UTxO recreated) |
+| **Total per reading** | | | **~0.5 ADA** | **~1.5 ADA temporary** |
+
+At ADA ~$0.25, the operator pays **~$0.13 per reading** in transaction fees. The ~1.5 ADA locked in the commitment is temporary — returned when the reading is submitted or the commitment expires.
+
+For a battery manufacturer with 1 million items, each read monthly:
+
+| Metric | Value |
+|--------|-------|
+| Readings per year | 12M |
+| Tx fee per reading | ~0.5 ADA (~$0.13) |
+| Annual tx fees | ~6M ADA (~$1.5M) |
+| Peak locked ADA (if all commitments outstanding) | ~1.5M ADA (~$375k) |
+
+This is significant at scale. The operator's cost structure is:
+
+- **Tx fees**: real cost, scales linearly with readings
+- **Locked ADA**: temporary, returned, but requires capital
+- **Reward tokens**: operator-defined value, not ADA cost
+
+At these volumes, batching becomes important. CIP-118 (nested transactions) would allow bundling multiple readings into a single top-level transaction, reducing per-reading fees.
+
+## On-chain validators
+
+### CommitmentValidator
+
+See above — handles `UseForReading` (consumed in reading tx) and `Reclaim` (operator recovers ADA after window expires).
+
+### ReadingValidator
+
+A reading submission transaction consumes the commitment and atomically updates two MPT leaves:
 
 ```
 ReadingValidator (Aiken):
