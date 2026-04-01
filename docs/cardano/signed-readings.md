@@ -320,6 +320,8 @@ The protocol supports two signature algorithms, both with native Plutus built-in
 
 The operator chooses the algorithm at deployment time. The on-chain validator reads the protected header to determine which built-in verifier to call. Both are supported by the [NXP SE050](../sectors/batteries/nfc-hardware.md#why-nxp-se050) secure element.
 
+See [NFC Hardware — secure element alternatives](../sectors/batteries/nfc-hardware.md#why-nxp-se050) for the full analysis of P-256 secure elements (OPTIGA Trust M, ATECC608B) and the ZK wrapper / off-chain verification alternatives. Choosing a P-256-only SE is possible but means either adding a ZK proving infrastructure or renouncing on-chain signature verification.
+
 ### Payload structure
 
 ```cbor-diagnostic

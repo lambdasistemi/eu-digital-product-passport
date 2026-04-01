@@ -106,17 +106,46 @@ The choice of secure element is driven by **on-chain signature verification**. C
 - **Ed25519** — `verifyEd25519Signature` (native since Shelley)
 - **secp256k1** — `verifyEcdsaSecp256k1Signature` (CIP-49, Valentine hard fork Feb 2023)
 
-P-256 (secp256r1), the most common curve in IoT secure elements, has **no Plutus built-in**. Using P-256 would require either off-chain-only verification (trusting the operator) or an on-chain implementation (prohibitively expensive in Plutus execution units).
+P-256 (secp256r1), the most common curve in IoT secure elements, has **no Plutus built-in**. No CIP has been proposed for P-256, and implementing P-256 verification in pure Plutus/Aiken exceeds the transaction execution budget by orders of magnitude.
 
 | Secure Element | secp256k1 | Ed25519 | I2C | Price (100k) | On-chain verify? |
 |----------------|-----------|---------|-----|-------------|-----------------|
-| **NXP SE050** | **Yes** | **Yes** | Yes | ~$2.50 | **Both curves** |
-| Infineon OPTIGA Trust M | No | No | Yes | ~$0.90 | No — P-256 only |
-| Microchip ATECC608B | No | No | Yes | ~$0.81 | No — P-256 only |
+| **NXP SE050** | **Yes** | **Yes** | Yes | ~$2.50 | **Both curves — native** |
+| Infineon OPTIGA Trust M | No | No | Yes | ~$0.90 | ZK wrapper only (see below) |
+| Microchip ATECC608B | No | No | Yes | ~$0.81 | ZK wrapper only (see below) |
 | Infineon SECORA Blockchain | Yes | No | No | ~$1.50 | secp256k1 only |
 | Tropic Square TROPIC01 | No | Yes | SPI | ~$1.50 | Ed25519 only |
 
-The SE050 is the only commercially available secure element that supports **both** Plutus-compatible curves while providing I2C for sensor bus integration. The ~$1.60 premium over OPTIGA Trust M (at 100k distributor pricing) buys fully trustless on-chain verification — no off-chain intermediary needed. At 1M+ direct volumes, the premium narrows.
+The SE050 is the only commercially available secure element that supports **both** Plutus-compatible curves while providing I2C for sensor bus integration. The ~$1.60 premium over OPTIGA Trust M (at 100k distributor pricing) buys direct on-chain verification — no off-chain intermediary needed. At 1M+ direct volumes, the premium narrows.
+
+### Alternative: P-256 with ZK proof wrapper
+
+A P-256 signature from an OPTIGA Trust M **can** be verified on Cardano indirectly via a Groth16 SNARK:
+
+1. The operator verifies the P-256 COSE_Sign1 signature off-chain
+2. A [circom-ecdsa-p256](https://github.com/privacy-ethereum/circom-ecdsa-p256) circuit generates a Groth16 proof attesting "this P-256 signature is valid for this message and this public key"
+3. The on-chain validator verifies the Groth16 proof using Cardano's BLS12-381 built-ins (CIP-0381)
+
+This works today in theory, but adds significant complexity:
+
+| Aspect | Native (SE050) | ZK wrapper (OPTIGA) |
+|--------|---------------|---------------------|
+| On-chain cost | ~1% tx budget (built-in) | ~23% tx budget (Groth16 verify) |
+| Off-chain infra | None | Proving server (26s per proof, 56GB RAM) |
+| Phone proving | N/A | Not feasible — must delegate to server |
+| Circuit audit status | N/A (built-in) | **Unaudited** |
+| SE price (100k) | ~$2.50 | ~$0.90 |
+
+The ZK path trades cheaper hardware for a proving infrastructure and an unaudited cryptographic circuit. [CIP-0133](https://cips.cardano.org/cip/CIP-0133) (native multi-scalar multiplication) would reduce the on-chain Groth16 verification cost once enabled.
+
+### Alternative: off-chain verification only
+
+If on-chain signature verification is not required, any P-256 secure element works. The operator verifies the COSE_Sign1 signature off-chain and the on-chain validator trusts the operator's attestation (the operator's own signing key on the MPT update transaction serves as the trust anchor).
+
+!!! warning "Trust model impact"
+    Without on-chain signature verification, the protocol **cannot claim** that all readings stored on-chain are cryptographically bound to the physical item's secure element. The chain records that the operator _says_ a valid reading occurred, not that it can independently prove it. Third-party auditors must trust the operator's off-chain verification, which is the same trust model as a centralized database — the blockchain adds immutability but not independent verifiability.
+
+    This is still useful (tamper-evident log, regulatory compliance), but it is a weaker guarantee than full on-chain verification.
 
 ## Alternative: Infineon SECORA Blockchain
 
