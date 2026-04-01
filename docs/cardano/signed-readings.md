@@ -13,8 +13,8 @@ The foundational assumption: **the user is the transport layer**. The item has n
 | **Sensor(s)** | Measures physical state (voltage, temperature, pressure, depth, humidity, vibration...) | Sensor type varies by product |
 | **Secure element** | Holds private key, signs readings (ECDSA) | Yes — same chip for any product |
 | **NFC interface** | Delivers signed reading to user's phone, powered by NFC field | Yes — same chip for any product |
-| **COSE_Sign1 envelope** | Signing format ([RFC 9052](../../references.md#rfc9052)) | Yes — standard envelope |
-| **CBOR payload** | Structured reading data ([RFC 8949](../../references.md#rfc8949)) | Schema varies by product |
+| **COSE_Sign1 envelope** | Signing format ([RFC 9052](../references.md#rfc9052)) | Yes — standard envelope |
+| **CBOR payload** | Structured reading data ([RFC 8949](../references.md#rfc8949)) | Schema varies by product |
 | **Operator MPT** | Merkle Patricia Trie holding item registry + reporter rewards | Yes — same MPFS infrastructure |
 | **Operator reward tokens** | Native tokens redeemable with the operator | Yes — same minting pattern |
 
@@ -245,7 +245,7 @@ The operator's only cost for a burned commitment is the wasted Tx 1 fee (~0.2 AD
 For a €50 item over a 5-year lifetime with monthly readings: 60 readings × ~$0.12 = **~$7 in tx fees**. That's ~14% of the item price. Acceptable for high-value items (batteries, commercial tyres), challenging for low-value items.
 
 !!! note "Future optimization"
-    [CIP-118](../../references.md#cip118) (nested transactions, expected H1-H2 2026) would allow batching multiple readings into a single top-level transaction, significantly reducing per-reading fees. L2 solutions (Hydra) could reduce costs further but introduce operational complexity. These are future design options, not current protocol requirements.
+    [CIP-118](../references.md#cip118) (nested transactions, expected H1-H2 2026) would allow batching multiple readings into a single top-level transaction, significantly reducing per-reading fees. L2 solutions (Hydra) could reduce costs further but introduce operational complexity. These are future design options, not current protocol requirements.
 
 ## On-chain validator
 
@@ -296,7 +296,7 @@ ReadingValidator (Aiken):
 
 ## Signing format: COSE_Sign1
 
-Every signed reading is a [COSE_Sign1](../../references.md#rfc9052) structure — the same signing envelope used in the EU Digital COVID Certificate, mobile driving licences (ISO 18013-5), and WebAuthn/FIDO2.
+Every signed reading is a [COSE_Sign1](../references.md#rfc9052) structure — the same signing envelope used in the EU Digital COVID Certificate, mobile driving licences (ISO 18013-5), and WebAuthn/FIDO2.
 
 ```
 COSE_Sign1 = [
@@ -373,9 +373,9 @@ graph LR
 
 ## Future: CIP-118 (nested transactions)
 
-[CIP-118](../../references.md#cip118) introduces **nested transactions** in the Dijkstra ledger era. Actively being implemented — CIP merged January 2026, ledger code landing Q1-Q2 2026.
+[CIP-118](../references.md#cip118) introduces **nested transactions** in the Dijkstra ledger era. Actively being implemented — CIP merged January 2026, ledger code landing Q1-Q2 2026.
 
-With CIP-118, the user could create a sub-transaction containing the signed reading, and any batcher (operator or third party) wraps it in a top-level transaction providing ADA. A [CIP-112](../../references.md#cip112) guard script enforces the terms. This would eliminate the need for operator cooperation on the submission side, though the commitment phase still requires the operator to update their MPT.
+With CIP-118, the user could create a sub-transaction containing the signed reading, and any batcher (operator or third party) wraps it in a top-level transaction providing ADA. A [CIP-112](../references.md#cip112) guard script enforces the terms. This would eliminate the need for operator cooperation on the submission side, though the commitment phase still requires the operator to update their MPT.
 
 ## Applicability
 
