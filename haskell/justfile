@@ -1,0 +1,16 @@
+# DPP Haskell project
+
+# Build everything
+build:
+    cabal build all -O0
+
+# Run tests
+test:
+    cabal test dpp-tests -O0 --test-show-details=direct
+
+# Format
+format:
+    fourmolu -i lib/ test/ app/
+
+# CI: format check + build + test
+ci: format build test

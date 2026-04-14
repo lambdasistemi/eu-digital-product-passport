@@ -1,0 +1,71 @@
+cabal-version: 3.0
+name:          dpp
+version:       0.1.0.0
+synopsis:      On-chain types and test vectors for the DPP signed readings protocol
+description:
+  PlutusData types and test vector generation for the
+  EU Digital Product Passport signed sensor readings protocol.
+  Canonical specification — Aiken validators must match byte-for-byte.
+
+license:       Apache-2.0
+license-file:  LICENSE
+author:        Paolo Veronelli
+maintainer:    paolo.veronelli@gmail.com
+category:      Blockchain
+build-type:    Simple
+
+library
+  hs-source-dirs:     lib
+  default-language:   GHC2021
+  ghc-options:
+    -Wall -Werror -Wunused-imports -Wunused-packages
+    -Wmissing-export-lists -Wname-shadowing -Wredundant-constraints
+
+  exposed-modules:
+    Dpp.Types
+
+  build-depends:
+    , base         >=4.14 && <5
+    , bytestring
+    , plutus-core
+    , plutus-tx
+
+  default-extensions:
+    DerivingStrategies
+    OverloadedStrings
+    RecordWildCards
+
+executable dpp-test-vectors
+  hs-source-dirs:     app
+  main-is:            Main.hs
+  default-language:   GHC2021
+  ghc-options:        -Wall -Werror
+  build-depends:
+    , aiken-codegen
+    , base               >=4.14 && <5
+    , bytestring
+    , dpp
+
+  default-extensions:
+    DerivingStrategies
+    OverloadedStrings
+
+test-suite dpp-tests
+  type:               exitcode-stdio-1.0
+  hs-source-dirs:     test
+  main-is:            Main.hs
+  default-language:   GHC2021
+  ghc-options:        -Wall -Werror
+  build-depends:
+    , base         >=4.14 && <5
+    , bytestring
+    , dpp
+    , hspec
+    , plutus-core
+    , plutus-tx
+    , QuickCheck
+
+  default-extensions:
+    DerivingStrategies
+    OverloadedStrings
+    RecordWildCards
